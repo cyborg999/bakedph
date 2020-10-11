@@ -4,6 +4,7 @@ session_start();
 class Model {
 	public $db;
 	public $errors = array();
+	public $success;
 
 	public function __construct(){
 		require_once "config.php";
@@ -15,7 +16,93 @@ class Model {
 		$this->addStoreListener();
 		$this->addSubscriptionListener();
 		$this->getAllUnverifiedStores();
+		$this->addProductListener();
+		$this->deleteProductListener();
 	}	
+
+	public function deleteProductListener(){
+		if(isset($_POST['deleteProduct'])){
+			$sql = "
+				DELETE from product
+				WHERE id = ?
+			";
+
+			$this->db->prepare($sql)->execute(array($_POST['id']));
+
+			die(json_encode(array("added")));
+		}
+	}
+
+	public function getAllProducts(){
+		$sql = "
+			SELECT *
+			FROM product
+			WHERE storeid = '".$_SESSION['storeid']."'
+		";
+
+		return $this->db->query($sql)->fetchAll();
+	}
+
+	public function getProductCount(){
+		$sql = "
+			SELECT count(id) as total
+			FROM product
+			WHERE storeid = '".$_SESSION['storeid']."'
+		";
+
+		$record =  $this->db->query($sql)->fetch();
+
+		if($record){
+			return $record['total'];
+		} else {
+			return 0;
+		}
+	}
+
+	//for easy deletion of records
+	public function reset(){
+		$sql = "delete from store";
+		$this->db->prepare($sql)->execute(array());
+		$sql = "delete from user";
+		$this->db->prepare($sql)->execute(array());
+		$sql = "delete from product";
+		$this->db->prepare($sql)->execute(array());
+	}
+
+	public function addProductListener(){
+		if(isset($_POST['addproduct'])){
+			$sql = "
+				SELECT *
+				FROM product
+				WHERE name = '".$_POST['name']."'  AND storeid = '".$_SESSION['storeid']."'
+				LIMIT 1
+			";
+
+			$exists = $this->db->query($sql)->fetch();
+	
+
+			if(!$exists){
+				$sql = "
+					INSERT INTO product(name,srp,qty,expiry_date,storeid)
+					VALUES(?,?,?,?,?)
+				";
+
+				$this->db->prepare($sql)->execute(array($_POST['name'], $_POST['price'],$_POST['qty'],$_POST['expiry'],$_SESSION['storeid']));
+
+				$this->success = "You have sucesfully added this product.";
+
+			} else {
+				$this->errors[] = "You already have this product added before.";
+			}
+
+			return $this;
+		}
+	}
+
+	public function showSuccessMessage(){
+		return $this->success;
+	}
+	
 
 	public function getAllUnverifiedStores(){
 		$sql = "
@@ -87,8 +174,10 @@ class Model {
 	public function loginListener(){
 		if(isset($_POST['login'])){
 			$sql = "
-				SELECT *
-				FROM user
+				SELECT t1.*, t2.id as 'storeId'
+				FROM user t1
+				LEFT JOIN store t2
+				ON t1.id = t2.userid
 				WHERE username = '".$_POST['username']."'
 				AND password = '".md5($_POST['password'])."'
 
@@ -103,6 +192,7 @@ class Model {
 				//redirect to dashboard
 				$_SESSION['id'] = $exists['id'];
 				$_SESSION['username'] = $exists['username'];
+				$_SESSION['storeid'] = $exists['storeId'];
 
 				header("Location:dashboard.php");
 			}

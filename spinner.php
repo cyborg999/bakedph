@@ -1,0 +1,10 @@
+ <div class="row  preloader hidden">
+ 	<div class="col-sm">
+ 		 <button class="btn btn-primary" type="button" disabled>
+		    <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+		    Loading...
+		  </button>
+ 	</div>
+ </div>
+
+ 

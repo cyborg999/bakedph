@@ -1,4 +1,4 @@
-<?php include_once "./head.php"; ?>
+<?php include "./head.php"; ?>
 <body>
 	<div class="container-sm">
 		<?php include_once "./nav.php"; ?>

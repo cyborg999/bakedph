@@ -22,6 +22,10 @@
 					    <label class="form-check-label" for="exampleCheck1">Check me out</label>
 					  </div> -->
 					  <button type="submit" class="btn btn-primary">Submit </button>
+					  <br>
+					  <br>
+					  <hr>
+					  <a href="signup.php">No Account Yet? Sign up for here</a>
 					</form>
 				</div>
 			<!-- errors -->

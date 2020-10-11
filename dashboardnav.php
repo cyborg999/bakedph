@@ -14,3 +14,10 @@
     </ul>
   </div>
 </nav>
+
+<?php
+	//restrict acccess to page if not logged in
+	if(!isset($_SESSION['id'])){
+		header("Location:logout.php");
+	}
+?>
