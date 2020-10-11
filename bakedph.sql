@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Oct 11, 2020 at 07:12 AM
+-- Generation Time: Oct 11, 2020 at 05:07 PM
 -- Server version: 10.4.13-MariaDB
 -- PHP Version: 7.4.8
 
@@ -24,6 +24,23 @@ SET time_zone = "+00:00";
 -- --------------------------------------------------------
 
 --
+-- Table structure for table `product`
+--
+
+CREATE TABLE `product` (
+  `id` int(11) NOT NULL,
+  `name` varchar(255) NOT NULL,
+  `srp` float NOT NULL,
+  `qty` int(11) NOT NULL,
+  `expiry_date` date NOT NULL,
+  `storeid` int(11) NOT NULL,
+  `date_created` int(11) NOT NULL DEFAULT current_timestamp(),
+  `status` int(11) DEFAULT 1
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+-- --------------------------------------------------------
+
+--
 -- Table structure for table `store`
 --
 
@@ -36,19 +53,6 @@ CREATE TABLE `store` (
   `userid` int(11) NOT NULL,
   `subscription` varchar(255) NOT NULL DEFAULT '6 Months'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
-
---
--- Dumping data for table `store`
---
-
-INSERT INTO `store` (`id`, `name`, `description`, `logo`, `date_creaed`, `userid`, `subscription`) VALUES
-(3, 'user5store', NULL, NULL, '2020-10-10 13:23:37', 7, '3 Months'),
-(4, 'user6store', NULL, NULL, '2020-10-10 13:31:49', 8, '1 Year'),
-(5, 'test', NULL, NULL, '2020-10-11 02:54:50', 9, '6 Months'),
-(6, 'jey', NULL, NULL, '2020-10-11 04:57:31', 18, '6 Months'),
-(7, 'jeys', NULL, NULL, '2020-10-11 04:58:56', 18, '6 Months'),
-(8, 'asdas', NULL, NULL, '2020-10-11 05:04:56', 18, '6 Months'),
-(9, 'asdass', NULL, NULL, '2020-10-11 05:05:01', 18, '6 Months');
 
 -- --------------------------------------------------------
 
@@ -66,32 +70,14 @@ CREATE TABLE `user` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 --
--- Dumping data for table `user`
---
-
-INSERT INTO `user` (`id`, `username`, `password`, `usertype`, `verified`, `date_created`) VALUES
-(1, 'user', 'aaaaaaaa', 'basic', 0, '2020-10-10 11:04:52'),
-(2, 'dan', 'a', 'basic', 0, '2020-10-10 11:12:20'),
-(3, 'user1', '0b4e7a0e5fe84ad35fb5f95b9ceeac79', 'basic', 0, '2020-10-10 11:32:13'),
-(4, 'user2', '0b4e7a0e5fe84ad35fb5f95b9ceeac79', 'basic', 0, '2020-10-10 12:13:35'),
-(5, 'user3', '0b4e7a0e5fe84ad35fb5f95b9ceeac79', 'basic', 0, '2020-10-10 12:14:09'),
-(6, 'user4', '0b4e7a0e5fe84ad35fb5f95b9ceeac79', 'basic', 0, '2020-10-10 12:16:30'),
-(7, 'user5', '0b4e7a0e5fe84ad35fb5f95b9ceeac79', 'basic', 0, '2020-10-10 13:23:30'),
-(8, 'user6', '0b4e7a0e5fe84ad35fb5f95b9ceeac79', 'basic', 0, '2020-10-10 13:31:45'),
-(9, 'TEST', '96e79218965eb72c92a549dd5a330112', 'basic', 0, '2020-10-11 00:38:42'),
-(10, 'adsa', '0b4e7a0e5fe84ad35fb5f95b9ceeac79', 'basic', 0, '2020-10-11 04:50:03'),
-(11, 'sdfsdf', '0b4e7a0e5fe84ad35fb5f95b9ceeac79', 'basic', 0, '2020-10-11 04:50:40'),
-(12, 'asd', '0b4e7a0e5fe84ad35fb5f95b9ceeac79', 'basic', 0, '2020-10-11 04:51:47'),
-(13, 'asda', '0b4e7a0e5fe84ad35fb5f95b9ceeac79', 'basic', 0, '2020-10-11 04:53:58'),
-(14, 'asdsad', '0b4e7a0e5fe84ad35fb5f95b9ceeac79', 'basic', 0, '2020-10-11 04:54:20'),
-(15, 'asdasdas', '0b4e7a0e5fe84ad35fb5f95b9ceeac79', 'basic', 0, '2020-10-11 04:54:41'),
-(16, 'asfdsfs', '0b4e7a0e5fe84ad35fb5f95b9ceeac79', 'basic', 0, '2020-10-11 04:55:46'),
-(17, 'asdsada', '0b4e7a0e5fe84ad35fb5f95b9ceeac79', 'basic', 0, '2020-10-11 04:56:28'),
-(18, 'sdfsdfs', '0b4e7a0e5fe84ad35fb5f95b9ceeac79', 'basic', 0, '2020-10-11 04:57:24');
-
---
 -- Indexes for dumped tables
 --
+
+--
+-- Indexes for table `product`
+--
+ALTER TABLE `product`
+  ADD PRIMARY KEY (`id`);
 
 --
 -- Indexes for table `store`
@@ -110,16 +96,22 @@ ALTER TABLE `user`
 --
 
 --
+-- AUTO_INCREMENT for table `product`
+--
+ALTER TABLE `product`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
+
+--
 -- AUTO_INCREMENT for table `store`
 --
 ALTER TABLE `store`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=17;
 
 --
 -- AUTO_INCREMENT for table `user`
 --
 ALTER TABLE `user`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=19;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=31;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
