@@ -43,10 +43,9 @@ class Model {
 			//wait for admin to verify this store
 
 			$data = array(
-				"added" => true,
-				"final" => true
+				"added" => true
 			);
-			
+
 			die(json_encode($data));
 		}
 	}

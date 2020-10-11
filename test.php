@@ -13,6 +13,128 @@
   <body>
     <div class="container-sm">
 
+
+
+
+
+
+      <form>
+  <div class="form-row">
+    <div class="form-group col-md-6">
+      <label for="inputEmail4">Email</label>
+      <input type="email" class="form-control" id="inputEmail4">
+    </div>
+    <div class="form-group col-md-6">
+      <label for="inputPassword4">Password</label>
+      <input type="password" class="form-control" id="inputPassword4">
+    </div>
+  </div>
+  <div class="form-group">
+    <label for="inputAddress">Address</label>
+    <input type="text" class="form-control" id="inputAddress" placeholder="1234 Main St">
+  </div>
+  <div class="form-group">
+    <label for="inputAddress2">Address 2</label>
+    <input type="text" class="form-control" id="inputAddress2" placeholder="Apartment, studio, or floor">
+  </div>
+  <div class="form-row">
+    <div class="form-group col-md-6">
+      <label for="inputCity">City</label>
+      <input type="text" class="form-control" id="inputCity">
+    </div>
+    <div class="form-group col-md-4">
+      <label for="inputState">State</label>
+      <select id="inputState" class="form-control">
+        <option selected>Choose...</option>
+        <option>...</option>
+      </select>
+    </div>
+    <div class="form-group col-md-2">
+      <label for="inputZip">Zip</label>
+      <input type="text" class="form-control" id="inputZip">
+    </div>
+  </div>
+  <div class="form-group">
+    <div class="form-check">
+      <input class="form-check-input" type="checkbox" id="gridCheck">
+      <label class="form-check-label" for="gridCheck">
+        Check me out
+      </label>
+    </div>
+  </div>
+  <button type="submit" class="btn btn-primary">Sign in</button>
+</form>
+
+
+<div class="card border-primary mb-3" style="max-width: 18rem;">
+  <div class="card-header">Header</div>
+  <div class="card-body text-primary">
+    <h5 class="card-title">Primary card title</h5>
+    <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
+  </div>
+</div>
+<div class="card border-secondary mb-3" style="max-width: 18rem;">
+  <div class="card-header">Header</div>
+  <div class="card-body text-secondary">
+    <h5 class="card-title">Secondary card title</h5>
+    <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
+  </div>
+</div>
+<div class="card border-success mb-3" style="max-width: 18rem;">
+  <div class="card-header">Header</div>
+  <div class="card-body text-success">
+    <h5 class="card-title">Success card title</h5>
+    <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
+  </div>
+</div>
+<div class="card border-danger mb-3" style="max-width: 18rem;">
+  <div class="card-header">Header</div>
+  <div class="card-body text-danger">
+    <h5 class="card-title">Danger card title</h5>
+    <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
+  </div>
+</div>
+<div class="card border-warning mb-3" style="max-width: 18rem;">
+  <div class="card-header">Header</div>
+  <div class="card-body text-warning">
+    <h5 class="card-title">Warning card title</h5>
+    <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
+  </div>
+</div>
+<div class="card border-info mb-3" style="max-width: 18rem;">
+  <div class="card-header">Header</div>
+  <div class="card-body text-info">
+    <h5 class="card-title">Info card title</h5>
+    <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
+  </div>
+</div>
+<div class="card border-light mb-3" style="max-width: 18rem;">
+  <div class="card-header">Header</div>
+  <div class="card-body">
+    <h5 class="card-title">Light card title</h5>
+    <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
+  </div>
+</div>
+<div class="card border-dark mb-3" style="max-width: 18rem;">
+  <div class="card-header">Header</div>
+  <div class="card-body text-dark">
+    <h5 class="card-title">Dark card title</h5>
+    <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
+  </div>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
       <nav class="navbar navbar-dark bg-primary">
   <a class="navbar-brand" href="#">BakedPH</a>
   <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarText" aria-controls="navbarText" aria-expanded="false" aria-label="Toggle navigation">
