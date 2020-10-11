@@ -25,7 +25,7 @@
 					  <br>
 					  <br>
 					  <hr>
-					  <a href="signup.php">No Account Yet? Sign up for here</a>
+					  <a href="signup.php">No Account Yet? Sign up here</a>
 					</form>
 				</div>
 			<!-- errors -->
