@@ -91,35 +91,36 @@
 
           <div class="col-sm-8">
             <h5>Raw Materials</h5>
-            <table class="table table-hover table-sm">
+            <table class="table table-hover table-sm" id="material">
               <thead>
                 <tr>
-                  <th scope="col">#</th>
-                  <th scope="col">First</th>
-                  <th scope="col">Last</th>
-                  <th scope="col">Handle</th>
+                  <th scope="col">Name</th>
+                  <th scope="col">Price</th>
+                  <th scope="col">Quantity</th>
+                  <th scope="col">Action</th>
                 </tr>
               </thead>
               <tbody>
-                <tr>
-                  <th scope="row">1</th>
-                  <td>Mark</td>
-                  <td>Otto</td>
-                  <td>@mdo</td>
-                </tr>
-                <tr>
-                  <th scope="row">2</th>
-                  <td>Jacob</td>
-                  <td>Thornton</td>
-                  <td>@fat</td>
-                </tr>
-                <tr>
-                  <th scope="row">3</th>
-                  <td colspan="2">Larry the Bird</td>
-                  <td>@twitter</td>
-                </tr>
+                
               </tbody>
+              <tfoot>
+                <tr>
+                  <td>
+                    <input type="text" id="materialName" class="form-control" name="name" placeholder="Name..."/>
+                  </td>
+                  <td>
+                    <input type="text" id="materialSrp" class="form-control" name="price" placeholder="SRP..."/>
+                  </td>
+                  <td>
+                    <input type="number" id="materialQty" class="form-control" name="qty" placeholder="Quantity..."/>
+                  </td>
+                  <td>
+                    <input type="submit" id="addMaterial" class="btn btn-sm btn-primary" value="Add">
+                  </td>
+                </tr>
+              </tfoot>
             </table>
+
           </div>
         </div>
       </div>
@@ -130,7 +131,16 @@
   </div>
 </div>
 
-
+<script type="text/html" id="mats">
+  <tr>
+    <td>[NAME]</td>
+    <td>[PRICE]</td>
+    <td>[QTY]</td>
+    <td>
+      <a href="" class="btn btn-sm btn-danger deleteMaterial" data-id="[ID]">remove</a>
+    </td>
+  </tr>
+</script>
 <script type="text/html" id="success">
       <div class="alert alert-success alert-dismissible fade show" role="alert">
         <strong>Success!!</strong> You have sucessfully updated this product.
@@ -144,6 +154,29 @@
     (function($){
       $(document).ready(function(){
         function __listen(){
+          $(".preloader").addClass("hidden");
+          
+          $(".deleteMaterial").off().on("click", function(e){
+            e.preventDefault();
+
+            var me = $(this);
+
+            $(".preloader").removeClass("hidden");
+
+            $.ajax({
+              url : "ajax.php",
+              data : { deleteMaterial : true, id : me.data("id")},
+              type : "post",
+              dataType : "json",
+              success : function(response){
+                $(".preloader").addClass("hidden");
+
+                me.parents("tr").remove();
+              }
+            });
+
+          });
+
           $("#editform").on("submit", function(e){
             e.preventDefault();
 
@@ -179,10 +212,33 @@
             $("#editqty").attr("value", data.qty);
             $("#editprice").attr("value", data.srp);
             $("#editid").attr("value", data.id);
+            $("#addMaterial").data("id", data.id);
             $("#editexpiry").attr("value", data.expiry);
             $(".msg").addClass("hidden");
+            $(".preloader").removeClass("hidden");
 
-            console.log(data);
+            //get materials
+            $.ajax({
+              url : "ajax.php",
+              data : { getMaterials : true, id : data.id},
+              type : "post",
+              dataType : 'json',
+              success : function(response){
+                for(var i in response){
+                  var tpl = $("#mats").html();
+
+                  tpl = tpl.replace("[NAME]", response[i].name).
+                    replace("[ID]", response[i].id).
+                    replace("[PRICE]", response[i].price).replace("[QTY]", response[i].qty);
+
+                  $("#material tbody").append(tpl);
+                  $(".preloader").addClass("hidden");
+                }
+
+                __listen();
+
+              }
+            });
           });
 
           $(".delete").off().on("click", function(e){
@@ -208,8 +264,49 @@
         }
 
         __listen();
-      });
 
+        $("#addMaterial").on("click", function(e){
+          e.preventDefault();
+
+          var name = $("#materialName").val();
+          var srp = $("#materialSrp").val();
+          var qty = $("#materialQty").val();
+          var id = $(this).data("id");
+          
+          $(".preloader").removeClass("hidden");
+
+          $.ajax({
+            url : "ajax.php",
+            data : { 
+              addMaterial : true, 
+              name : name,
+              srp : srp,
+              id : id,
+              qty : qty
+            },
+            type : "post",
+            dataType : "json",
+            success :  function(response){
+              if(response.added){
+                var tpl = $("#mats").html();
+
+                tpl = tpl.replace("[NAME]", name).
+                  replace("[ID]", response.id).
+                  replace("[PRICE]", srp).replace("[QTY]", qty);
+
+                $("#material tbody").append(tpl);
+                $(".preloader").addClass("hidden");
+
+                __listen();
+              } else {
+                alert("You already added this material to this product.");
+              }
+              
+            }
+          });
+        });
+
+      });
 
     })(jQuery);
 

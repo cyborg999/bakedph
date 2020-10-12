@@ -17,3 +17,8 @@
 		op($data);
 		die();
 	}
+
+	function opp(){
+		echo "<pre>";
+		print_r($_POST);
+	}

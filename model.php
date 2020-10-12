@@ -19,7 +19,78 @@ class Model {
 		$this->addProductListener();
 		$this->deleteProductListener();
 		$this->editproductListener();
+		$this->addMaterialListener();
+		$this->getMaterialsListener();
+		$this->deleteMaterialListener();
 	}	
+
+	public function deleteMaterialListener(){
+		if(isset($_POST['deleteMaterial'])){
+			$sql = "
+				DELETE FROM material
+				WHERE id = ".$_POST['id']."
+			";
+
+			$this->db->prepare($sql)->execute(array());
+
+			die(json_encode(array("deleted")));
+		}
+	}
+
+	public function getMaterialsListener(){
+		if(isset($_POST['getMaterials'])){
+			$records = $this->getMaterialById($_POST['id']);
+
+			die(json_encode($records));
+		}
+	}
+
+	public function getMaterialById($id){
+		$sql = "
+			SELECT *
+			FROM material
+			WHERE productid = ".$id."
+		";
+
+		return $this->db->query($sql)->fetchAll();
+	}
+
+	public function addMaterialListener(){
+		if(isset($_POST['addMaterial'])){
+			$data = array();
+
+			if($this->findMaterialByNameAndProductId($_POST['name'], $_POST['id'])){
+
+				$data['added'] = false;
+			} else {
+				$sql = "
+					INSERT INTO material(name,price,qty,productid)
+					VALUES(?,?,?,?)
+				";	
+
+				$this->db->prepare($sql)->execute(array($_POST['name'], $_POST['srp'], $_POST['qty'], $_POST['id']));
+
+				$data['added'] = true;
+				$data['id'] = $this->db->lastInsertId();
+			}
+
+			die(json_encode($data));
+		}
+	}
+
+	public function findMaterialByNameAndProductId($name, $id){
+		$sql = "
+			SELECT *
+			FROM material
+			WHERE name = '".$name."'
+			AND productid = ".$id."
+			LIMIT 1
+		";
+
+		return $this->db->query($sql)->fetch();
+
+
+	}
 
 	public function editproductListener(){
 		if(isset($_POST['editproduct'])){
@@ -76,12 +147,16 @@ class Model {
 
 	//for easy deletion of records
 	public function reset(){
-		$sql = "delete from store";
+		// $sql = "delete from store";
+		// $this->db->prepare($sql)->execute(array());
+		// $sql = "delete from user";
+		// $this->db->prepare($sql)->execute(array());
+		// $sql = "delete from product";
+		// $this->db->prepare($sql)->execute(array());
+
+		$sql = "delete from material";
 		$this->db->prepare($sql)->execute(array());
-		$sql = "delete from user";
-		$this->db->prepare($sql)->execute(array());
-		$sql = "delete from product";
-		$this->db->prepare($sql)->execute(array());
+
 	}
 
 	public function addProductListener(){
