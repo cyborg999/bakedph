@@ -8,13 +8,13 @@
 				      </h2>
 				    </div>
 
-				    <div id="collapseProfile" class=" collapse" aria-labelledby="headingOne" data-parent="#accordionExample">
+				    <div id="collapseProfile" class="<?= ($active == "user") ? "show" : ""; ?> collapse" aria-labelledby="headingOne" data-parent="#accordionExample">
 				      <div class="card-body">
 				      	<div class="col-sm"><svg class="bi" width="50" height="50" fill="currentColor"><use xlink:href="./node_modules/bootstrap-icons/bootstrap-icons.svg#file-person-fill"/></svg></div>
 				        <?= $_SESSION['username'] ?>
 				        <br>
 				        <small>
-				        <a href="">edit profile</a>
+				        <a href="profile.php">edit profile</a>
 				        </small>
 				      </div>
 				    </div>
@@ -44,7 +44,7 @@
 				      </h2>
 				    </div>
 
-				    <div id="collapseOne" class="show collapse" aria-labelledby="headingOne" data-parent="#accordionExample">
+				    <div id="collapseOne" class="<?= ($active == "product") ? "show" : ""; ?> collapse" aria-labelledby="headingOne" data-parent="#accordionExample">
 				      <div class="card-body">
 				      	<ul class="list-group list-group-flush">
 						  <li class="list-group-item">

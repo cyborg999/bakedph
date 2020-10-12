@@ -5,7 +5,7 @@
 		<div class="row">
 			<br>
 			<div class="col-sm-3">
-				<?php include "./sidenav.php"; ?>
+				<?php $active = "product"; include "./sidenav.php"; ?>
 			</div>
 			<div class="col-sm-9">
 				<?php include_once "./error.php"; ?>

@@ -6,7 +6,7 @@
     <div class="row">
       <br>
       <div class="col-sm-3">
-        <?php include_once "./sidenav.php"; ?>
+        <?php  $active = "product";  include_once "./sidenav.php"; ?>
       </div>
       <div class="col-sm-9">
         <?php
@@ -115,10 +115,10 @@
                     <input type="number" id="materialQty" class="form-control" name="qty" placeholder="Quantity..."/>
                   </td>
                   <td>
-                    <input type="submit" id="addMaterial" class="btn btn-sm btn-primary" value="Add">
+                    <button id="addMaterial" class="btn btn-sm btn-primary" ><svg class="bi" width="18" height="18" fill="currentColor"><use xlink:href="./node_modules/bootstrap-icons/bootstrap-icons.svg#plus"/></svg></button>
                   </td>
                 </tr>
-              </tfoot>
+              </tfoot> 
             </table>
 
           </div>
@@ -137,7 +137,7 @@
     <td>[PRICE]</td>
     <td>[QTY]</td>
     <td>
-      <a href="" class="btn btn-sm btn-danger deleteMaterial" data-id="[ID]">remove</a>
+      <button  class="btn btn-sm btn-danger deleteMaterial" data-id="[ID]"><svg class="bi" width="18" height="18" fill="currentColor"><use xlink:href="./node_modules/bootstrap-icons/bootstrap-icons.svg#trash"/></svg></button>
     </td>
   </tr>
 </script>

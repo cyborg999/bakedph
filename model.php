@@ -22,7 +22,35 @@ class Model {
 		$this->addMaterialListener();
 		$this->getMaterialsListener();
 		$this->deleteMaterialListener();
+		$this->updateUserInfoListener();
 	}	
+
+	public function getUserProfile(){
+		$sql = "
+			SELECT *
+			FROM userinfo
+			WHERE userid = ".$_SESSION['id']."
+			LIMIT 1
+		";	
+		
+
+		return $this->db->query($sql)->fetch();
+	}
+
+	public function updateUserInfoListener(){
+		if(isset($_POST['updateUserInfo'])){
+			$sql = "
+				UPDATE userinfo
+				SET fullname = ?, address = ?, contact = ?, email = ?, bday = ?
+			";
+
+			$this->db->prepare($sql)->execute(array($_POST['fullname'], $_POST['address'], $_POST['contact'], $_POST['email'], $_POST['birthday']));
+
+			$this->success = "You have sucesfully updated your personal information.";
+
+			return $this;
+		}
+	}
 
 	public function deleteMaterialListener(){
 		if(isset($_POST['deleteMaterial'])){
@@ -147,15 +175,16 @@ class Model {
 
 	//for easy deletion of records
 	public function reset(){
-		// $sql = "delete from store";
-		// $this->db->prepare($sql)->execute(array());
-		// $sql = "delete from user";
-		// $this->db->prepare($sql)->execute(array());
-		// $sql = "delete from product";
-		// $this->db->prepare($sql)->execute(array());
+		$sql = array();
+		$sql[] = "delete from store";
+		$sql[] = "delete from user";
+		$sql[] = "delete from product";
+		$sql[] = "delete from material";
+		$sql[] = "delete from userinfo";
 
-		$sql = "delete from material";
-		$this->db->prepare($sql)->execute(array());
+		foreach ($sql as $key => $s) {
+			$this->db->query($s);
+		}
 
 	}
 
@@ -314,6 +343,17 @@ class Model {
 		}
 	}
 
+	public function addUserInfoById($id){
+		$sql = "
+			INSERT INTO userinfo(userid)
+			VALUES(?)
+		";
+
+		$this->db->prepare($sql)->execute(array($id));
+
+		return $this;
+	}
+
 	public function addUser(){
 		$sql = "
 			INSERT INTO user(username,password)
@@ -323,6 +363,8 @@ class Model {
 		$this->db->prepare($sql)->execute(array($_POST['username'], md5($_POST['password'])));
 		
 		$_SESSION['lastinsertedid'] = $this->db->lastInsertId();
+
+		$this->addUserInfoById($this->db->lastInsertId());
 
 		return $this;
 	}	
