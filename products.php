@@ -25,12 +25,12 @@
           <tbody>
             <?php foreach($products as $idx => $product): ?>
 
-            <tr>
-              <td><?= $product['name']; ?></td>
-              <td><?= $product['srp']; ?></td>
-              <td><?= $product['qty']; ?></td>
+            <tr id="edit<?= $product['id']; ?>">
+              <td class="editname"><?= $product['name']; ?></td>
+              <td class="editsrp"><?= $product['srp']; ?></td>
+              <td class="editqty"><?= $product['qty']; ?></td>
               <td>
-                <a href="" class="btn btn-sm btn-warning"  data-toggle="modal" data-target="#editProductModal">edit</a>
+                <a href="" data-qty="<?= $product['qty']; ?>" data-expiry="<?= $product['expiry_date']; ?>" data-srp="<?= $product['srp']; ?>" data-id="<?= $product['id']; ?>" data-name="<?= $product['name']; ?>"class="btn btn-sm btn-warning edit"  data-toggle="modal" data-target="#editProductModal">edit</a>
                 <a href="" data-id="<?= $product['id']; ?>" class="btn btn-sm btn-danger delete">delete</a>
               </td>
             </tr>
@@ -55,32 +55,36 @@
         </button>
       </div>
       <div class="modal-body">
+        <div class="row  ">
+          <div class="col-sm msg hidden"></div>
+        </div>
         <div class="row">
           <div class="col-sm-4">
             <h5>Product Information</h5>
-            <form method="post">
-              <input type="hidden" name="addproduct" value="true">
+            <form method="post" id="editform">
+              <input type="hidden" name="editproduct" id="editid" value="">
               <div class="form-group">
                 <label>Product Name:
-                  <input type="text" required class="form-control" name="name" value="" placeholder="Product Name..."/>
+                  <input type="text" id="editname" required class="form-control" name="name" value="" placeholder="Product Name..."/>
                 </label>
               </div>
               <div class="form-group">
                 <label>Price:
-                  <input type="text" required class="form-control" name="price" placeholder="Price..."/>
+                  <input type="text" id="editprice" required class="form-control" name="price" placeholder="Price..."/>
                 </label>
               </div>
               <div class="form-group">
                 <label>Quantity:
-                  <input type="number" required class="form-control" name="qty" placeholder="Quantity..."/>
+                  <input type="number" id="editqty" required class="form-control" name="qty" placeholder="Quantity..."/>
                 </label>
               </div>
               <div class="form-group">
                 <label>Expiry Date:
-                  <input type="date" required class="form-control" name="expiry" placeholder="Expiry Date..."/>
+                  <input type="date" id="editexpiry" required class="form-control" name="expiry" placeholder="Expiry Date..."/>
                 </label>
               </div>
               <input type="submit" class="btn btn-lg btn-success" value="Update">
+
             </form>
           </div>
 
@@ -121,17 +125,66 @@
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-        <button type="button" class="btn btn-primary">Save changes</button>
       </div>
     </div>
   </div>
 </div>
 
+
+<script type="text/html" id="success">
+      <div class="alert alert-success alert-dismissible fade show" role="alert">
+        <strong>Success!!</strong> You have sucessfully updated this product.
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+</script>
   <?php include_once "./foot.php"; ?>
   <script type="text/javascript">
     (function($){
       $(document).ready(function(){
         function __listen(){
+          $("#editform").on("submit", function(e){
+            e.preventDefault();
+
+            var me = $(this);
+
+            $.ajax({
+              url : "ajax.php",
+              data : me.serialize(),
+              type : "post",
+              dataType : "json",
+              success : function(response){
+                var tr = $("#edit"+response.editproduct);
+
+                tr.find(".editname").html(response.name);
+                tr.find(".editexpiry").html(response.expiry);
+                tr.find(".editsrp").html(response.price);
+                tr.find(".editqty").html(response.qty);
+
+                $(".msg").append($("#success").html());
+                $(".msg").removeClass("hidden");
+                
+              }
+            });
+          });
+
+          $(".edit").off().on("click", function(e){
+            e.preventDefault();
+            
+            var me = $(this);
+            var data = me.data();
+
+            $("#editname").attr("value", data.name);
+            $("#editqty").attr("value", data.qty);
+            $("#editprice").attr("value", data.srp);
+            $("#editid").attr("value", data.id);
+            $("#editexpiry").attr("value", data.expiry);
+            $(".msg").addClass("hidden");
+
+            console.log(data);
+          });
+
           $(".delete").off().on("click", function(e){
             e.preventDefault();
 
@@ -139,6 +192,7 @@
             var id = me.data("id");
 
             $(".preloader").removeClass("hidden");
+
             $.ajax({
               url : "ajax.php",
               data : { deleteProduct: true, id :id},

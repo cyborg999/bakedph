@@ -18,7 +18,22 @@ class Model {
 		$this->getAllUnverifiedStores();
 		$this->addProductListener();
 		$this->deleteProductListener();
+		$this->editproductListener();
 	}	
+
+	public function editproductListener(){
+		if(isset($_POST['editproduct'])){
+			$sql = "
+				UPDATE product
+				SET name = ?, srp = ?, qty = ?, expiry_date = ?
+				WHERE id = ?
+			";
+
+			$this->db->prepare($sql)->execute(array($_POST['name'], $_POST['price'], $_POST['qty'], $_POST['expiry'], $_POST['editproduct']));
+
+			die(json_encode($_POST));
+		}
+	}
 
 	public function deleteProductListener(){
 		if(isset($_POST['deleteProduct'])){
