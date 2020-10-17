@@ -41,6 +41,7 @@
 		<div class="signup slide col-sm active">
 			<h4>Sign Up</h4>
 			<form method="post"  class="form">
+				<div class="err"></div>
 				<input type="hidden" name="signup" value="true"/>
 				<label>Username
 					<input type="text" value="<?= isset($_POST['username']) ? $_POST['username'] : '';?>" class="form-control" name="username" placeholder="Username..." required/>
@@ -52,12 +53,11 @@
 					<input type="password" value="<?= isset($_POST['password1']) ? $_POST['password1'] : '';?>" class="form-control" name="password1" placeholder="Password..." required/>
 				</label>
 				<br>
-				<input type="submit" class="btn btn-primary btn-lg" value="Submit"/>
-				<div class="err"></div>
+				<br>
+				<button class="btn btn-primary btn-lg float-right">Next <svg class="bi" width="30" height="30" fill="currentColor"><use xlink:href="./node_modules/bootstrap-icons/bootstrap-icons.svg#chevron-compact-right"/></svg></button>
 			</form>
 			<br>
-			<hr>
-			<a href="" data-target=".store" class="disabled next">Next</a>
+			<a href="" data-target=".store" class="disabled next hidden">Next</a>
 		</div>
 
 
@@ -67,11 +67,13 @@
 				<h4>Enter Store Name</h4>
 				<input type="text" class="form-control" name="name" value="" placeholder="Store Name..." required/>
 				<br>
-				<input type="submit"  class="btn btn-primary btn-lg" value="submit"/>
+				<br>
+				<a href="" data-target=".signup" class="next enabled"><svg class="bi" width="50" height="50" fill="currentColor"><use xlink:href="./node_modules/bootstrap-icons/bootstrap-icons.svg#chevron-compact-left"/></svg></a>
+
+				<button class="btn btn-primary btn-lg float-right">Next <svg class="bi" width="30" height="30" fill="currentColor"><use xlink:href="./node_modules/bootstrap-icons/bootstrap-icons.svg#chevron-compact-right"/></svg></button>
 				<div class="err"></div>
 			</form>
-			<a href="" data-target=".signup" class="next enabled">Previous</a>
-			<a href="" data-target=".plan" data-target="store" class="disabled next">Next</a>
+			<a href="" data-target=".plan" data-target="store" class="disabled next hidden">Next</a>
 		</div>
 
 
@@ -109,10 +111,11 @@
 			</div>
 			<div class="row">
 				<div class="col-sm">
-					<a href="" class="btn btn-lg btn-success purchase">Purchase</a>
+					<a href="" data-target=".store" class="next enabled"><svg class="bi" width="50" height="50" fill="currentColor"><use xlink:href="./node_modules/bootstrap-icons/bootstrap-icons.svg#chevron-compact-left"/></svg></a>
+
+					<a href="" class="btn btn-lg btn-success purchase float-right">Purchase</a>
 				</div>
 			</div>
-			<a href="" data-target=".store" class="next enabled">Previous</a>
 		</div>
 	</div>	
 	<div class="row">
@@ -157,7 +160,7 @@
 
 
 				__listen();
-				
+
 				$(".purchase").on("click", function(e){
 					e.preventDefault();
 
@@ -204,9 +207,12 @@
 						success : function(response){
 							if(response.added){
 								me.parents(".slide").find(".next").removeClass("disabled").addClass("enabled");
+								var t = me.parents(".slide").find(".enabled");
 								me.find(".err").first().html("");
 								
 								__listen();
+
+								t.trigger("click");
 							} else {
 								var errors = "";
 

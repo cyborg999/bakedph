@@ -27,11 +27,6 @@ class Model {
 	}	
 
 	public function uploadProfileListener(){
-		if(isset($_POST['uploadpic'])){
-			opd($_POST);
-			opd($_FILES);
-			opd($_GET);
-		}
 		if(isset($_POST['profile'])){
 			$target_dir = "uploads/";
 			$imageFileType = strtolower(pathinfo($_FILES["profile"]["name"],PATHINFO_EXTENSION));
@@ -297,6 +292,9 @@ class Model {
 
 	public function addSubscriptionListener(){
 		if(isset($_POST['plan'])){
+			$this->addUser();
+			$this->addStore();
+			//d2
 			$sql = "
 				UPDATE store
 				SET subscription = ? 
@@ -333,21 +331,28 @@ class Model {
 					"errors" => $this->errors,
 					"added" => false
 				);
+
 			} else {
-				$sql = "
-					INSERT INTO store(name,userid)
-					VALUES(?,?)
-				";
+				$_SESSION['setup']['store'] = $_POST['name'];
 
-				$this->db->prepare($sql)->execute(array($_POST['name'], $_SESSION['lastinsertedid']));
-
-				$_SESSION['laststoreid'] = $this->db->lastInsertId();
-				
 				$data = array("added" => true);
 			}
 			
 			die(json_encode($data));
 		}
+	}
+
+	public function addStore(){
+		$sql = "
+			INSERT INTO store(name,userid)
+			VALUES(?,?)
+		";
+
+		$this->db->prepare($sql)->execute(array($_SESSION['setup']['store'], $_SESSION['lastinsertedid']));
+
+		$_SESSION['laststoreid'] = $this->db->lastInsertId();
+
+		return $this;
 	}
 
 	public function loginListener(){
@@ -383,13 +388,14 @@ class Model {
 
 	public function signUpListener(){
 		if(isset($_POST['signup'])){
-
 			//authentication
 			$this->checkPassword();
 			$this->checkUsernameIfExists();
 
 			if(!count($this->errors)){
-				$this->addUser();
+				$_SESSION['setup']['username'] = $_POST['username'];
+				$_SESSION['setup']['password'] = $_POST['password'];
+				// $this->addUser();
 
 				$data = array("added" => true);
 			} else {
@@ -420,7 +426,7 @@ class Model {
 			VALUES(?,?)
 		";
 
-		$this->db->prepare($sql)->execute(array($_POST['username'], md5($_POST['password'])));
+		$this->db->prepare($sql)->execute(array($_SESSION['setup']['username'], md5($_SESSION['setup']['password'])));
 		
 		$_SESSION['lastinsertedid'] = $this->db->lastInsertId();
 

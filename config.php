@@ -22,3 +22,8 @@
 		echo "<pre>";
 		print_r($_POST);
 	}
+
+	function oppd(){
+		opp();
+		die();
+	}
