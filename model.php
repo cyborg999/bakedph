@@ -25,7 +25,42 @@ class Model {
 		$this->updateUserInfoListener();
 		$this->uploadProfileListener();
 		$this->searchProductListener();
+		$this->addVendorListener();
+		$this->deleteVendorListener();
 	}	
+
+	public function addVendorListener(){
+		if(isset($_POST['addVendor'])){
+			$exists = $this->checkifVendorExists($_SESSION['storeid'], $_POST['name']);
+
+			if($exists){
+				$this->errors[] = "This vendor was added already to this store.";
+
+			} else {
+				$sql = "
+					INSERT INTO vendor(name,address,contact,storeid)
+					VALUES(?,?,?,?)
+				";
+
+				$this->db->prepare($sql)->execute(array($_POST['name'], $_POST['address'], $_POST['contact'], $_SESSION['storeid']));
+				$this->success = "You have succesfully added this vendor.";
+			}
+
+			return $this;
+		}
+	}
+
+	public function checkifVendorExists($id, $name){
+		$sql = "
+			SELECT *
+			FROM vendor
+			WHERE name = '".$name."'
+			AND storeid = ".$id."
+			LIMIT 1
+		";
+
+		return $this->db->query($sql)->fetch();
+	}
 
 	public function searchProductListener(){
 		if(isset($_POST['searchProduct'])) {
@@ -33,6 +68,7 @@ class Model {
 				SELECT *
 				FROM product
 				WHERE name LIKE '%".$_POST['txt']."%'
+				LIMIT 20
 			";
 
 			$data = $this->db->query($sql)->fetchAll();
@@ -217,6 +253,19 @@ class Model {
 		}
 	}
 
+	public function deleteVendorListener(){
+		if(isset($_POST['deleteVendor'])){
+			$sql = "
+				DELETE from vendor
+				WHERE id = ?
+			";
+
+			$this->db->prepare($sql)->execute(array($_POST['id']));
+
+			die(json_encode(array("added")));
+		}
+	}
+
 	public function getAllProducts(){
 		$sql = "
 			SELECT *
@@ -227,10 +276,36 @@ class Model {
 		return $this->db->query($sql)->fetchAll();
 	}
 
+	public function getAllVendors(){
+		$sql = "
+			SELECT *
+			FROM vendor
+			WHERE storeid = '".$_SESSION['storeid']."'
+		";
+
+		return $this->db->query($sql)->fetchAll();
+	}
+
 	public function getProductCount(){
 		$sql = "
 			SELECT count(id) as total
 			FROM product
+			WHERE storeid = '".$_SESSION['storeid']."'
+		";
+
+		$record =  $this->db->query($sql)->fetch();
+
+		if($record){
+			return $record['total'];
+		} else {
+			return 0;
+		}
+	}
+
+		public function getVendorCount(){
+		$sql = "
+			SELECT count(id) as total
+			FROM vendor
 			WHERE storeid = '".$_SESSION['storeid']."'
 		";
 

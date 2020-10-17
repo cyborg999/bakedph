@@ -58,6 +58,32 @@
 				    </div>
 				  </div>
 
+
+
+
+				  	  <div class="card">
+				    <div class="card-header" id="headingOne">
+				      <h2 class="mb-0">
+				        <button class="btn btn-link btn-block text-left" type="button" data-toggle="collapse" data-target="#collapseVendor" aria-expanded="true" aria-controls="collapseVendor">
+				          <svg class="bi" width="18" height="18" fill="currentColor"><use xlink:href="./node_modules/bootstrap-icons/bootstrap-icons.svg#clipboard-plus"/></svg> Vendors
+				        </button>
+				      </h2>
+				    </div>
+
+				    <div id="collapseVendor" class="<?= ($active == "vendor") ? "show" : ""; ?> collapse" aria-labelledby="headingOne" data-parent="#accordionExample">
+				      <div class="card-body">
+				      	<ul class="list-group list-group-flush">
+						  <li class="list-group-item">
+						  	<a href="vendor.php" class="black">All Vendors <span class="badge badge-primary badge-pill"><?= $model->getVendorCount(); ?></span></a>
+						  </li>
+						  <li class="list-group-item">
+						  	<a href="addvendor.php" class="black">Add New</a>
+						  </li>
+						</ul>
+				      </div>
+				    </div>
+				  </div>
+
 				  <div class="card">
 				    <div class="card-header" id="headingTwo">
 				      <h2 class="mb-0">

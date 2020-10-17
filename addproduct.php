@@ -10,7 +10,7 @@
 			<div class="col-sm-9">
 				<?php include_once "./error.php"; ?>
 				<br>
-				<h2>Product Information</h2>
+				<h5>Product Information</h5>
 				<form method="post">
 					<input type="hidden" name="addproduct" value="true">
 					<div class="form-group">
