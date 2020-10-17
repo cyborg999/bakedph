@@ -23,9 +23,14 @@
             </tr>
           </thead>
           <tbody>
+            <tr id="search">
+              <td colspan="4">
+                <input type="text" class="form-control" id="searchName" placeholder="Name search..."/>
+              </td>
+            </tr>
             <?php foreach($products as $idx => $product): ?>
 
-            <tr id="edit<?= $product['id']; ?>">
+            <tr class="result" id="edit<?= $product['id']; ?>">
               <td class="editname"><?= $product['name']; ?></td>
               <td class="editsrp"><?= $product['srp']; ?></td>
               <td class="editqty"><?= $product['qty']; ?></td>
@@ -131,6 +136,17 @@
   </div>
 </div>
 
+<script type="text/html" id="productTPL">
+      <tr class="result" id="edit[ID]">
+          <td class="editname">[NAME]</td>
+          <td class="editsrp">[SRP]</td>
+          <td class="editqty">[QTY]</td>
+          <td>
+            <a href="" data-qty="[QTY]" data-expiry="[EXPIRY]" data-srp="[SRP]" data-id="[ID]" data-name="[NAME]" class="btn btn-sm btn-warning edit"  data-toggle="modal" data-target="#editProductModal" alt="Edit product"><svg class="bi" width="18" height="18" fill="currentColor"><use xlink:href="./node_modules/bootstrap-icons/bootstrap-icons.svg#pencil"/></svg> </a>
+            <a href="" data-id="[ID]"" class="btn btn-sm btn-danger delete" alt="Delete Product"><svg class="bi" width="18" height="18" fill="currentColor"><use xlink:href="./node_modules/bootstrap-icons/bootstrap-icons.svg#trash"/></svg></a>
+          </td>
+        </tr>
+</script>
 <script type="text/html" id="mats">
   <tr>
     <td>[NAME]</td>
@@ -154,7 +170,7 @@
     (function($){
       $(document).ready(function(){
         function __listen(){
-          $(".preloader").addClass("hidden");
+          // $(".preloader").addClass("hidden");
           
           $(".deleteMaterial").off().on("click", function(e){
             e.preventDefault();
@@ -197,6 +213,7 @@
 
                 $(".msg").append($("#success").html());
                 $(".msg").removeClass("hidden");
+                $(".preloader").addClass("hidden");
                 
               }
             });
@@ -232,10 +249,10 @@
                     replace("[PRICE]", response[i].price).replace("[QTY]", response[i].qty);
 
                   $("#material tbody").append(tpl);
-                  $(".preloader").addClass("hidden");
                 }
 
                 __listen();
+                $(".preloader").addClass("hidden");
 
               }
             });
@@ -264,6 +281,65 @@
         }
 
         __listen();
+
+        function throttle(){
+          setTimeout(function(){
+            console.log('test');
+          },1000);
+        }
+
+        const debounce = (func, wait) => {
+          let timeout;
+
+          return function executedFunction(...args) {
+            const later = () => {
+              clearTimeout(timeout);
+              func(...args);
+            };
+
+            clearTimeout(timeout);
+            timeout = setTimeout(later, wait);
+          };
+        };
+
+        var returnedFunction = debounce(function() {
+          var txt = $("#searchName").val();
+
+          $(".result").remove();
+          $(".preloader").removeClass("hidden");
+
+           $.ajax({
+              url : "ajax.php"
+              , data : { searchProduct : true, txt : txt }
+              , type : "post"
+              , dataType : "json"
+              , success : function(response){
+                // productTPL
+                console.log(response);
+                for(var i in response){
+                  console.log(response[i].name);
+                  var tpl = $("#productTPL").html();
+
+                  tpl = tpl.replace("[ID]", response[i].id).replace("[ID]", response[i].id).replace("[ID]", response[i].id).replace("[NAME]", response[i].name).replace("[NAME]", response[i].name)
+                  .replace("[SRP]", response[i].srp).replace("[SRP]", response[i].srp).replace("[QTY]", response[i].qty).replace("[QTY]", response[i].qty);
+
+                  $("#search").after(tpl);
+                }
+                
+                __listen();
+                setTimeout(function(){
+                  $(".preloader").addClass("hidden");
+                },200);
+
+
+              }
+            });
+
+        }, 250);
+
+        window.addEventListener('resize', returnedFunction);
+
+        $('#searchName').on("keyup", returnedFunction);
 
         $("#addMaterial").on("click", function(e){
           e.preventDefault();
@@ -295,6 +371,7 @@
                   replace("[PRICE]", srp).replace("[QTY]", qty);
 
                 $("#material tbody").append(tpl);
+
                 $(".preloader").addClass("hidden");
 
                 __listen();

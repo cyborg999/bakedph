@@ -24,7 +24,22 @@ class Model {
 		$this->deleteMaterialListener();
 		$this->updateUserInfoListener();
 		$this->uploadProfileListener();
+		$this->searchProductListener();
 	}	
+
+	public function searchProductListener(){
+		if(isset($_POST['searchProduct'])) {
+			$sql = "
+				SELECT *
+				FROM product
+				WHERE name LIKE '%".$_POST['txt']."%'
+			";
+
+			$data = $this->db->query($sql)->fetchAll();
+
+			die(json_encode($data));
+		}
+	}
 
 	public function uploadProfileListener(){
 		if(isset($_POST['profile'])){
