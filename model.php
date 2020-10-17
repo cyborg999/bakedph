@@ -29,7 +29,33 @@ class Model {
 		$this->deleteVendorListener();
 		$this->editvendorListener();
 		$this->searchVendorListener();
+		$this->addProductionListener();
 	}	
+
+	public function getAllProduction(){
+		$sql = "
+			SELECT t1.*, t2.name 
+			FROM production t1
+			LEFT JOIN product t2
+			ON t1.productid = t2.id
+			WHERE t1.storeid = ".$_SESSION['storeid']."
+		";	
+
+		return $this->db->query($sql)->fetchAll();
+	}
+
+	public function addProductionListener(){
+		if(isset($_POST['addProduction'])){
+			$sql = "
+				INSERT INTO production(productid,batchnumber,quantity,date_produced,storeid)
+				VALUES(?,?,?,?,?)
+			";
+
+			$this->db->prepare($sql)->execute(array($_POST['productid'], $_POST['batchnumber'],$_POST['qty'],$_POST['date_produced'],$_SESSION['storeid']));
+
+			return $this;
+		}
+	}
 
 	public function addVendorListener(){
 		if(isset($_POST['addVendor'])){
