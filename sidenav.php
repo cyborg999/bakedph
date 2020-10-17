@@ -92,9 +92,13 @@
 				        </button>
 				      </h2>
 				    </div>
-				    <div id="collapseTwo" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionExample">
+				    <div id="collapseTwo" class="<?= ($active == "sales") ? "show" : ""; ?> collapse" aria-labelledby="headingTwo" data-parent="#accordionExample">
 				      <div class="card-body">
-				        TODO
+				      	<ul class="list-group list-group-flush">
+				         <li class="list-group-item">
+						  	<a href="production.php" class="black">Production</a>
+						  </li>
+						</ul>
 				      </div>
 				    </div>
 				  </div>

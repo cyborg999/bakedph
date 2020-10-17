@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Oct 12, 2020 at 06:39 PM
+-- Generation Time: Oct 17, 2020 at 04:37 PM
 -- Server version: 10.4.13-MariaDB
 -- PHP Version: 7.4.8
 
@@ -53,6 +53,30 @@ CREATE TABLE `product` (
   `status` int(11) DEFAULT 1
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
+--
+-- Dumping data for table `product`
+--
+
+INSERT INTO `product` (`id`, `name`, `srp`, `qty`, `expiry_date`, `storeid`, `date_created`, `status`) VALUES
+(11, 'Cheese Cake', 2, 233, '1991-02-21', 21, 2147483647, 1),
+(12, 'Fudgee Bar', 3, 33, '1991-02-22', 21, 2147483647, 1);
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `production`
+--
+
+CREATE TABLE `production` (
+  `id` int(11) NOT NULL,
+  `name` varchar(255) NOT NULL,
+  `batchnumber` varchar(255) NOT NULL,
+  `quantity` int(11) NOT NULL,
+  `date_produced` date NOT NULL,
+  `storeid` int(11) NOT NULL,
+  `date_created` timestamp NOT NULL DEFAULT current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
 -- --------------------------------------------------------
 
 --
@@ -74,7 +98,8 @@ CREATE TABLE `store` (
 --
 
 INSERT INTO `store` (`id`, `name`, `description`, `logo`, `date_creaed`, `userid`, `subscription`) VALUES
-(20, 'jorjor', NULL, NULL, '2020-10-12 15:57:01', 36, '6 Months');
+(20, 'jorjor', NULL, NULL, '2020-10-12 15:57:01', 36, '6 Months'),
+(21, 'cyborg999', NULL, NULL, '2020-10-17 04:48:07', 37, '1 Year');
 
 -- --------------------------------------------------------
 
@@ -96,7 +121,8 @@ CREATE TABLE `user` (
 --
 
 INSERT INTO `user` (`id`, `username`, `password`, `usertype`, `verified`, `date_created`) VALUES
-(36, 'jojor', '5c07f19fdd6ce3b1a588f71d11ee2b23', 'basic', 0, '2020-10-12 15:56:55');
+(36, 'jojor', '5c07f19fdd6ce3b1a588f71d11ee2b23', 'basic', 0, '2020-10-12 15:56:55'),
+(37, 'cyborg999', '5c07f19fdd6ce3b1a588f71d11ee2b23', 'basic', 0, '2020-10-17 04:48:06');
 
 -- --------------------------------------------------------
 
@@ -120,7 +146,31 @@ CREATE TABLE `userinfo` (
 --
 
 INSERT INTO `userinfo` (`id`, `fullname`, `address`, `contact`, `email`, `bday`, `date_created`, `userid`) VALUES
-(2, 'fullname2', 'add2', '09232342', 'sad2@mail.com', '0000-00-00', '2020-10-12 15:56:56', 36);
+(2, 'fullname2', 'add2', '09232342', 'sad2@mail.com', '1991-02-24', '2020-10-12 15:56:56', 36),
+(3, NULL, NULL, NULL, NULL, NULL, '2020-10-17 04:48:06', 37);
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `vendor`
+--
+
+CREATE TABLE `vendor` (
+  `id` int(11) NOT NULL,
+  `name` varchar(255) NOT NULL,
+  `address` varchar(255) NOT NULL,
+  `contact` int(11) NOT NULL,
+  `date_created` timestamp NOT NULL DEFAULT current_timestamp(),
+  `storeid` int(11) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+--
+-- Dumping data for table `vendor`
+--
+
+INSERT INTO `vendor` (`id`, `name`, `address`, `contact`, `date_created`, `storeid`) VALUES
+(1, 'Jordan Sadiwa', '1852 Sandejas Pasay City', 2342342, '2020-10-17 11:17:37', 21),
+(3, 'test345', '345', 234, '2020-10-17 11:20:20', 21);
 
 --
 -- Indexes for dumped tables
@@ -136,6 +186,12 @@ ALTER TABLE `material`
 -- Indexes for table `product`
 --
 ALTER TABLE `product`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Indexes for table `production`
+--
+ALTER TABLE `production`
   ADD PRIMARY KEY (`id`);
 
 --
@@ -157,6 +213,12 @@ ALTER TABLE `userinfo`
   ADD PRIMARY KEY (`id`);
 
 --
+-- Indexes for table `vendor`
+--
+ALTER TABLE `vendor`
+  ADD PRIMARY KEY (`id`);
+
+--
 -- AUTO_INCREMENT for dumped tables
 --
 
@@ -170,25 +232,37 @@ ALTER TABLE `material`
 -- AUTO_INCREMENT for table `product`
 --
 ALTER TABLE `product`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=13;
+
+--
+-- AUTO_INCREMENT for table `production`
+--
+ALTER TABLE `production`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT for table `store`
 --
 ALTER TABLE `store`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=21;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=22;
 
 --
 -- AUTO_INCREMENT for table `user`
 --
 ALTER TABLE `user`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=37;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=38;
 
 --
 -- AUTO_INCREMENT for table `userinfo`
 --
 ALTER TABLE `userinfo`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+
+--
+-- AUTO_INCREMENT for table `vendor`
+--
+ALTER TABLE `vendor`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
