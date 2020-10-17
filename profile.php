@@ -30,13 +30,25 @@
 					.store-logo {
 
 					}
+					#profilePreview {
+						height: 200px;
+						width: 200px;
+					}
 				</style>
-
 				<div class="col-sm banner">
 
+					<form enctype="multipart/form-data" method="post">
+						<input type="file" id="profile" name="profile" />
+						<figure id="profilePreview"></figure>
+						<input type="text" name="name">
+						<input type="submit"  id="formProfile" value="upload" name="uploadProfile">
+					</form>
 					<div class="store-logo-container">
-						<svg class="bi" width="150" height="150" fill="currentColor"><use xlink:href="./node_modules/bootstrap-icons/bootstrap-icons.svg#image-fill"/></svg>
-						<!-- <figure class="storelogo"></figure> -->
+						<?php if(file_exists("uploads/".$_SESSION['storeid'])): ?>
+							<figure class="storelogo"></figure>
+						<?php else: ?>
+							<svg class="bi" width="150" height="150" fill="currentColor"><use xlink:href="./node_modules/bootstrap-icons/bootstrap-icons.svg#image-fill"/></svg>
+						<?php endif ?>
 					</div>
 				</div>
 				<div class="col-sm">
@@ -79,5 +91,28 @@
 	</div>
 
 	<?php include_once "./foot.php"; ?>
+	<script type="text/javascript">
+		(function($){
+			$(document).ready(function(){
+				$("#profile").on("change", function(){
+					var preview = $(this).val();
+					console.log("changed");
+					console.log(preview);
+					// $("#profilePreview").attr("src", preview);
+					$("#formProfile").trigger("click");
+					// $.ajax({
+					// 	url : "ajax.php",
+					// 	data : { profilePreview : true, file : },
+					// 	type : ,
+					// 	dataType : ,
+					// 	success : function(response){
+
+					// 	}
+					// });
+				});
+			});
+		})(jQuery);
+	</script>
+
 </body>
 </html>
