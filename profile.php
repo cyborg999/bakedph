@@ -35,14 +35,13 @@
 						width: 200px;
 					}
 				</style>
-				<div class="col-sm banner">
+				<div class="col-sm banner hidden">
 
-					<form enctype="multipart/form-data" method="post">
+				<!-- 	<form enctype="multipart/form-data" id="formProfileFrm" method="post">
+						<input type="hidden" name="uploadpic">
 						<input type="file" id="profile" name="profile" />
 						<figure id="profilePreview"></figure>
-						<input type="text" name="name">
-						<input type="submit"  id="formProfile" value="upload" name="uploadProfile">
-					</form>
+					</form> -->
 					<div class="store-logo-container">
 						<?php if(file_exists("uploads/".$_SESSION['storeid'])): ?>
 							<figure class="storelogo"></figure>
@@ -68,7 +67,7 @@
 					  <div class="form-row">
 					    <div class="form-group col-md-4">
 					      <label for="inputCity">Birthday</label>
-					      <input type="date" value="<?= isset($profile['bday']) ? $profile['fullname'] : '';?>" name="birthday" class="form-control" id="inputCity">
+					      <input type="date" value="<?= isset($profile['bday']) ? $profile['bday'] : '';?>" name="birthday" class="form-control" id="inputCity">
 					    </div>
 					    <div class="form-group col-md-4">
 					      <label for="inputState">Contact Number</label>
@@ -99,17 +98,24 @@
 					console.log("changed");
 					console.log(preview);
 					// $("#profilePreview").attr("src", preview);
-					$("#formProfile").trigger("click");
-					// $.ajax({
-					// 	url : "ajax.php",
-					// 	data : { profilePreview : true, file : },
-					// 	type : ,
-					// 	dataType : ,
-					// 	success : function(response){
+					$("#formProfileFrm").trigger("submit");
 
-					// 	}
-					// });
 				});
+
+				$("#formProfileFrm").on("submit", function(e){
+					var me = $(this);
+					e.preventDefault();
+
+					$.ajax({
+						url : "ajax.php",
+						data : me.serialize(),
+						type : "post",
+						dataType : "json",
+						success : function(response){
+						}
+					});
+				});
+
 			});
 		})(jQuery);
 	</script>

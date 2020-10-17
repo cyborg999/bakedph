@@ -27,11 +27,18 @@ class Model {
 	}	
 
 	public function uploadProfileListener(){
-		if(isset($_POST['uploadProfile'])){
+		if(isset($_POST['uploadpic'])){
+			opd($_POST);
+			opd($_FILES);
+			opd($_GET);
+		}
+		if(isset($_POST['profile'])){
 			$target_dir = "uploads/";
 			$imageFileType = strtolower(pathinfo($_FILES["profile"]["name"],PATHINFO_EXTENSION));
 			$target_file = $target_dir . basename($_SESSION['storeid'].".".$imageFileType);
 			$uploadOk = 1;
+
+			opp();
 
 			// // Check if image file is a actual image or fake image
 			// if(isset($_POST["submit"])) {
