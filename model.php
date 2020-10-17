@@ -27,6 +27,8 @@ class Model {
 		$this->searchProductListener();
 		$this->addVendorListener();
 		$this->deleteVendorListener();
+		$this->editvendorListener();
+		$this->searchVendorListener();
 	}	
 
 	public function addVendorListener(){
@@ -67,6 +69,21 @@ class Model {
 			$sql = "
 				SELECT *
 				FROM product
+				WHERE name LIKE '%".$_POST['txt']."%'
+				LIMIT 20
+			";
+
+			$data = $this->db->query($sql)->fetchAll();
+
+			die(json_encode($data));
+		}
+	}
+
+	public function searchVendorListener(){
+		if(isset($_POST['searchVendor'])) {
+			$sql = "
+				SELECT *
+				FROM vendor
 				WHERE name LIKE '%".$_POST['txt']."%'
 				LIMIT 20
 			";
@@ -224,6 +241,19 @@ class Model {
 		return $this->db->query($sql)->fetch();
 
 
+	}
+	
+	public function editvendorListener(){
+		if(isset($_POST['editvendor'])){
+			$sql = "
+				UPDATE vendor
+				SET name = ?, contact = ?, address = ?
+				WHERE id = ?
+			";
+			$this->db->prepare($sql)->execute(array($_POST['name'], $_POST['contact'], $_POST['address'], $_POST['editvendor']));
+
+			die(json_encode($_POST));
+		}
 	}
 
 	public function editproductListener(){
