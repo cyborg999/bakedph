@@ -35,7 +35,29 @@ class Model {
 		$this->deleteSaleListener();
 		$this->addPurchaseListener();
 		$this->deletePurchaseListener();
+		$this->addMaterialInventoryListener();
 	}	
+
+	public function addMaterialInventoryListener(){
+		if(isset($_POST['addMaterialInventory'])){
+			$exists = $this->checkifMaterialInventoryExists($_SESSION['storeid'], $_POST['name']);
+
+			if($exists){
+				$this->errors[] = "This material exists in this store already.";
+			} else {
+				$this->success = "You have succesfully added this material.";
+
+				$sql = "
+					INSERT INTO material_inventory(storeid,name,qty,price,expiry_date,vendorid)
+					VALUES(?,?,?,?,?,?)
+				";
+
+				$this->db->prepare($sql)->execute(array($_SESSION['storeid'],$_POST['name'],$_POST['qty'],$_POST['price'],$_POST['expiry_date'],$_POST['vendorid']));
+
+				return $this;
+			}
+		}
+	}
 
 	public function addPurchaseListener(){
 		if(isset($_POST['addPurchase'])){
@@ -153,6 +175,18 @@ class Model {
 		$sql = "
 			SELECT *
 			FROM vendor
+			WHERE name = '".$name."'
+			AND storeid = ".$id."
+			LIMIT 1
+		";
+
+		return $this->db->query($sql)->fetch();
+	}
+
+	public function checkifMaterialInventoryExists($id, $name){
+		$sql = "
+			SELECT *
+			FROM material_inventory
 			WHERE name = '".$name."'
 			AND storeid = ".$id."
 			LIMIT 1
@@ -467,10 +501,26 @@ class Model {
 		}
 	}
 
-		public function getVendorCount(){
+	public function getVendorCount(){
 		$sql = "
 			SELECT count(id) as total
 			FROM vendor
+			WHERE storeid = '".$_SESSION['storeid']."'
+		";
+
+		$record =  $this->db->query($sql)->fetch();
+
+		if($record){
+			return $record['total'];
+		} else {
+			return 0;
+		}
+	}
+
+	public function getMaterialCount(){
+		$sql = "
+			SELECT count(id) as total
+			FROM material_inventory
 			WHERE storeid = '".$_SESSION['storeid']."'
 		";
 

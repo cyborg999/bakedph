@@ -26,7 +26,7 @@
 						</div>
 						<div class="form-group">
 							<label>Address:
-								<input type="text" class="form-control" value="<?= isset($_POST['address']) ? $_POST['address'] : '';?>"" name="address" placeholder="Address..."/>
+								<input type="text" class="form-control" value="<?= isset($_POST['address']) ? $_POST['address'] : '';?>" name="address" placeholder="Address..."/>
 							</label>
 						</div>
 						<input type="submit" value="Submit" class="btn btn-lg btn-primary">

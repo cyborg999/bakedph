@@ -35,56 +35,9 @@
 				    </div>
 				  </div>
 
-				  <div class="card">
-				    <div class="card-header" id="headingOne">
-				      <h2 class="mb-0">
-				        <button class="btn btn-link btn-block text-left" type="button" data-toggle="collapse" data-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
-				          <svg class="bi" width="18" height="18" fill="currentColor"><use xlink:href="./node_modules/bootstrap-icons/bootstrap-icons.svg#clipboard-plus"/></svg> Products
-				        </button>
-				      </h2>
-				    </div>
+				
 
-				    <div id="collapseOne" class="<?= ($active == "product") ? "show" : ""; ?> collapse" aria-labelledby="headingOne" data-parent="#accordionExample">
-				      <div class="card-body">
-				      	<ul class="list-group list-group-flush">
-						  <li class="list-group-item">
-						  	<a href="products.php" class="black">All Products <span class="badge badge-primary badge-pill"><?= $model->getProductCount(); ?></span></a>
-						  </li>
-						  <li class="list-group-item">
-						  	<a href="addproduct.php" class="black">Add New</a>
-						  </li>
-						</ul>
-				      </div>
-				    </div>
-				  </div>
-
-
-
-
-		  	  	<div class="card">
-				    <div class="card-header" id="headingOne">
-				      <h2 class="mb-0">
-				        <button class="btn btn-link btn-block text-left" type="button" data-toggle="collapse" data-target="#collapseMaterials" aria-expanded="true" aria-controls="collapseMaterials">
-				          <svg class="bi" width="18" height="18" fill="currentColor"><use xlink:href="./node_modules/bootstrap-icons/bootstrap-icons.svg#clipboard-plus"/></svg> Materials
-				        </button>
-				      </h2>
-				    </div>
-
-				    <div id="collapseMaterials" class="<?= ($active == "vendor") ? "show" : ""; ?> collapse" aria-labelledby="headingOne" data-parent="#accordionExample">
-				      <div class="card-body">
-				      	<ul class="list-group list-group-flush">
-						  <li class="list-group-item">
-						  	<a href="materials.php" class="black">All Materials <span class="badge badge-primary badge-pill"><?= $model->getVendorCount(); ?></span></a>
-						  </li>
-						  <li class="list-group-item">
-						  	<a href="addmaterial.php" class="black">Add Material</a>
-						  </li>
-						</ul>
-				      </div>
-				    </div>
-				  </div>
-
-				  <div class="card">
+				<div class="card">
 				    <div class="card-header" id="headingOne">
 				      <h2 class="mb-0">
 				        <button class="btn btn-link btn-block text-left" type="button" data-toggle="collapse" data-target="#collapseVendor" aria-expanded="true" aria-controls="collapseVendor">
@@ -101,6 +54,55 @@
 						  </li>
 						  <li class="list-group-item">
 						  	<a href="addvendor.php" class="black">Add New</a>
+						  </li>
+						</ul>
+				      </div>
+				    </div>
+				  </div>
+
+
+		  	  	<div class="card">
+				    <div class="card-header" id="headingOne">
+				      <h2 class="mb-0">
+				        <button class="btn btn-link btn-block text-left" type="button" data-toggle="collapse" data-target="#collapseMaterials" aria-expanded="true" aria-controls="collapseMaterials">
+				          <svg class="bi" width="18" height="18" fill="currentColor"><use xlink:href="./node_modules/bootstrap-icons/bootstrap-icons.svg#clipboard-plus"/></svg> Materials
+				        </button>
+				      </h2>
+				    </div>
+
+				    <div id="collapseMaterials" class="<?= ($active == "material") ? "show" : ""; ?> collapse" aria-labelledby="headingOne" data-parent="#accordionExample">
+				      <div class="card-body">
+				      	<ul class="list-group list-group-flush">
+						  <li class="list-group-item">
+						  	<a href="materials.php" class="black">All Materials <span class="badge badge-primary badge-pill"><?= $model->getMaterialCount(); ?></span></a>
+						  </li>
+						  <li class="list-group-item">
+						  	<a href="addmaterial.php" class="black">Add Material</a>
+						  </li>
+						</ul>
+				      </div>
+				    </div>
+				  </div>
+
+				  
+
+			    <div class="card">
+				    <div class="card-header" id="headingOne">
+				      <h2 class="mb-0">
+				        <button class="btn btn-link btn-block text-left" type="button" data-toggle="collapse" data-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+				          <svg class="bi" width="18" height="18" fill="currentColor"><use xlink:href="./node_modules/bootstrap-icons/bootstrap-icons.svg#clipboard-plus"/></svg> Products
+				        </button>
+				      </h2>
+				    </div>
+
+				    <div id="collapseOne" class="<?= ($active == "product") ? "show" : ""; ?> collapse" aria-labelledby="headingOne" data-parent="#accordionExample">
+				      <div class="card-body">
+				      	<ul class="list-group list-group-flush">
+						  <li class="list-group-item">
+						  	<a href="products.php" class="black">All Products <span class="badge badge-primary badge-pill"><?= $model->getProductCount(); ?></span></a>
+						  </li>
+						  <li class="list-group-item">
+						  	<a href="addproduct.php" class="black">Add New</a>
 						  </li>
 						</ul>
 				      </div>
