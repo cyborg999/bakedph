@@ -36,6 +36,7 @@ class Model {
 		$this->addPurchaseListener();
 		$this->deletePurchaseListener();
 		$this->addMaterialInventoryListener();
+		$this->deleteMaterialInventoryListener();
 	}	
 
 	public function addMaterialInventoryListener(){
@@ -306,6 +307,7 @@ class Model {
 		}
 	}
 
+
 	public function deleteMaterialListener(){
 		if(isset($_POST['deleteMaterial'])){
 			$sql = "
@@ -427,6 +429,20 @@ class Model {
 		}
 	}
 
+
+	public function deleteMaterialInventoryListener(){
+		if(isset($_POST['deleteMaterialInventory'])){
+			$sql = "
+				DELETE from material_inventory
+				WHERE id = ?
+			";
+
+			$this->db->prepare($sql)->execute(array($_POST['id']));
+
+			die(json_encode(array("added")));
+		}
+	}
+
 	public function deleteSaleListener(){
 		if(isset($_POST['deleteSale'])){
 			$sql = "
@@ -458,6 +474,18 @@ class Model {
 			SELECT *
 			FROM product
 			WHERE storeid = '".$_SESSION['storeid']."'
+		";
+
+		return $this->db->query($sql)->fetchAll();
+	}
+
+	public function getAllMaterialInventory(){
+		$sql = "
+			SELECT t1.*, t2.name as 'vendorname'
+			FROM material_inventory t1
+			LEFT JOIN vendor t2
+			ON t1.vendorid = t2.id
+			WHERE t1.storeid = '".$_SESSION['storeid']."'
 		";
 
 		return $this->db->query($sql)->fetchAll();

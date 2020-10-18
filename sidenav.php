@@ -73,9 +73,9 @@
 				    <div id="collapseMaterials" class="<?= ($active == "material") ? "show" : ""; ?> collapse" aria-labelledby="headingOne" data-parent="#accordionExample">
 				      <div class="card-body">
 				      	<ul class="list-group list-group-flush">
-						  <li class="list-group-item">
+					<!-- 	  <li class="list-group-item">
 						  	<a href="materials.php" class="black">All Materials <span class="badge badge-primary badge-pill"><?= $model->getMaterialCount(); ?></span></a>
-						  </li>
+						  </li> -->
 						  <li class="list-group-item">
 						  	<a href="addmaterial.php" class="black">Add Material</a>
 						  </li>
