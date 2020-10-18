@@ -31,7 +31,21 @@ class Model {
 		$this->searchVendorListener();
 		$this->addProductionListener();
 		$this->deleteProductionListener();
+		$this->addSaleListener();
 	}	
+
+	public function addSaleListener(){
+		if(isset($_POST['addSale'])){
+			$sql = "
+				INSERT INTO sales(storeid,productid,qty,date_purchased)
+				VALUES(?,?,?,?)
+			";
+
+			$this->db->prepare($sql)->execute(array($_SESSION['storeid'], $_POST['productid'], $_POST['qty'], $_POST['date_purchased']));
+
+			return $this;
+		}
+	}
 
 	public function deleteProductionListener(){
 		if(isset($_POST['deleteProduction'])){
@@ -53,6 +67,19 @@ class Model {
 			LEFT JOIN product t2
 			ON t1.productid = t2.id
 			WHERE t1.storeid = ".$_SESSION['storeid']."
+		";	
+
+		return $this->db->query($sql)->fetchAll();
+	}
+
+	public function getAllSales(){
+		$sql = "
+			SELECT t1.*, t2.name 
+			FROM sales t1
+			LEFT JOIN product t2
+			ON t1.productid = t2.id
+			WHERE t1.storeid = ".$_SESSION['storeid']."
+			ORDER BY t1.id desc
 		";	
 
 		return $this->db->query($sql)->fetchAll();

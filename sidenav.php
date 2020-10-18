@@ -98,6 +98,9 @@
 				         <li class="list-group-item">
 						  	<a href="production.php" class="black">Production</a>
 						  </li>
+						   <li class="list-group-item">
+						  	<a href="addsale.php" class="black">Add Sale</a>
+						  </li>
 						</ul>
 				      </div>
 				    </div>
