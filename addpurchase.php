@@ -12,22 +12,40 @@
 				<br>
 				<div class="col-sm">
 				  	<?php
-			          $products = $model->getAllProducts();
+			          $materials = $model->getAllMaterials();
 			          $sales = $model->getAllSales();
+			          $vendors = $model->getAllVendors();
+			          // $purchasedOrders = $model->getPurchaseOrders();
 
 			        ?>
 					<div class="row">
 						<div class="col-sm-4">
-							<h5>Sales Information</h5>
+							<h5>Purchase Information</h5>
 							<form method="post">
-								<input type="hidden" name="addSale" value="true">
+								<input type="hidden" name="addPurchase" value="true">
 								<div class="form-group">
-									<label>Product Name:</label>
-									<select id="slcProduct"  name="productid" class="form-control">
-		            					<?php foreach($products as $idx => $product): ?>
+									<label>Vendor Name:</label>
+									<select id="slcProduct"  name="vendorid" class="form-control">
+		            					<?php foreach($vendors as $idx => $v): ?>
 
-										<option value="<?= $product['id']; ?>"><?= $product['name']; ?></option>
+										<option value="<?= $v['id']; ?>"><?= $v['name']; ?></option>
 		            					<?php endforeach ?>
+									</select>
+								</div>
+								<div class="form-group">
+									<label>Material Name:</label>
+									<select id="slctMaterial"  name="materialid" class="form-control">
+		            					<?php foreach($materials as $idx => $m): ?>
+
+										<option value="<?= $m['id']; ?>"><?= $m['name']; ?></option>
+		            					<?php endforeach ?>
+									</select>
+								</div>
+								<div class="form-group">
+									<label for="type">Purchase Type</label>
+									<select class="form-control" id="type" name="type">
+										<option value="cash">Cash</option>
+										<option value="credit">Credit</option>
 									</select>
 								</div>
 								<div class="form-group">
@@ -42,11 +60,13 @@
 							</form>
 						</div>
 						<div class="col-sm-8">
-							<h5>Sales List</h5>
+							<h5>Purchase Order List</h5>
 							<table class="table">
 								<thead>
 									<tr>
-										<th>Product Name</th>
+										<th>Vendor</th>
+										<th>Material</th>
+										<th>Type</th>
 										<th>Quantity</th>
 										<th>Date Purchased</th>
 										<th>Action</th>
@@ -79,13 +99,8 @@
     	(function($){
     		$(document).ready(function(){
     			$("#slcProduct").chosen();
-
-
-    			$("#slcProduct").on("change", function(){
-    				var me = $(this);
-
-    				console.log(me.val());
-    			});
+    			$("#slctMaterial").chosen();
+    			$("#type").chosen();
 
     			$(".delete").on("click", function(e){
     				e.preventDefault();

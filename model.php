@@ -32,7 +32,22 @@ class Model {
 		$this->addProductionListener();
 		$this->deleteProductionListener();
 		$this->addSaleListener();
+		$this->deleteSaleListener();
+		$this->addPurchaseListener();
 	}	
+
+	public function addPurchaseListener(){
+		if(isset($_POST['addPurchase'])){
+			$sql = "
+				INSERT INTO purchase(vendorid,materialid,type,date_purchased,qty, storeid)
+				VALUES(?,?,?,?,?,?)
+			";
+
+			$this->db->prepare($sql)->execute(array($_POST['vendorid'],$_POST['materialid'],$_POST['type'],$_POST['date_purchased'],$_POST['qty'], $_SESSION['storeid']));
+
+			return $this;
+		}
+	}
 
 	public function addSaleListener(){
 		if(isset($_POST['addSale'])){
@@ -80,6 +95,20 @@ class Model {
 			ON t1.productid = t2.id
 			WHERE t1.storeid = ".$_SESSION['storeid']."
 			ORDER BY t1.id desc
+		";	
+
+		return $this->db->query($sql)->fetchAll();
+	}
+
+	public function getPurchaseOrders(){
+		$sql = "
+			SELECT t1.*
+			FROM purchase t1
+			LEFT JOIN vendor t2
+			ON t1.vendorid = t2.id
+			LEFT JOIN material t3
+			ON t1.materialid = t3.id
+			WHERE 
 		";	
 
 		return $this->db->query($sql)->fetchAll();
@@ -350,6 +379,19 @@ class Model {
 		}
 	}
 
+	public function deleteSaleListener(){
+		if(isset($_POST['deleteSale'])){
+			$sql = "
+				DELETE from sales
+				WHERE id = ?
+			";
+
+			$this->db->prepare($sql)->execute(array($_POST['id']));
+
+			die(json_encode(array("added")));
+		}
+	}
+
 	public function deleteVendorListener(){
 		if(isset($_POST['deleteVendor'])){
 			$sql = "
@@ -368,6 +410,18 @@ class Model {
 			SELECT *
 			FROM product
 			WHERE storeid = '".$_SESSION['storeid']."'
+		";
+
+		return $this->db->query($sql)->fetchAll();
+	}
+
+	public function getAllMaterials(){
+		$sql = "
+			SELECT t1.*
+			FROM material t1
+			LEFT JOIN product t2 
+			ON t1.productid = t2.id
+			WHERE t2.storeid = '".$_SESSION['storeid']."'
 		";
 
 		return $this->db->query($sql)->fetchAll();

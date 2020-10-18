@@ -99,7 +99,10 @@
 						  	<a href="production.php" class="black">Production</a>
 						  </li>
 						   <li class="list-group-item">
-						  	<a href="addsale.php" class="black">Add Sale</a>
+						  	<a href="addsale.php" class="black">Sales</a>
+						  </li>
+						     <li class="list-group-item">
+						  	<a href="addpurchase.php" class="black">Purchase Order</a>
 						  </li>
 						</ul>
 				      </div>

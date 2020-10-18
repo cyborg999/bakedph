@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Oct 17, 2020 at 04:37 PM
+-- Generation Time: Oct 18, 2020 at 09:32 AM
 -- Server version: 10.4.13-MariaDB
 -- PHP Version: 7.4.8
 
@@ -35,6 +35,13 @@ CREATE TABLE `material` (
   `productid` int(11) NOT NULL,
   `date_created` timestamp NOT NULL DEFAULT current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+--
+-- Dumping data for table `material`
+--
+
+INSERT INTO `material` (`id`, `name`, `price`, `qty`, `productid`, `date_created`) VALUES
+(27, 'asd', 2, 23, 11, '2020-10-18 07:02:27');
 
 -- --------------------------------------------------------
 
@@ -69,13 +76,67 @@ INSERT INTO `product` (`id`, `name`, `srp`, `qty`, `expiry_date`, `storeid`, `da
 
 CREATE TABLE `production` (
   `id` int(11) NOT NULL,
-  `name` varchar(255) NOT NULL,
+  `productid` int(11) NOT NULL,
   `batchnumber` varchar(255) NOT NULL,
   `quantity` int(11) NOT NULL,
   `date_produced` date NOT NULL,
   `storeid` int(11) NOT NULL,
   `date_created` timestamp NOT NULL DEFAULT current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+--
+-- Dumping data for table `production`
+--
+
+INSERT INTO `production` (`id`, `productid`, `batchnumber`, `quantity`, `date_produced`, `storeid`, `date_created`) VALUES
+(4, 11, 'asd', 324, '0000-00-00', 21, '2020-10-18 05:11:44');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `purchase`
+--
+
+CREATE TABLE `purchase` (
+  `id` int(11) NOT NULL,
+  `vendorid` int(11) NOT NULL,
+  `materialid` int(11) NOT NULL,
+  `date_purchased` date NOT NULL,
+  `type` varchar(255) NOT NULL,
+  `qty` int(11) NOT NULL,
+  `date_created` timestamp NOT NULL DEFAULT current_timestamp(),
+  `storeid` int(11) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+--
+-- Dumping data for table `purchase`
+--
+
+INSERT INTO `purchase` (`id`, `vendorid`, `materialid`, `date_purchased`, `type`, `qty`, `date_created`, `storeid`) VALUES
+(2, 1, 27, '0222-03-22', 'cash', 43, '2020-10-18 07:31:45', 21);
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `sales`
+--
+
+CREATE TABLE `sales` (
+  `id` int(11) NOT NULL,
+  `storeid` int(11) NOT NULL,
+  `productid` int(11) NOT NULL,
+  `qty` int(11) NOT NULL,
+  `date_purchased` date NOT NULL,
+  `other_details` varchar(255) NOT NULL,
+  `date_created` timestamp NOT NULL DEFAULT current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+--
+-- Dumping data for table `sales`
+--
+
+INSERT INTO `sales` (`id`, `storeid`, `productid`, `qty`, `date_purchased`, `other_details`, `date_created`) VALUES
+(1, 21, 11, 32, '3333-02-02', '', '2020-10-18 06:09:06');
 
 -- --------------------------------------------------------
 
@@ -195,6 +256,18 @@ ALTER TABLE `production`
   ADD PRIMARY KEY (`id`);
 
 --
+-- Indexes for table `purchase`
+--
+ALTER TABLE `purchase`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Indexes for table `sales`
+--
+ALTER TABLE `sales`
+  ADD PRIMARY KEY (`id`);
+
+--
 -- Indexes for table `store`
 --
 ALTER TABLE `store`
@@ -226,7 +299,7 @@ ALTER TABLE `vendor`
 -- AUTO_INCREMENT for table `material`
 --
 ALTER TABLE `material`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=27;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=28;
 
 --
 -- AUTO_INCREMENT for table `product`
@@ -238,7 +311,19 @@ ALTER TABLE `product`
 -- AUTO_INCREMENT for table `production`
 --
 ALTER TABLE `production`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+
+--
+-- AUTO_INCREMENT for table `purchase`
+--
+ALTER TABLE `purchase`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+
+--
+-- AUTO_INCREMENT for table `sales`
+--
+ALTER TABLE `sales`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
 -- AUTO_INCREMENT for table `store`
