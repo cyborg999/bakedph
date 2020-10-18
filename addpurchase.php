@@ -13,9 +13,8 @@
 				<div class="col-sm">
 				  	<?php
 			          $materials = $model->getAllMaterials();
-			          $sales = $model->getAllSales();
 			          $vendors = $model->getAllVendors();
-			          // $purchasedOrders = $model->getPurchaseOrders();
+			          $purchasedOrders = $model->getPurchaseOrders();
 
 			        ?>
 					<div class="row">
@@ -50,11 +49,11 @@
 								</div>
 								<div class="form-group">
 									<label>Quantity:</label>
-									<input type="number" class="form-control" value="<?= isset($_POST['qty']) ? $_POST['qty'] : '';?>" required name="qty" placeholder="Quantity..."/>
+									<input type="number" class="form-control" value="" required name="qty" placeholder="Quantity..."/>
 								</div>
 								<div class="form-group">
 									<label>Date of purchase:</label>
-									<input type="date" required class="form-control" value="<?= isset($_POST['date_purchased']) ? $_POST['date_purchased'] : '';?>"" name="date_purchased" placeholder="Date..."/>
+									<input type="date" required class="form-control" value="" name="date_purchased" placeholder="Date..."/>
 								</div>
 								<input type="submit" value="Submit" class="btn btn-lg btn-primary">
 							</form>
@@ -73,9 +72,11 @@
 									</tr>
 								</thead>
 
-            					<?php foreach($sales as $idx => $p): ?>
+            					<?php foreach($purchasedOrders as $idx => $p): ?>
             						<tr>
-										<td><?= $p['name']; ?></td>
+										<td><?= $p['vendorname']; ?></td>
+										<td><?= $p['materialname']; ?></td>
+										<td><?= $p['type']; ?></td>
 										<td><?= $p['qty']; ?></td>
 										<td><?= $p['date_purchased']; ?></td>
 										<td>
@@ -110,7 +111,7 @@
 
     				$.ajax({
     					url : "ajax.php"
-    					, data : { deleteSale : true , id : me.data("id")}
+    					, data : { deletePurchase : true , id : me.data("id")}
     					, type : 'post'
     					, dataType : 'json'
     					, success : function(response){

@@ -34,6 +34,7 @@ class Model {
 		$this->addSaleListener();
 		$this->deleteSaleListener();
 		$this->addPurchaseListener();
+		$this->deletePurchaseListener();
 	}	
 
 	public function addPurchaseListener(){
@@ -102,13 +103,13 @@ class Model {
 
 	public function getPurchaseOrders(){
 		$sql = "
-			SELECT t1.*
+			SELECT t1.*, t2.name as 'vendorname', t3.name as 'materialname'
 			FROM purchase t1
 			LEFT JOIN vendor t2
 			ON t1.vendorid = t2.id
 			LEFT JOIN material t3
 			ON t1.materialid = t3.id
-			WHERE 
+			WHERE t1.storeid = ".$_SESSION['storeid']."
 		";	
 
 		return $this->db->query($sql)->fetchAll();
@@ -275,6 +276,19 @@ class Model {
 		if(isset($_POST['deleteMaterial'])){
 			$sql = "
 				DELETE FROM material
+				WHERE id = ".$_POST['id']."
+			";
+
+			$this->db->prepare($sql)->execute(array());
+
+			die(json_encode(array("deleted")));
+		}
+	}
+
+	public function deletePurchaseListener(){
+		if(isset($_POST['deletePurchase'])){
+			$sql = "
+				DELETE FROM purchase
 				WHERE id = ".$_POST['id']."
 			";
 

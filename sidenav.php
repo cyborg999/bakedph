@@ -61,7 +61,30 @@
 
 
 
-				  	  <div class="card">
+		  	  	<div class="card">
+				    <div class="card-header" id="headingOne">
+				      <h2 class="mb-0">
+				        <button class="btn btn-link btn-block text-left" type="button" data-toggle="collapse" data-target="#collapseMaterials" aria-expanded="true" aria-controls="collapseMaterials">
+				          <svg class="bi" width="18" height="18" fill="currentColor"><use xlink:href="./node_modules/bootstrap-icons/bootstrap-icons.svg#clipboard-plus"/></svg> Materials
+				        </button>
+				      </h2>
+				    </div>
+
+				    <div id="collapseMaterials" class="<?= ($active == "vendor") ? "show" : ""; ?> collapse" aria-labelledby="headingOne" data-parent="#accordionExample">
+				      <div class="card-body">
+				      	<ul class="list-group list-group-flush">
+						  <li class="list-group-item">
+						  	<a href="materials.php" class="black">All Materials <span class="badge badge-primary badge-pill"><?= $model->getVendorCount(); ?></span></a>
+						  </li>
+						  <li class="list-group-item">
+						  	<a href="addmaterial.php" class="black">Add Material</a>
+						  </li>
+						</ul>
+				      </div>
+				    </div>
+				  </div>
+
+				  <div class="card">
 				    <div class="card-header" id="headingOne">
 				      <h2 class="mb-0">
 				        <button class="btn btn-link btn-block text-left" type="button" data-toggle="collapse" data-target="#collapseVendor" aria-expanded="true" aria-controls="collapseVendor">
