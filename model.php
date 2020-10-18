@@ -30,7 +30,21 @@ class Model {
 		$this->editvendorListener();
 		$this->searchVendorListener();
 		$this->addProductionListener();
+		$this->deleteProductionListener();
 	}	
+
+	public function deleteProductionListener(){
+		if(isset($_POST['deleteProduction'])){
+			$sql = "
+				DELETE FROM production
+				WHERE id = ?
+			";
+
+			$this->db->prepare($sql)->execute(array($_POST['id']));
+
+			die(json_encode(array("deleted")));
+		}
+	}
 
 	public function getAllProduction(){
 		$sql = "

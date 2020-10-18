@@ -14,6 +14,7 @@
 				  	<?php
 			          $products = $model->getAllProducts();
 			          $production = $model->getAllProduction();
+
 			        ?>
 					<div class="row">
 						<div class="col-sm-4">
@@ -52,12 +53,19 @@
 										<th>Batch #</th>
 										<th>Quantity</th>
 										<th>Date Produced</th>
+										<th>Action</th>
 									</tr>
 								</thead>
 
             					<?php foreach($production as $idx => $p): ?>
             						<tr>
-										<td><?= $product['name']; ?></td>
+										<td><?= $p['name']; ?></td>
+										<td><?= $p['batchnumber']; ?></td>
+										<td><?= $p['quantity']; ?></td>
+										<td><?= $p['date_produced']; ?></td>
+										<td>
+											<a href="" class="delete btn btn-danger" data-id="<?= $p['id']; ?>"><svg class="bi" width="18" height="18" fill="currentColor"><use xlink:href="./node_modules/bootstrap-icons/bootstrap-icons.svg#trash"/></svg></a>
+										</td>
 									</tr>
             					<?php endforeach ?>
 
@@ -82,6 +90,24 @@
     				var me = $(this);
 
     				console.log(me.val());
+    			});
+
+    			$(".delete").on("click", function(e){
+    				e.preventDefault();
+
+    				var me = $(this);
+    				console.log(me.data("id"));
+
+    				$.ajax({
+    					url : "ajax.php"
+    					, data : { deleteProduction : true , id : me.data("id")}
+    					, type : 'post'
+    					, dataType : 'json'
+    					, success : function(response){
+    						me.parents("tr").remove();
+    					}
+    				});
+
     			});
     		});
     	})(jQuery);
