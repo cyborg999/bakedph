@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Oct 18, 2020 at 09:32 AM
+-- Generation Time: Oct 18, 2020 at 01:15 PM
 -- Server version: 10.4.13-MariaDB
 -- PHP Version: 7.4.8
 
@@ -42,6 +42,33 @@ CREATE TABLE `material` (
 
 INSERT INTO `material` (`id`, `name`, `price`, `qty`, `productid`, `date_created`) VALUES
 (27, 'asd', 2, 23, 11, '2020-10-18 07:02:27');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `material_inventory`
+--
+
+CREATE TABLE `material_inventory` (
+  `id` int(11) NOT NULL,
+  `storeid` int(11) NOT NULL,
+  `name` varchar(255) NOT NULL,
+  `qty` int(11) NOT NULL,
+  `price` double NOT NULL,
+  `expiry_date` date NOT NULL,
+  `date_created` timestamp NOT NULL DEFAULT current_timestamp(),
+  `vendorid` int(11) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+--
+-- Dumping data for table `material_inventory`
+--
+
+INSERT INTO `material_inventory` (`id`, `storeid`, `name`, `qty`, `price`, `expiry_date`, `date_created`, `vendorid`) VALUES
+(1, 21, 'name', 23, 234, '0222-12-22', '2020-10-18 10:58:58', 1),
+(2, 21, 'name2', 23, 234, '0222-12-22', '2020-10-18 10:59:12', 1),
+(3, 21, '23432', 23, 234, '0232-12-31', '2020-10-18 11:00:39', 1),
+(4, 21, '234', 234, 234, '0122-12-12', '2020-10-18 11:01:32', 1);
 
 -- --------------------------------------------------------
 
@@ -244,6 +271,12 @@ ALTER TABLE `material`
   ADD PRIMARY KEY (`id`);
 
 --
+-- Indexes for table `material_inventory`
+--
+ALTER TABLE `material_inventory`
+  ADD PRIMARY KEY (`id`);
+
+--
 -- Indexes for table `product`
 --
 ALTER TABLE `product`
@@ -302,6 +335,12 @@ ALTER TABLE `material`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=28;
 
 --
+-- AUTO_INCREMENT for table `material_inventory`
+--
+ALTER TABLE `material_inventory`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+
+--
 -- AUTO_INCREMENT for table `product`
 --
 ALTER TABLE `product`
@@ -317,7 +356,7 @@ ALTER TABLE `production`
 -- AUTO_INCREMENT for table `purchase`
 --
 ALTER TABLE `purchase`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 
 --
 -- AUTO_INCREMENT for table `sales`
