@@ -1,4 +1,4 @@
-<?php include_once "./headchosen.php"; ?>
+<?php include_once "./head.php"; ?>
 <body>
 	<div class="container-sm">
 		<?php include_once "./dashboardnav.php"; ?>
@@ -13,25 +13,12 @@
 				<h5>Material Information</h5>
 				<div class="row">
 					<div class="col-sm-3">
-						<?php
-				          $vendors = $model->getAllVendors();
-
-				        ?>
 						<form method="post">
 							<input type="hidden" name="addMaterialInventory" value="true">
 							<div class="form-group">
 								<label>Name:
 									<input type="text" class="form-control"  value="<?= isset($_POST['name']) ? $_POST['name'] : '';?>" name="name" placeholder="Name..." required />
 								</label>
-							</div>
-							<div class="form-group">
-								<label for="vendors">Vendor:</label>
-								<br>
-								<select  id="vendors" class="form-control" name="vendorid">
-									<?php foreach($vendors as $idx => $v): ?>
-										<option value="<?= $v['id']; ?>"><?= $v['name']; ?></option>
-	            					<?php endforeach ?>
-								</select>
 							</div>
 							<div class="form-group">
 								<label>Quantity:
@@ -57,12 +44,9 @@
 	</div>
 
 	<?php include_once "./foot.php"; ?>
-    <script src="./node_modules/chosen-js/chosen.jquery.min.js" ></script>
 	<script type="text/javascript">
     	(function($){
-    		$(document).ready(function(){
-    			$("#vendors").chosen();
-    		});
+    	
     	})(jQuery);
     </script>
 </body>

@@ -12,10 +12,10 @@
 				<br>
 				<div class="col-sm">
 				  	<?php
-			          $materials = $model->getAllMaterials();
+			          $materials = $model->getAllMaterialInventory();
+
 			          $vendors = $model->getAllVendors();
 			          $purchasedOrders = $model->getPurchaseOrders();
-
 			        ?>
 					<div class="row">
 						<div class="col-sm-4">
@@ -80,7 +80,7 @@
 										<td><?= $p['qty']; ?></td>
 										<td><?= $p['date_purchased']; ?></td>
 										<td>
-											<a href="" class="delete btn btn-danger" data-id="<?= $p['id']; ?>"><svg class="bi" width="18" height="18" fill="currentColor"><use xlink:href="./node_modules/bootstrap-icons/bootstrap-icons.svg#trash"/></svg></a>
+											<a href="" class="delete btn btn-danger" data-qty="<?= $p['qty']; ?>"  data-id="<?= $p['id']; ?>" data-mid="<?= $p['materialid']; ?>"><svg class="bi" width="18" height="18" fill="currentColor"><use xlink:href="./node_modules/bootstrap-icons/bootstrap-icons.svg#trash"/></svg></a>
 										</td>
 									</tr>
             					<?php endforeach ?>
@@ -111,7 +111,12 @@
 
     				$.ajax({
     					url : "ajax.php"
-    					, data : { deletePurchase : true , id : me.data("id")}
+    					, data : { 
+    						deletePurchase : true , 
+    						id : me.data("id"),
+    						qty : me.data("qty"),
+    						materialid : me.data("mid")
+    					}
     					, type : 'post'
     					, dataType : 'json'
     					, success : function(response){

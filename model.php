@@ -37,7 +37,24 @@ class Model {
 		$this->deletePurchaseListener();
 		$this->addMaterialInventoryListener();
 		$this->deleteMaterialInventoryListener();
+		$this->editMaterialListener();
+		$this->searchMaterialListener();
+		$this->updatePurchaseTypeListener();
 	}	
+
+	public function updatePurchaseTypeListener(){
+		if(isset($_POST['updatePurchaseType'])){
+			$sql = "
+				UPDATE purchase
+				SET type = ?
+				WHERE id = ?
+			";
+
+			$this->db->prepare($sql)->execute(array($_POST['type'],$_POST['id']));
+
+			die(json_encode(array("updated")));
+		}
+	}
 
 	public function addMaterialInventoryListener(){
 		if(isset($_POST['addMaterialInventory'])){
@@ -49,11 +66,11 @@ class Model {
 				$this->success = "You have succesfully added this material.";
 
 				$sql = "
-					INSERT INTO material_inventory(storeid,name,qty,price,expiry_date,vendorid)
-					VALUES(?,?,?,?,?,?)
+					INSERT INTO material_inventory(storeid,name,qty,price,expiry_date)
+					VALUES(?,?,?,?,?)
 				";
 
-				$this->db->prepare($sql)->execute(array($_SESSION['storeid'],$_POST['name'],$_POST['qty'],$_POST['price'],$_POST['expiry_date'],$_POST['vendorid']));
+				$this->db->prepare($sql)->execute(array($_SESSION['storeid'],$_POST['name'],$_POST['qty'],$_POST['price'],$_POST['expiry_date']));
 
 				return $this;
 			}
@@ -68,6 +85,8 @@ class Model {
 			";
 
 			$this->db->prepare($sql)->execute(array($_POST['vendorid'],$_POST['materialid'],$_POST['type'],$_POST['date_purchased'],$_POST['qty'], $_SESSION['storeid']));
+			
+			$this->updateMaterialInventory($_POST['materialid'], $_POST['qty'], true);
 
 			return $this;
 		}
@@ -130,7 +149,7 @@ class Model {
 			FROM purchase t1
 			LEFT JOIN vendor t2
 			ON t1.vendorid = t2.id
-			LEFT JOIN material t3
+			LEFT JOIN material_inventory t3
 			ON t1.materialid = t3.id
 			WHERE t1.storeid = ".$_SESSION['storeid']."
 		";	
@@ -202,6 +221,23 @@ class Model {
 				SELECT *
 				FROM product
 				WHERE name LIKE '%".$_POST['txt']."%'
+				AND storeid = '".$_SESSION['storeid']."'
+				LIMIT 20
+			";
+
+			$data = $this->db->query($sql)->fetchAll();
+
+			die(json_encode($data));
+		}
+	}
+
+	public function searchMaterialListener(){
+		if(isset($_POST['searchMaterial'])) {
+			$sql = "
+				SELECT *
+				FROM material_inventory
+				WHERE name LIKE '%".$_POST['txt']."%'
+				AND storeid = '".$_SESSION['storeid']."'
 				LIMIT 20
 			";
 
@@ -312,10 +348,12 @@ class Model {
 		if(isset($_POST['deleteMaterial'])){
 			$sql = "
 				DELETE FROM material
-				WHERE id = ".$_POST['id']."
+				WHERE materialid = ".$_POST['id']."
 			";
 
 			$this->db->prepare($sql)->execute(array());
+
+			$this->updateMaterialInventory($_POST['id'], $_POST['qty'], true);
 
 			die(json_encode(array("deleted")));
 		}
@@ -329,6 +367,8 @@ class Model {
 			";
 
 			$this->db->prepare($sql)->execute(array());
+			
+			$this->updateMaterialInventory($_POST['materialid'], $_POST['qty']);
 
 			die(json_encode(array("deleted")));
 		}
@@ -344,9 +384,11 @@ class Model {
 
 	public function getMaterialById($id){
 		$sql = "
-			SELECT *
-			FROM material
-			WHERE productid = ".$id."
+			SELECT t1.*, t2.name, t2.price
+			FROM material t1
+			LEFT JOIN material_inventory t2
+			ON t1.materialid = t2.id
+			WHERE t1.productid = ".$id."
 		";
 
 		return $this->db->query($sql)->fetchAll();
@@ -356,37 +398,62 @@ class Model {
 		if(isset($_POST['addMaterial'])){
 			$data = array();
 
-			if($this->findMaterialByNameAndProductId($_POST['name'], $_POST['id'])){
+			if($this->findMaterialByMateralIdAndProductId($_POST['materialId'], $_POST['id'])){
 
 				$data['added'] = false;
 			} else {
 				$sql = "
-					INSERT INTO material(name,price,qty,productid)
-					VALUES(?,?,?,?)
+					INSERT INTO material(materialId,qty,productid)
+					VALUES(?,?,?)
 				";	
 
-				$this->db->prepare($sql)->execute(array($_POST['name'], $_POST['srp'], $_POST['qty'], $_POST['id']));
+				$this->db->prepare($sql)->execute(array($_POST['materialId'],  $_POST['qty'], $_POST['id']));
 
 				$data['added'] = true;
 				$data['id'] = $this->db->lastInsertId();
+
+				$this->updateMaterialInventory($_POST['materialId'], $_POST['qty']);
 			}
 
 			die(json_encode($data));
 		}
 	}
 
-	public function findMaterialByNameAndProductId($name, $id){
+	public function updateMaterialInventory($id,$qty, $add = false){
+		if($add){
+			//delete material of product
+			//purchase order
+			$sql = "
+				UPDATE material_inventory
+				SET qty = qty + ?
+				WHERE storeid = ?
+				AND id = ?
+			";
+		} else {
+			// add material to product
+			$sql = "
+				UPDATE material_inventory
+				SET qty = qty - ?
+				WHERE storeid = ?
+				AND id = ?
+			";
+		}
+
+		$this->db->prepare($sql)->execute(array($qty, $_SESSION['storeid'], $id));
+
+		return $this;
+	}
+
+	public function findMaterialByMateralIdAndProductId($mid, $id){
 		$sql = "
 			SELECT *
 			FROM material
-			WHERE name = '".$name."'
+			WHERE materialid = ".$mid."
 			AND productid = ".$id."
 			LIMIT 1
 		";
 
 		return $this->db->query($sql)->fetch();
-
-
 	}
 	
 	public function editvendorListener(){
@@ -416,6 +483,20 @@ class Model {
 		}
 	}
 
+	public function editMaterialListener(){
+		if(isset($_POST['editmaterial'])){
+			$sql = "
+				UPDATE material_inventory
+				SET name = ?, price = ?, qty = ?, expiry_date = ?
+				WHERE id = ?
+			";
+
+			$this->db->prepare($sql)->execute(array($_POST['name'], $_POST['price'], $_POST['qty'], $_POST['expiry'], $_POST['editmaterial']));
+
+			die(json_encode($_POST));
+		}
+	}
+
 	public function deleteProductListener(){
 		if(isset($_POST['deleteProduct'])){
 			$sql = "
@@ -438,9 +519,21 @@ class Model {
 			";
 
 			$this->db->prepare($sql)->execute(array($_POST['id']));
+			$this->deleteMaterialsById($_POST['id']);
 
 			die(json_encode(array("added")));
 		}
+	}
+
+	public function deleteMaterialsById($id){
+		$sql = "
+			DELETE FROM material
+			WHERE materialid = ?
+		";
+		
+		$this->db->prepare($sql)->execute(array($id));
+
+		return $this;
 	}
 
 	public function deleteSaleListener(){
@@ -481,11 +574,9 @@ class Model {
 
 	public function getAllMaterialInventory(){
 		$sql = "
-			SELECT t1.*, t2.name as 'vendorname'
-			FROM material_inventory t1
-			LEFT JOIN vendor t2
-			ON t1.vendorid = t2.id
-			WHERE t1.storeid = '".$_SESSION['storeid']."'
+			SELECT *
+			FROM material_inventory 
+			WHERE storeid = '".$_SESSION['storeid']."'
 		";
 
 		return $this->db->query($sql)->fetchAll();

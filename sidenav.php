@@ -73,9 +73,9 @@
 				    <div id="collapseMaterials" class="<?= ($active == "material") ? "show" : ""; ?> collapse" aria-labelledby="headingOne" data-parent="#accordionExample">
 				      <div class="card-body">
 				      	<ul class="list-group list-group-flush">
-					<!-- 	  <li class="list-group-item">
+						  <li class="list-group-item">
 						  	<a href="materials.php" class="black">All Materials <span class="badge badge-primary badge-pill"><?= $model->getMaterialCount(); ?></span></a>
-						  </li> -->
+						  </li>
 						  <li class="list-group-item">
 						  	<a href="addmaterial.php" class="black">Add Material</a>
 						  </li>
@@ -141,9 +141,13 @@
 				        </button>
 				      </h2>
 				    </div>
-				    <div id="collapseThree" class="collapse" aria-labelledby="headingThree" data-parent="#accordionExample">
+				    <div id="collapseThree" class="<?= ($active == "reports") ? "show" : ""; ?>  collapse" aria-labelledby="headingThree" data-parent="#accordionExample">
 				      <div class="card-body">
-				       TODO
+				      	<ul class="list-group list-group-flush">
+						     <li class="list-group-item">
+						  	<a href="purchasetype.php" class="black">Purchase</a>
+						  </li>
+						</ul>
 				      </div>
 				    </div>
 				  </div>

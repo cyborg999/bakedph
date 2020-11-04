@@ -1,4 +1,4 @@
-<?php include_once "./head.php"; ?>
+<?php include_once "./headchosen.php"; ?>
 <body>
   <?php include_once "./spinner.php"; ?>
   <div class="container-sm">
@@ -11,8 +11,9 @@
       <div class="col-sm-9">
         <?php
           $products = $model->getAllProducts();
-        ?>
+          $materials = $model->getAllMaterialInventory();
 
+        ?>
         <table class="table">
           <thead>
             <tr>
@@ -110,14 +111,28 @@
               </tbody>
               <tfoot>
                 <tr>
-                  <td>
-                    <input type="text" id="materialName" class="form-control" name="name" placeholder="Name..."/>
+                  <td style="width: 200px;">
+                    <style type="text/css">
+                      .chosen-container-single .chosen-single,
+                      .chosen-container {
+                        width: 200px!important;
+                      }
+                    </style>
+                    <select  id="materialName" class="form-control" >
+                      <?php foreach($materials as $idx => $material): ?>
+                        <?php if($idx == 0): ?>
+                        <option selected>Select</option>
+                        <?php endif ?>
+                        <option data-price="<?= $material['price'];?>"  data-max="<?= $material['qty'];?>"  data-name="<?= $material['name'];?>" value="<?= $material['id'];?>"><?= $material['name'];?></option>
+                      <?php endforeach ?>
+                    </select>
+
                   </td>
                   <td>
-                    <input type="text" id="materialSrp" class="form-control" name="price" placeholder="SRP..."/>
+                    <input type="text" id="materialSrp" readonly class="form-control" name="price" placeholder="SRP..." required />
                   </td>
                   <td>
-                    <input type="number" id="materialQty" class="form-control" name="qty" placeholder="Quantity..."/>
+                    <input type="number" id="materialQty" class="form-control" name="qty" placeholder="Quantity..." min="1" required/>
                   </td>
                   <td>
                     <button id="addMaterial" class="btn btn-sm btn-primary" ><svg class="bi" width="18" height="18" fill="currentColor"><use xlink:href="./node_modules/bootstrap-icons/bootstrap-icons.svg#plus"/></svg></button>
@@ -125,7 +140,7 @@
                 </tr>
               </tfoot> 
             </table>
-
+            <h4 >Total Material Cost : P<span id="total">0.00</span></h4>
           </div>
         </div>
       </div>
@@ -153,7 +168,7 @@
     <td>[PRICE]</td>
     <td>[QTY]</td>
     <td>
-      <button  class="btn btn-sm btn-danger deleteMaterial" data-id="[ID]"><svg class="bi" width="18" height="18" fill="currentColor"><use xlink:href="./node_modules/bootstrap-icons/bootstrap-icons.svg#trash"/></svg></button>
+      <button  class="btn btn-sm btn-danger deleteMaterial" data-mid="[MID]" data-id="[ID]" data-price="[PRICE]" data-qty="[QTY]"><svg class="bi" width="18" height="18" fill="currentColor"><use xlink:href="./node_modules/bootstrap-icons/bootstrap-icons.svg#trash"/></svg></button>
     </td>
   </tr>
 </script>
@@ -166,6 +181,7 @@
       </div>
 </script>
   <?php include_once "./foot.php"; ?>
+  <script src="./node_modules/chosen-js/chosen.jquery.min.js" ></script>
   <script type="text/javascript">
     (function($){
       $(document).ready(function(){
@@ -176,18 +192,24 @@
             e.preventDefault();
 
             var me = $(this);
+            var qty = me.data("qty");
+            var price = me.data("price");
+            var total = $("#total").html();
+
 
             $(".preloader").removeClass("hidden");
 
             $.ajax({
               url : "ajax.php",
-              data : { deleteMaterial : true, id : me.data("id")},
+              data : { deleteMaterial : true, qty : me.data("qty") ,id : me.data("mid")},
               type : "post",
               dataType : "json",
               success : function(response){
                 $(".preloader").addClass("hidden");
 
                 me.parents("tr").remove();
+
+                $("#total").html(parseFloat(total) - (qty*price));
               }
             });
 
@@ -233,7 +255,10 @@
             $("#editexpiry").attr("value", data.expiry);
             $(".msg").addClass("hidden");
             $(".preloader").removeClass("hidden");
-
+            $("#material").find("tbody").html("");
+            $("#total").html("");
+            
+            console.log(data);
             //get materials
             $.ajax({
               url : "ajax.php",
@@ -241,17 +266,22 @@
               type : "post",
               dataType : 'json',
               success : function(response){
+                var total = 0;
+
                 for(var i in response){
                   var tpl = $("#mats").html();
 
                   tpl = tpl.replace("[NAME]", response[i].name).
                     replace("[ID]", response[i].id).
-                    replace("[PRICE]", response[i].price).replace("[QTY]", response[i].qty);
+                    replace("[PRICE]", response[i].price).replace("[QTY]", response[i].qty).replace("[QTY]", response[i].qty).replace("[PRICE]", response[i].price).replace("[MID]", response[i].materialid);
+
+                  total += response[i].price * response[i].qty;
 
                   $("#material tbody").append(tpl);
                 }
 
                 __listen();
+                $("#total").html(total);
                 $(".preloader").addClass("hidden");
 
               }
@@ -287,6 +317,15 @@
             console.log('test');
           },1000);
         }
+
+        $("#materialName").on("change", function(){
+          var me = $(this);
+
+          $("#materialSrp").val(me.find("option:selected").data("price"));
+          $("#materialQty").attr("max", me.find("option:selected").data("max"));
+          // $("#materialQty").attr("placeholder", me.find("option:selected").data("max"));
+          $("#materialQty").val("");
+        });
 
         const debounce = (func, wait) => {
           let timeout;
@@ -341,46 +380,59 @@
 
         $('#searchName').on("keyup", returnedFunction);
 
+        $("#materialName").chosen();
         $("#addMaterial").on("click", function(e){
           e.preventDefault();
 
-          var name = $("#materialName").val();
+          var material = $("#materialName option:selected").data();
           var srp = $("#materialSrp").val();
           var qty = $("#materialQty").val();
           var id = $(this).data("id");
-          
-          $(".preloader").removeClass("hidden");
+          var max = $("#materialQty option:selected").data();
+          console.log("D2",material.max);
+          if(qty == ""){
+            alert("Please Input Quantity");
+          } else if(qty > material.max) {
+            alert("Not enough stocks");
+          } else {
+            // $(".preloader").removeClass("hidden");
 
-          $.ajax({
-            url : "ajax.php",
-            data : { 
-              addMaterial : true, 
-              name : name,
-              srp : srp,
-              id : id,
-              qty : qty
-            },
-            type : "post",
-            dataType : "json",
-            success :  function(response){
-              if(response.added){
-                var tpl = $("#mats").html();
+            $.ajax({
+              url : "ajax.php",
+              data : { 
+                addMaterial : true, 
+                materialId : $("#materialName").val(),
+                id : id,
+                qty : qty
+              },
+              type : "post",
+              dataType : "json",
+              success :  function(response){
+                if(response.added){
+                  var tpl = $("#mats").html();
 
-                tpl = tpl.replace("[NAME]", name).
-                  replace("[ID]", response.id).
-                  replace("[PRICE]", srp).replace("[QTY]", qty);
+                  tpl = tpl.replace("[NAME]", material.name).
+                    replace("[ID]", response.id).
+                    replace("[PRICE]", material.price).replace("[QTY]", qty).replace("[QTY]", qty).replace("[PRICE]", material.price).replace("[MID]", $("#materialName").val());
 
-                $("#material tbody").append(tpl);
+                  $("#material tbody").append(tpl);
+                  var total = $("#total").html();
 
+                  $("#total").html(parseFloat(total) + (qty*material.price));
+                  __listen();
+                } else {
+                  alert("You already added this material to this product.");
+                }
+                
                 $(".preloader").addClass("hidden");
-
-                __listen();
-              } else {
-                alert("You already added this material to this product.");
+                
               }
-              
-            }
-          });
+            });
+
+          }
+
+          console.log(material);
+      
         });
 
       });

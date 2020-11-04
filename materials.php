@@ -11,7 +11,6 @@
       <div class="col-sm-9">
         <?php
           $products = $model->getAllMaterialInventory();
-          $vendors = $model->getAllVendors();
         ?>
 
         <table class="table">
@@ -20,7 +19,6 @@
               <th scope="col">Name</th>
               <th scope="col">Price</th>
               <th scope="col">Quantity</th>
-              <th scope="col">Vendor</th>
               <th scope="col">Expiry</th>
               <th scope="col">Action</th>
             </tr>
@@ -37,7 +35,6 @@
               <td class="editname"><?= $product['name']; ?></td>
               <td class="editprice"><?= $product['price']; ?></td>
               <td class="editqty"><?= $product['qty']; ?></td>
-              <td class="editvendorid" data-id="<?= $product['vendorid']; ?>"><?= $product['vendorname']; ?></td>
               <td class="editexpiry"><?= $product['expiry_date']; ?></td>
               <td>
                 <a href="" data-qty="<?= $product['qty']; ?>" data-expiry="<?= $product['expiry_date']; ?>" data-price="<?= $product['price']; ?>" data-id="<?= $product['id']; ?>" data-name="<?= $product['name']; ?>"class="btn btn-sm btn-warning edit"  data-toggle="modal" data-target="#editProductModal" alt="Edit product"><svg class="bi" width="18" height="18" fill="currentColor"><use xlink:href="./node_modules/bootstrap-icons/bootstrap-icons.svg#pencil"/></svg> </a>
@@ -76,24 +73,11 @@
             <form method="post" id="editform">
             <div class="row">
               <div class="col-sm-6">
-                <input type="hidden" name="editproduct" id="editid" value="">
+                <input type="hidden" name="editmaterial" id="editid" value="">
                   <div class="form-group">
                     <label>Name :
                       <input type="text" id="editname" required class="form-control" name="name" value="" placeholder="Material Name..."/>
                     </label>
-                  </div>
-                    <label>Vendor :</label>
-                  <div class="form-group" style="width:200px;">
-                    <style type="text/css">
-                      .chosen-container {
-                        width: 200px!important;
-                      }
-                    </style>
-                    <select  id="editvendorname" class="form-control" name="vendorid">
-                      <?php foreach($vendors as $idx => $v): ?>
-                        <option value="<?= $v['id']; ?>"><?= $v['name']; ?></option>
-                      <?php endforeach ?>
-                    </select>
                   </div>
                   <div class="form-group">
                     <label>Price:
@@ -173,11 +157,11 @@
               type : "post",
               dataType : "json",
               success : function(response){
-                var tr = $("#edit"+response.editproduct);
+                var tr = $("#edit"+response.editmaterial);
 
                 tr.find(".editname").html(response.name);
                 tr.find(".editexpiry").html(response.expiry);
-                tr.find(".editsrp").html(response.price);
+                tr.find(".editprice").html(response.price);
                 tr.find(".editqty").html(response.qty);
 
                 $(".msg").append($("#success").html());
@@ -201,8 +185,6 @@
             $("#editvendor").data("id", data.vendorname);
             $("#editexpiry").attr("value", data.expiry);
             $(".msg").addClass("hidden");
-
-            console.log(data);
           });
 
           $(".delete").off().on("click", function(e){
@@ -257,7 +239,7 @@
 
            $.ajax({
               url : "ajax.php"
-              , data : { searchProduct : true, txt : txt }
+              , data : { searchMaterial : true, txt : txt }
               , type : "post"
               , dataType : "json"
               , success : function(response){
