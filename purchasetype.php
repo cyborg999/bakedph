@@ -8,9 +8,16 @@
 				<?php $active = "reports"; include "./sidenav.php"; ?>
 			</div>
 			<div class="col-sm-9">
-				<?php include_once "./error.php"; ?>
 				<br>
-				<h5>Purchase Information</h5>
+				<?php include_once "./error.php"; ?>
+				<div class="row">
+					<div class="col-sm">
+						<h5>Purchase Information</h5>
+					</div>
+					<div class="col-sm">
+						<a class="float-right" href="./ajax.php?purchase=true">Export File <svg class="bi" width="20" height="20" fill="currentColor"><use xlink:href="./node_modules/bootstrap-icons/bootstrap-icons.svg#file-earmark-spreadsheet-fill"/></svg></a>
+					</div>
+				</div>
 				<div class="row">
 					<div class="col-sm">
 					<?php

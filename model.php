@@ -41,8 +41,31 @@ class Model {
 		$this->searchMaterialListener();
 		$this->updatePurchaseTypeListener();
 		$this->filterPurchaseListener();
+		$this->exportPurchaseReportListener();
 
 	}	
+
+	public function exportPurchaseReportListener(){
+		if(isset($_GET['purchase'])){
+			// output headers so that the file is downloaded rather than displayed
+			header('Content-Type: text/csv; charset=utf-8');
+			header('Content-Disposition: attachment; filename=Purchase_Report.csv');
+
+			// create a file pointer connected to the output stream
+			$output = fopen('php://output', 'w');
+
+			// output the column headings
+			fputcsv($output, array('Purchase Type', 'Material', 'Vendor', "Date Purchased", "Quantity"));
+
+			$records = $this->db->query($_SESSION['lastQuery'])->fetchAll();
+			
+			foreach($records as $idx => $r){
+				$data = array($r['type'],$r['materialname'],$r['vendorname'],$r['date_purchased'],$r['qty'],);
+				fputcsv($output, $data);
+			}
+
+		}
+	}
 
 	public function filterPurchaseListener(){
 		if(isset($_POST['filterPurchase'])){
@@ -165,6 +188,8 @@ class Model {
 			AND t1.type = '".$type."'
 		";	
 
+		$_SESSION['lastQuery'] = $sql;
+
 		return $this->db->query($sql)->fetchAll();
 	}
 
@@ -178,6 +203,8 @@ class Model {
 			ON t1.materialid = t3.id
 			WHERE t1.storeid = ".$_SESSION['storeid']."
 		";	
+		
+		$_SESSION['lastQuery'] = $sql;
 
 		return $this->db->query($sql)->fetchAll();
 	}
