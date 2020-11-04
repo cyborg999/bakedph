@@ -40,7 +40,17 @@ class Model {
 		$this->editMaterialListener();
 		$this->searchMaterialListener();
 		$this->updatePurchaseTypeListener();
+		$this->filterPurchaseListener();
+
 	}	
+
+	public function filterPurchaseListener(){
+		if(isset($_POST['filterPurchase'])){
+			$records = $this->getPurchaseOrdersByType($_POST['type']);
+
+			die(json_encode($records));
+		}
+	}
 
 	public function updatePurchaseTypeListener(){
 		if(isset($_POST['updatePurchaseType'])){
@@ -138,6 +148,21 @@ class Model {
 			ON t1.productid = t2.id
 			WHERE t1.storeid = ".$_SESSION['storeid']."
 			ORDER BY t1.id desc
+		";	
+
+		return $this->db->query($sql)->fetchAll();
+	}
+
+	public function getPurchaseOrdersByType($type){
+		$sql = "
+			SELECT t1.*, t2.name as 'vendorname', t3.name as 'materialname'
+			FROM purchase t1
+			LEFT JOIN vendor t2
+			ON t1.vendorid = t2.id
+			LEFT JOIN material_inventory t3
+			ON t1.materialid = t3.id
+			WHERE t1.storeid = ".$_SESSION['storeid']."
+			AND t1.type = '".$type."'
 		";	
 
 		return $this->db->query($sql)->fetchAll();

@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Oct 18, 2020 at 01:15 PM
+-- Generation Time: Nov 04, 2020 at 12:17 PM
 -- Server version: 10.4.13-MariaDB
 -- PHP Version: 7.4.8
 
@@ -29,19 +29,11 @@ SET time_zone = "+00:00";
 
 CREATE TABLE `material` (
   `id` int(11) NOT NULL,
-  `name` varchar(255) NOT NULL,
-  `price` double NOT NULL,
+  `materialid` int(11) NOT NULL,
   `qty` int(11) NOT NULL,
   `productid` int(11) NOT NULL,
   `date_created` timestamp NOT NULL DEFAULT current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
-
---
--- Dumping data for table `material`
---
-
-INSERT INTO `material` (`id`, `name`, `price`, `qty`, `productid`, `date_created`) VALUES
-(27, 'asd', 2, 23, 11, '2020-10-18 07:02:27');
 
 -- --------------------------------------------------------
 
@@ -56,19 +48,15 @@ CREATE TABLE `material_inventory` (
   `qty` int(11) NOT NULL,
   `price` double NOT NULL,
   `expiry_date` date NOT NULL,
-  `date_created` timestamp NOT NULL DEFAULT current_timestamp(),
-  `vendorid` int(11) NOT NULL
+  `date_created` timestamp NOT NULL DEFAULT current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 --
 -- Dumping data for table `material_inventory`
 --
 
-INSERT INTO `material_inventory` (`id`, `storeid`, `name`, `qty`, `price`, `expiry_date`, `date_created`, `vendorid`) VALUES
-(1, 21, 'name', 23, 234, '0222-12-22', '2020-10-18 10:58:58', 1),
-(2, 21, 'name2', 23, 234, '0222-12-22', '2020-10-18 10:59:12', 1),
-(3, 21, '23432', 23, 234, '0232-12-31', '2020-10-18 11:00:39', 1),
-(4, 21, '234', 234, 234, '0122-12-12', '2020-10-18 11:01:32', 1);
+INSERT INTO `material_inventory` (`id`, `storeid`, `name`, `qty`, `price`, `expiry_date`, `date_created`) VALUES
+(8, 21, 'material1', 226, 2, '0011-02-11', '2020-11-02 02:54:05');
 
 -- --------------------------------------------------------
 
@@ -140,7 +128,9 @@ CREATE TABLE `purchase` (
 --
 
 INSERT INTO `purchase` (`id`, `vendorid`, `materialid`, `date_purchased`, `type`, `qty`, `date_created`, `storeid`) VALUES
-(2, 1, 27, '0222-03-22', 'cash', 43, '2020-10-18 07:31:45', 21);
+(11, 1, 8, '0111-11-11', 'credit', 1, '2020-11-02 19:43:44', 21),
+(12, 1, 8, '0111-11-11', 'cash', 1, '2020-11-02 19:44:33', 21),
+(13, 1, 8, '0002-02-22', 'credit', 34, '2020-11-04 09:39:45', 21);
 
 -- --------------------------------------------------------
 
@@ -332,13 +322,13 @@ ALTER TABLE `vendor`
 -- AUTO_INCREMENT for table `material`
 --
 ALTER TABLE `material`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=28;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=63;
 
 --
 -- AUTO_INCREMENT for table `material_inventory`
 --
 ALTER TABLE `material_inventory`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
 
 --
 -- AUTO_INCREMENT for table `product`
@@ -356,7 +346,7 @@ ALTER TABLE `production`
 -- AUTO_INCREMENT for table `purchase`
 --
 ALTER TABLE `purchase`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=14;
 
 --
 -- AUTO_INCREMENT for table `sales`

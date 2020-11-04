@@ -32,17 +32,20 @@
 			        		</tr>
 			        	</thead>
 			        	<tbody>
-			        		<tr>
+			        		<tr id="result">
 			        			<td>
 			        				<select id="type" class="form-control">
 			        					<option value="cash">Cash</option>
 			        					<option value="credit">Credit</option>
 			        				</select>
 			        			</td>
+			        			<td>
+			        				<button id="filter" class="btn btn-md btn-primary">Filter</button>
+			        			</td>
 			        			<td></td>
 			        			<td></td>
 			        			<td></td>
-			        			<td></td>
+			        			
 			        		</tr>
 			        		<?php foreach($purchasedOrders as $idx => $p): ?>
 							<tr>
@@ -64,19 +67,84 @@
 	</div>
 
 	<?php include_once "./foot.php"; ?>
+	<script type="text/html" id="purchase">
+		<tr>
+			<td>
+				<span data-id="[ID]?>" class="badge [BADGE]">[TYPE]</span>
+			</td>
+			<td>[MATERIALNAME]</td>
+			<td>[VENDORNAME]</td>
+			<td>[DATE]</td>
+			<td>[QTY]</td>
+		</tr>
+	</script>
 	<script type="text/javascript">
     	(function($){
     		$(document).ready(function(){
-    			$(".badge").on("click", function(){
-    				var me = $(this);
-    				var type = "";
+    			function __listen(){
+    				$(".badge").off().on("click", function(){
+	    				var me = $(this);
+	    				var type = "";
 
-    				if(me.hasClass("badge-success")){
-    					me.removeClass("badge-success");
-    					me.addClass("badge-danger");
+	    				if(me.hasClass("badge-success")){
+	    					me.removeClass("badge-success");
+	    					me.addClass("badge-danger");
 
-    					type = "credit";
-    				} else {
-    					me.addClass("badge-success");
-    					me.removeClass("badge-danger");
-    					type =
+	    					type = "credit";
+	    				} else {
+	    					me.addClass("badge-success");
+	    					me.removeClass("badge-danger");
+	    					type = "cash";
+	    				}
+
+						me.html(type);
+
+	    				$.ajax({
+	    					url : "ajax.php",
+	    					data : { updatePurchaseType : true, id : me.data("id"), type : type  },
+	    					type : "post" ,
+	    					dataType : "json",
+	    					success : function(response){
+
+	    					}
+	    				});
+	    			});
+    			}
+
+    			__listen();
+
+    			$("#filter").on("click", function(){
+    				var type = $("#type").val();
+
+    				$("tbody tr:not('#result')").remove();
+    				$.ajax({
+    					url : "ajax.php", 
+    					data : { filterPurchase : true, type : type},
+    					type : "post",
+    					dataType : "json",
+    					success : function(response){
+    						for(var i in response){
+    							var r = response[i];
+    							var tpl = $("#purchase").html();
+
+    							tpl = tpl.replace("[ID]",r.id).
+    							replace("[TYPE]",r.type).
+    							replace("[MATERIALNAME]",r.materialname).
+    							replace("[VENDORNAME]",r.vendorname).
+    							replace("[DATE]",r.date_purchased).
+    							replace("[BADGE]", (r.type == 'cash')  ? 'badge-success' : 'badge-danger' ).
+    							replace("[QTY]",r.qty);
+
+
+    							$("#result").after(tpl);
+    						}
+
+			    			__listen();
+    					}
+    				});
+    			});
+    		});
+    	})(jQuery);
+    </script>
+</body>
+</html>
