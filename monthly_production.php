@@ -13,16 +13,20 @@
 				<div class="row">
 					<div class="col-sm">
 					  <div class="form-row">
+				  		<?php
+				          $products = $model->getAllProducts();
+				        ?>
 						<div class="form-group col-sm-3">
 							<label>Year
 								<input type="number" class="form-control" placeholder="Year" id="year">
 							</label>
 						</div>
-						<div class="form-group col-sm-3">
+						<div class="form-group col-sm-6">
 							<label>Products
-								<select id="products" placeholder="Products" class="form-control" multiple style="width: 200px;">
-									<option value="11">val1</option>
-									<option value="12">val2</option>
+								<select id="products" placeholder="Products" class="form-control" multiple style="width: 400px;">
+									<?php foreach($products as $idx => $product): ?>
+									<option value="<?= $product['id']; ?>"><?= $product['name']; ?></option>
+	            					<?php endforeach ?>
 								</select>
 							</label>
 						</div>
