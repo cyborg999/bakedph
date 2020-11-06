@@ -42,7 +42,8 @@ class Model {
 		$this->updatePurchaseTypeListener();
 		$this->filterPurchaseListener();
 		$this->exportPurchaseReportListener();
-
+		$this->getMonthlyProductionReport();
+		$this->getMonthlyProductionReportByYear();
 	}	
 
 	public function exportPurchaseReportListener(){
@@ -72,6 +73,68 @@ class Model {
 			$records = $this->getPurchaseOrdersByType($_POST['type']);
 
 			die(json_encode($records));
+		}
+	}
+
+	public function loadChart($records){
+		$months = array(
+			"Jan" => 0,
+			"Feb" => 0,
+			"Mar" => 0,
+			"Apr" => 0,
+			"May" => 0,
+			"Jun" => 0,
+			"Jul" => 0,
+			"Aug" => 0,
+			"Sep" => 0,
+			"Nov" => 0,
+			"Dec" => 0
+		);
+
+		$data = array();
+
+		foreach($records as $idx => $r){
+			$producedDate = date_create($r['date_produced']);
+			$m = date_format($producedDate, "M");
+			$y = date_format($producedDate, "Y");
+
+			$data[$r['productid']]['name'] = $r['name'];
+			@$data[$r['productid']][$m]['total'] += $r['quantity'];
+		}
+
+		$formatted = array();
+
+		$counter = 0;
+
+		foreach($data as $idx => $d){
+			$formatted[$counter]['name'] = $d['name'];
+			$formatted[$counter]['data'] = $months;
+
+			foreach($months as $iidx => $m){
+				if(array_key_exists($iidx, $d)){
+					$formatted[$counter]['data'][$iidx] = $d[$iidx]['total'];
+				}
+
+			}
+
+			$formatted[$counter]['data'] = array_values($formatted[$counter]['data']);
+
+			$counter++;
+
+		}
+
+		die(json_encode($formatted));
+	}
+
+	public function getMonthlyProductionReport(){
+		if(isset($_POST['loadMonthlyProductChart'])){
+			$this->loadChart($this->getAllProduction());
+		}
+	}
+
+	public function getMonthlyProductionReportByYear(){
+		if(isset($_POST['loadMonthlyProductChartByYear'])){
+			$this->loadChart($this->getAllProductionByYear($_POST['year']));
 		}
 	}
 
@@ -159,6 +222,33 @@ class Model {
 			ON t1.productid = t2.id
 			WHERE t1.storeid = ".$_SESSION['storeid']."
 		";	
+
+		return $this->db->query($sql)->fetchAll();
+	}
+
+	public function getAllProductionByYear($year){
+		if(isset($_POST['products'])){
+			$sql = "
+			SELECT t1.*, t2.name 
+			FROM production t1
+			LEFT JOIN product t2
+			ON t1.productid = t2.id
+			WHERE t1.storeid = ".$_SESSION['storeid']."
+			AND YEAR(t1.date_produced) = ".$year."
+			AND t1.productid in(".implode(",", $_POST['products']).")
+		";	
+
+		} else {
+			$sql = "
+				SELECT t1.*, t2.name 
+				FROM production t1
+				LEFT JOIN product t2
+				ON t1.productid = t2.id
+				WHERE t1.storeid = ".$_SESSION['storeid']."
+				AND YEAR(t1.date_produced) = ".$year."
+			";	
+		}
+
 
 		return $this->db->query($sql)->fetchAll();
 	}

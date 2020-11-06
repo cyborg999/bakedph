@@ -144,9 +144,8 @@
 				    <div id="collapseThree" class="<?= ($active == "reports") ? "show" : ""; ?>  collapse" aria-labelledby="headingThree" data-parent="#accordionExample">
 				      <div class="card-body">
 				      	<ul class="list-group list-group-flush">
-						     <li class="list-group-item">
-						  	<a href="purchasetype.php" class="black">Purchase</a>
-						  </li>
+					     <li class="list-group-item"><a href="production_report.php" class="black">Purchase Order</a> </li>
+					     <li class="list-group-item"><a href="monthly_production.php" class="black">Production</a> </li>
 						</ul>
 				      </div>
 				    </div>

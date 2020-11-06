@@ -13,9 +13,7 @@
 //backup files
 
 //vendor
-//show suggested vendor in drop down(if already added before)
 //add window if new
-
 
 todo
 material search render undefined
