@@ -45,8 +45,56 @@ class Model {
 		$this->getMonthlyProductionReport();
 		$this->getMonthlyProductionReportByYear();
 		$this->getMonthlySalesReportListener();
+		$this->loadMonthlyDataListener();
+		$this->loadLineChartListener();
 	}	
 
+	public function loadLineChartListener(){
+		if(isset($_POST['loadLineChart'])){
+			$sales = $this->getAllSales();
+
+			$this->loadChart($sales, "date_purchased");
+		}
+	}
+
+	public function loadMonthlyDataListener(){
+		if(isset($_POST['loadMonthlyData'])){
+			$records = $this->getAllProductionByYearAndMonth();
+
+			$this->loadPieChart($records);
+		}
+	}
+
+	public function loadPieChart($records, $key = false){
+		$data = array();
+
+		foreach($records as $idx => $r){
+			$producedDate = ($key) ? date_create($r[$key]) : date_create($r['date_produced']);
+			$m = date_format($producedDate, "M");
+			$y = date_format($producedDate, "Y");
+
+			$data[$r['productid']]['name'] = $r['name'];
+			@$data[$r['productid']]['total'] += ($key) ? $r['qty'] : $r['quantity'];
+		}
+
+
+		$formatted = array();
+
+		foreach($data as $idx => $d){
+			$formatted[] = array($d['name'], $d['total']);
+		}
+   // series: [{
+   //      type: 'pie',
+   //      name: 'Quantity',
+   //      data: [
+   //          ['Cheese Cake', 45.0],
+   //          ['Fudgee Bar', 26.8]
+   //      ]
+   //  }]
+
+		die(json_encode(array_values($formatted)));
+	}
+	
 	public function exportPurchaseReportListener(){
 		if(isset($_GET['purchase'])){
 			// output headers so that the file is downloaded rather than displayed
@@ -88,6 +136,7 @@ class Model {
 			"Jul" => 0,
 			"Aug" => 0,
 			"Sep" => 0,
+			"Oct" => 0,
 			"Nov" => 0,
 			"Dec" => 0
 		);
@@ -230,6 +279,20 @@ class Model {
 			LEFT JOIN product t2
 			ON t1.productid = t2.id
 			WHERE t1.storeid = ".$_SESSION['storeid']."
+		";	
+
+		return $this->db->query($sql)->fetchAll();
+	}
+
+	public function getAllProductionByYearAndMonth(){
+		$sql = "
+			SELECT t1.*, t2.name 
+			FROM production t1
+			LEFT JOIN product t2
+			ON t1.productid = t2.id
+			WHERE t1.storeid = ".$_SESSION['storeid']."
+			AND YEAR(t1.date_produced) = ".$_POST['year']."
+			AND MONTH(t1.date_produced) = '".$_POST['month']."'
 		";	
 
 		return $this->db->query($sql)->fetchAll();

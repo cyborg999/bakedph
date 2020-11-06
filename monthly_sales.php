@@ -122,7 +122,8 @@
     				type : "post",
     				dataType : "json",
     				success : function(response){
-    					loadChart(response, "2020");
+    					var d = new Date();
+    					loadChart(response, d.getFullYear());
     				}
     			});
 
