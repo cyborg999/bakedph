@@ -44,6 +44,7 @@ class Model {
 		$this->exportPurchaseReportListener();
 		$this->getMonthlyProductionReport();
 		$this->getMonthlyProductionReportByYear();
+		$this->getMonthlySalesReportListener();
 	}	
 
 	public function exportPurchaseReportListener(){
@@ -76,7 +77,7 @@ class Model {
 		}
 	}
 
-	public function loadChart($records){
+	public function loadChart($records, $key = false){
 		$months = array(
 			"Jan" => 0,
 			"Feb" => 0,
@@ -94,12 +95,12 @@ class Model {
 		$data = array();
 
 		foreach($records as $idx => $r){
-			$producedDate = date_create($r['date_produced']);
+			$producedDate = ($key) ? date_create($r[$key]) : date_create($r['date_produced']);
 			$m = date_format($producedDate, "M");
 			$y = date_format($producedDate, "Y");
 
 			$data[$r['productid']]['name'] = $r['name'];
-			@$data[$r['productid']][$m]['total'] += $r['quantity'];
+			@$data[$r['productid']][$m]['total'] += ($key) ? $r['qty'] : $r['quantity'];
 		}
 
 		$formatted = array();
@@ -129,6 +130,14 @@ class Model {
 	public function getMonthlyProductionReport(){
 		if(isset($_POST['loadMonthlyProductChart'])){
 			$this->loadChart($this->getAllProduction());
+		}
+	}
+
+	public function getMonthlySalesReportListener(){
+		if(isset($_POST['loadMonthlySalesChart'])){
+			$sales = $this->getAllSales();
+
+			$this->loadChart($sales, "date_purchased");
 		}
 	}
 

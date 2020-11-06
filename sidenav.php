@@ -145,7 +145,7 @@
 				      <div class="card-body">
 				      	<ul class="list-group list-group-flush">
 			      		 <li class="list-group-item"><a href="monthly_production.php" class="black">Production</a> </li>
-			      		  <li class="list-group-item"><a href="monthly_production.php" class="black">Sales</a> </li>
+			      		  <li class="list-group-item"><a href="monthly_sales.php" class="black">Sales</a> </li>
 					     <li class="list-group-item"><a href="production_report.php" class="black">Purchase Order</a> </li>
 					    
 						</ul>
