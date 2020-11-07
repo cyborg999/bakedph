@@ -18,9 +18,9 @@
 <?php
 	//restrict acccess to page if not logged in
 	if(!isset($_SESSION['id'])){
-		header("Location:logout.php");
-	}
-    if($_SESSION['usertype'] != "basic"){
+    header("Location:logout.php");
+  }
+  if($_SESSION['usertype'] != "admin"){
     header("Location:logout.php");
   }
 ?>

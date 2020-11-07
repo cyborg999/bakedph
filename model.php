@@ -47,6 +47,33 @@ class Model {
 		$this->getMonthlySalesReportListener();
 		$this->loadMonthlyDataListener();
 		$this->loadLineChartListener();
+		$this->resetPasswordListener();
+	}
+
+	public function resetPasswordListener(){
+		if (isset($_POST['resetpassword'])) {
+			$this->checkPassword();
+			
+			$profile = $this->getUserById($_SESSION['id']);
+
+			if($profile['password'] != md5($_POST['oldpassword'])){
+				$this->errors[] = "Incorrect Old Password";
+			}
+
+			if(count($this->errors) == 0){
+				$sql = "
+					UPDATE user
+					SET password = ?
+					WHERE id = ?
+				";
+
+				$this->db->prepare($sql)->execute(array(md5($_POST['password']), $_SESSION['id']));
+
+				$this->success = "You have succesfully updated your password";
+			}
+
+			return $this;
+		}
 	}	
 
 	public function loadLineChartListener(){
@@ -542,6 +569,18 @@ class Model {
 		return $this->db->query($sql)->fetch();
 	}
 
+	public function getUserById($id){
+		$sql = "
+			SELECT *
+			FROM user
+			WHERE id = ".$id."
+			LIMIT 1
+		";	
+		
+
+		return $this->db->query($sql)->fetch();
+	}
+
 	public function updateUserInfoListener(){
 		if(isset($_POST['updateUserInfo'])){
 			$sql = "
@@ -1015,8 +1054,13 @@ class Model {
 				$_SESSION['id'] = $exists['id'];
 				$_SESSION['username'] = $exists['username'];
 				$_SESSION['storeid'] = $exists['storeId'];
+				$_SESSION['usertype'] = $exists['usertype'];
 
-				header("Location:dashboard.php");
+				if($exists['usertype'] == "admin"){
+					header("Location:admindashboard.php");
+				} else {
+					header("Location:dashboard.php");
+				}
 			}
 			
 

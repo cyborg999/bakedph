@@ -5,7 +5,7 @@
 		<div class="row">
 			<br>
 			<div class="col-sm-3">
-				<?php include_once "./sidenav.php"; ?>
+				<?php $active = "user";   include_once "./sidenav.php"; ?>
 			</div>
 			<div class="col-sm-9">
 				<div class="jumbotron">
