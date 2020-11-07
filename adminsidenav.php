@@ -49,14 +49,11 @@
 				      </h2>
 				    </div>
 
-				    <div id="collapseOne" class="<?= ($active == "product") ? "show" : ""; ?> collapse" aria-labelledby="headingOne" data-parent="#accordionExample">
+				    <div id="collapseOne" class="<?= ($active == "users") ? "show" : ""; ?> collapse" aria-labelledby="headingOne" data-parent="#accordionExample">
 				      <div class="card-body">
 				      	<ul class="list-group list-group-flush">
 						  <li class="list-group-item">
-						  	<a href="products.php" class="black">All Products <span class="badge badge-primary badge-pill"><?= $model->getProductCount(); ?></span></a>
-						  </li>
-						  <li class="list-group-item">
-						  	<a href="addproduct.php" class="black">Add New</a>
+						  	<a href="users.php" class="black">All Users <span class="badge badge-primary badge-pill"><?= count($model->getAllUsers()); ?></span></a>
 						  </li>
 						</ul>
 				      </div>

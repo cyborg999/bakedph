@@ -48,6 +48,34 @@ class Model {
 		$this->loadMonthlyDataListener();
 		$this->loadLineChartListener();
 		$this->resetPasswordListener();
+		$this->verifyUserListener();
+
+	}
+
+	public function verifyUserListener(){
+		if(isset($_POST['verifyUser'])){
+			$sql = "
+				UPDATE user
+				SET verified = ?
+				WHERE id = ?
+			";
+			$verified = !$_POST['verify'];
+			$this->db->prepare($sql)->execute(array($verified, $_POST['id']));
+
+			die(json_encode(array("updted")));
+		}
+	}
+	
+	public function getAllUsers(){
+		$sql = "
+			SELECT t1.*,t2.email, t2.contact
+			FROM user t1
+			LEFT JOIN userinfo t2
+			ON t1.id = t2.userid
+			WHERE t1.usertype = 'basic'
+		";	
+
+		return $this->db->query($sql)->fetchAll();
 	}
 
 	public function resetPasswordListener(){
