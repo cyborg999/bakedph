@@ -66,7 +66,7 @@
           </ol>
           <div class="carousel-inner">
             <?php foreach($slides as $idx => $s): ?>
-            <div class="carousel-item <?= ($idx==0) ? 'active' : '' ?> banner" style="background:url(<?= $s['photo'];?>) no-repeat;">
+            <div class="carousel-item <?= ($idx==0) ? 'active' : '' ?> banner" style="background:url(<?= $s['photo'];?>) no-repeat;background-size: cover;">
               <div class="container">
                 <div class="carousel-caption text-left">
                   <h1><?= $s['title'];?></h1>
