@@ -49,7 +49,97 @@ class Model {
 		$this->loadLineChartListener();
 		$this->resetPasswordListener();
 		$this->verifyUserListener();
+		$this->dropZoneTest();
+		$this->addSliderListener();
+		$this->deleteSlideListener();
+		$this->updateSliderStatus();
+	}
 
+	public function deleteSlideListener(){
+		if(isset($_POST['deleteSlide'])){
+			$sql = "
+				DELETE FROM slides
+				WHERE id = ?
+			";
+
+			$this->db->prepare($sql)->execute(array($_POST['id']));
+
+			die(json_encode(array("Deleted")));
+		}
+	}
+
+	public function updateSliderStatus(){
+		if(isset($_POST['updateSlideStatus'])){
+			$sql = "
+				UPDATE slides
+				SET status = ?
+				WHERE id = ?
+			";
+
+			$this->db->prepare($sql)->execute(array($_POST['status'], $_POST['id']));
+
+			die(json_encode(array("updated")));
+		}
+	}
+
+	public function getAllSlides($news = false){
+		$sql = "
+			SELECT *
+			FROM slides
+			WHERE type = '".(($news) ? "news" : "slider")."'
+		";
+
+		return $this->db->query($sql)->fetchAll();
+	}
+
+	public function addSliderListener(){
+		if(isset($_POST['addSlider'])){
+			$sql = "
+				INSERT INTO slides(title,content,photo,type)
+				VALUES(?,?,?,?)
+			";
+
+			$type = (isset($_POST['addNews'])) ? "news" : "slider";
+
+			$this->db->prepare($sql)->execute(array($_POST['title'],$_POST['subtext'],$_POST['photo'], $type));
+
+			die(json_encode(array("added")));
+		}
+	}
+
+	public function getAdminAssets(){
+		$assets = array();
+		$folder_name = 'uploads/admin/';
+		$files = scandir('uploads/admin/');
+
+		if(false !== $files) {
+		 foreach($files as $file) {
+		  if('.' !=  $file && '..' != $file) {
+		  	$assets[] = $folder_name.$file;
+		  }
+		 }
+		}
+
+		return $assets;
+	}
+
+	public function dropZoneTest(){
+
+		if(isset($_POST['assetupload'])){
+			if(isset($_FILES)){
+				$folder_name = 'uploads/admin/';
+
+				if(!empty($_FILES)) {
+				 $temp_file = $_FILES['file']['tmp_name'];
+				 $ext = strtolower(pathinfo($_FILES["file"]["name"],PATHINFO_EXTENSION));
+				 $location = $folder_name . $_FILES['file']['name'];
+
+				 if(move_uploaded_file($temp_file, $location)){
+				 	$_SESSION['lastUpload'] = $_FILES['file']['name'];
+				 }
+				}
+			}
+		}
 	}
 
 	public function verifyUserListener(){

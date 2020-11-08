@@ -68,17 +68,20 @@
 				        </button>
 				      </h2>
 				    </div>
-				    <div id="collapseTwo" class="<?= ($active == "sales") ? "show" : ""; ?> collapse" aria-labelledby="headingTwo" data-parent="#accordionExample">
+				    <div id="collapseTwo" class="<?= ($active == "settings") ? "show" : ""; ?> collapse" aria-labelledby="headingTwo" data-parent="#accordionExample">
 				      <div class="card-body">
 				      	<ul class="list-group list-group-flush">
 				         <li class="list-group-item">
-						  	<a href="production.php" class="black">Production</a>
+						  	<a href="slideshow.php" class="black">Add Slide</a>
 						  </li>
 						   <li class="list-group-item">
-						  	<a href="addsale.php" class="black">Sales</a>
+						  	<a href="slideshows.php" class="black">All Slides</a>
 						  </li>
-						     <li class="list-group-item">
-						  	<a href="addpurchase.php" class="black">Purchase Order</a>
+						   <li class="list-group-item">
+						  	<a href="addnews.php" class="black">Add News</a>
+						  </li>
+						   <li class="list-group-item">
+						  	<a href="news.php" class="black">All News</a>
 						  </li>
 						</ul>
 				      </div>

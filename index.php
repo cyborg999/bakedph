@@ -7,16 +7,7 @@
         .carousel-item {
           height: 100vh;
         }
-        .banner1 {
-          background: url(./uploads/banners/banner2.jpg) no-repeat;
-          background-size: 100%;
-        }
-        .banner2 {
-          background: url(./uploads/banners/banner6.jpg) no-repeat;
-          background-size: 100%;
-        }
-         .banner3 {
-          background: url(./uploads/banners/banner3.jpg) no-repeat;
+        .banner {
           background-size: 100%;
         }
         .container-fluid {
@@ -54,6 +45,7 @@
         }
 
         @media(max-width: 420px){
+          .banner,
           .banner1,
           .banner2,
           .banner3 {
@@ -61,41 +53,29 @@
           }
         }
       </style>
+      <?php
+        $slides = $model->getAllSlides();
+        $news = $model->getAllSlides(true);
+      ?>
 			<div class="col-sm">
 				 <div id="myCarousel" class="carousel slide" data-ride="carousel">
           <ol class="carousel-indicators">
-            <li data-target="#myCarousel" data-slide-to="0" class="active"></li>
-            <li data-target="#myCarousel" data-slide-to="1"></li>
-            <li data-target="#myCarousel" data-slide-to="2"></li>
+            <?php foreach($slides as $idx => $s): ?>
+            <li data-target="#myCarousel" data-slide-to="<?= $idx;?>" class="<?= ($idx==0) ? 'active' : '' ?>""></li>
+            <?php endforeach ?>
           </ol>
           <div class="carousel-inner">
-            <div class="carousel-item active banner1">
+            <?php foreach($slides as $idx => $s): ?>
+            <div class="carousel-item <?= ($idx==0) ? 'active' : '' ?> banner" style="background:url(<?= $s['photo'];?>) no-repeat;">
               <div class="container">
                 <div class="carousel-caption text-left">
-                  <h1>Example headline.</h1>
-                  <p>Cras justo odio, dapibus ac facilisis in, egestas eget quam. Donec id elit non mi porta gravida at eget metus. Nullam id dolor id nibh ultricies vehicula ut id elit.</p>
-                  <p><a class="btn btn-lg btn-primary" href="#" role="button">Sign up today</a></p>
+                  <h1><?= $s['title'];?></h1>
+                  <p><?= $s['content'];?></p>
+                  <p><a class="btn btn-lg btn-primary" href="signup.php" role="button">Sign up today</a></p>
                 </div>
               </div>
             </div>
-            <div class="carousel-item banner2">
-              <div class="container">
-                <div class="carousel-caption">
-                  <h1>Another example headline.</h1>
-                  <p>Cras justo odio, dapibus ac facilisis in, egestas eget quam. Donec id elit non mi porta gravida at eget metus. Nullam id dolor id nibh ultricies vehicula ut id elit.</p>
-                  <p><a class="btn btn-lg btn-primary" href="#" role="button">Learn more</a></p>
-                </div>
-              </div>
-            </div>
-            <div class="carousel-item banner3">
-              <div class="container">
-                <div class="carousel-caption text-right">
-                  <h1>One more for good measure.</h1>
-                  <p>Cras justo odio, dapibus ac facilisis in, egestas eget quam. Donec id elit non mi porta gravida at eget metus. Nullam id dolor id nibh ultricies vehicula ut id elit.</p>
-                  <p><a class="btn btn-lg btn-primary" href="#" role="button">Browse gallery</a></p>
-                </div>
-              </div>
-            </div>
+            <?php endforeach ?>
           </div>
           <a class="carousel-control-prev" href="#myCarousel" role="button" data-slide="prev">
             <span class="carousel-control-prev-icon" aria-hidden="true"></span>
@@ -114,24 +94,15 @@
       <div class="col-sm">
         <div class="container marketing">
           <div class="row">
+
+            <?php foreach($news as $idx => $s): ?>
             <div class="col-lg-4">
-              <svg class="bd-placeholder-img rounded-circle" width="140" height="140" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice" focusable="false" role="img" aria-label="Placeholder: 140x140"><title>Placeholder</title><rect width="100%" height="100%" fill="#777"/><text x="50%" y="50%" fill="#777" dy=".3em">140x140</text></svg>
-              <h2>Heading</h2>
-              <p>Donec sed odio dui. Etiam porta sem malesuada magna mollis euismod. Nullam id dolor id nibh ultricies vehicula ut id elit. Morbi leo risus, porta ac consectetur ac, vestibulum at eros. Praesent commodo cursus magna.</p>
-              <p><a class="btn btn-secondary" href="#" role="button">View details &raquo;</a></p>
-            </div><!-- /.col-lg-4 -->
-            <div class="col-lg-4">
-              <svg class="bd-placeholder-img rounded-circle" width="140" height="140" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice" focusable="false" role="img" aria-label="Placeholder: 140x140"><title>Placeholder</title><rect width="100%" height="100%" fill="#777"/><text x="50%" y="50%" fill="#777" dy=".3em">140x140</text></svg>
-              <h2>Heading</h2>
-              <p>Duis mollis, est non commodo luctus, nisi erat porttitor ligula, eget lacinia odio sem nec elit. Cras mattis consectetur purus sit amet fermentum. Fusce dapibus, tellus ac cursus commodo, tortor mauris condimentum nibh.</p>
-              <p><a class="btn btn-secondary" href="#" role="button">View details &raquo;</a></p>
-            </div><!-- /.col-lg-4 -->
-            <div class="col-lg-4">
-              <svg class="bd-placeholder-img rounded-circle" width="140" height="140" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice" focusable="false" role="img" aria-label="Placeholder: 140x140"><title>Placeholder</title><rect width="100%" height="100%" fill="#777"/><text x="50%" y="50%" fill="#777" dy=".3em">140x140</text></svg>
-              <h2>Heading</h2>
-              <p>Donec sed odio dui. Cras justo odio, dapibus ac facilisis in, egestas eget quam. Vestibulum id ligula porta felis euismod semper. Fusce dapibus, tellus ac cursus commodo, tortor mauris condimentum nibh, ut fermentum massa justo sit amet risus.</p>
-              <p><a class="btn btn-secondary" href="#" role="button">View details &raquo;</a></p>
+              <img  width="140" height="140" class="rounded-circle" src="<?= $s['photo'];?>">
+              <h2><?= $s['title'];?></h2>
+              <p><?= $s['content'];?></p>
+              <p><a class="btn btn-secondary" href="signup.php" role="button">View details &raquo;</a></p>
             </div>
+            <?php endforeach ?>
           </div>
       </div>
     </div>
