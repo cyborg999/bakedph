@@ -53,6 +53,7 @@ class Model {
 		$this->addSliderListener();
 		$this->deleteSlideListener();
 		$this->updateSliderStatus();
+		$this->addLogoListener();
 	}
 
 	public function deleteSlideListener(){
@@ -127,10 +128,15 @@ class Model {
 		}
 	}
 
-	public function getAdminAssets(){
+	public function getAdminAssets($type = false){
 		$assets = array();
 		$folder_name = 'uploads/admin/';
 		$files = scandir('uploads/admin/');
+
+		if($type == "logo"){
+			$folder_name = 'uploads/logo/';
+			$files = scandir('uploads/logo/');
+		}
 
 		if(false !== $files) {
 		 foreach($files as $file) {
@@ -143,12 +149,56 @@ class Model {
 		return $assets;
 	}
 
+	public function getLogo(){
+		$sql = "
+			SELECT logo
+			FROM settings
+			LIMIT 1
+		";
+
+		return $this->db->query($sql)->fetch();
+	}
+
+	public function addLogoListener(){
+		if(isset($_POST['addLogo'])){
+			$sql = "
+				SELECT *
+				FROM settings
+				WHERE userid = '".$_SESSION['id']."'
+				LIMIT 1
+			";
+			$exists = $this->db->query($sql)->fetch();
+
+			if($exists){
+				//update
+				$sql = "
+					UPDATE settings
+					SET logo = ?
+					WHERE userid = ?
+				";
+			} else {
+				//insert
+				$sql = "
+					INSERT INTO settings(logo,userid)
+					VALUES(?,?)
+				";
+			}
+
+			$this->db->prepare($sql)->execute(array($_POST['photo'], $_SESSION['id']));
+
+			die(json_encode(array("added")));
+		}
+	}
+
 	public function dropZoneTest(){
 
 		if(isset($_POST['assetupload'])){
 			if(isset($_FILES)){
 				$folder_name = 'uploads/admin/';
 
+				if(isset($_POST['logo'])){
+					$folder_name = 'uploads/logo/';
+				}
 				if(!empty($_FILES)) {
 				 $temp_file = $_FILES['file']['tmp_name'];
 				 $ext = strtolower(pathinfo($_FILES["file"]["name"],PATHINFO_EXTENSION));

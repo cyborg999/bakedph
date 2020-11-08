@@ -3,6 +3,7 @@
 
 	$model = new Model();
 	$err = $model->getErrors();
+  $logo = $model->getLogo();
 ?>
 <!doctype html>
 <html lang="en">

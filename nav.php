@@ -4,7 +4,7 @@
 			  </a>
 			  <style type="text/css">
 			  	.logo {
-			  		background: url(./uploads/banners/logo.png) no-repeat;
+			  		background: url(<?= $logo['logo'];?>) no-repeat;
 			  		background-size: contain;
 			  		width: 100px;
 			  		height: 50px;

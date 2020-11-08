@@ -83,6 +83,9 @@
 						   <li class="list-group-item">
 						  	<a href="news.php" class="black">All News</a>
 						  </li>
+						  <li class="list-group-item">
+						  	<a href="logo.php" class="black">Logo</a>
+						  </li>
 						</ul>
 				      </div>
 				    </div>
