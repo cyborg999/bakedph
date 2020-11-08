@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Nov 04, 2020 at 12:17 PM
+-- Generation Time: Nov 08, 2020 at 01:15 PM
 -- Server version: 10.4.13-MariaDB
 -- PHP Version: 7.4.8
 
@@ -56,7 +56,7 @@ CREATE TABLE `material_inventory` (
 --
 
 INSERT INTO `material_inventory` (`id`, `storeid`, `name`, `qty`, `price`, `expiry_date`, `date_created`) VALUES
-(8, 21, 'material1', 226, 2, '0011-02-11', '2020-11-02 02:54:05');
+(8, 21, 'material1', 191, 2, '0011-02-11', '2020-11-02 02:54:05');
 
 -- --------------------------------------------------------
 
@@ -104,7 +104,19 @@ CREATE TABLE `production` (
 --
 
 INSERT INTO `production` (`id`, `productid`, `batchnumber`, `quantity`, `date_produced`, `storeid`, `date_created`) VALUES
-(4, 11, 'asd', 324, '0000-00-00', 21, '2020-10-18 05:11:44');
+(6, 11, '23', 24, '2020-01-01', 21, '2020-11-06 11:14:26'),
+(7, 11, '23', 23, '2020-01-22', 21, '2020-11-06 11:25:54'),
+(8, 11, '23', 23, '2020-02-21', 21, '2020-11-06 11:27:24'),
+(9, 12, '23', 23, '2020-02-21', 21, '2020-11-06 11:27:40'),
+(10, 11, '23', 23, '2020-01-21', 21, '2020-11-06 11:27:47'),
+(11, 12, '23', 23, '2020-01-21', 21, '2020-11-06 11:28:12'),
+(12, 11, '23', 23, '2021-01-21', 21, '2020-11-06 13:09:40'),
+(13, 12, '23', 23, '2021-01-21', 21, '2020-11-06 13:09:56'),
+(14, 11, '23', 100, '2020-11-11', 21, '2020-11-06 15:15:46'),
+(15, 11, '23', 120, '2020-12-11', 21, '2020-11-06 15:23:35'),
+(16, 12, '23', 120, '2020-12-11', 21, '2020-11-06 15:23:38'),
+(17, 12, '23', 120, '2020-11-11', 21, '2020-11-06 15:23:46'),
+(18, 11, '23', 420, '2020-11-11', 21, '2020-11-06 15:23:57');
 
 -- --------------------------------------------------------
 
@@ -128,9 +140,7 @@ CREATE TABLE `purchase` (
 --
 
 INSERT INTO `purchase` (`id`, `vendorid`, `materialid`, `date_purchased`, `type`, `qty`, `date_created`, `storeid`) VALUES
-(11, 1, 8, '0111-11-11', 'credit', 1, '2020-11-02 19:43:44', 21),
-(12, 1, 8, '0111-11-11', 'cash', 1, '2020-11-02 19:44:33', 21),
-(13, 1, 8, '0002-02-22', 'credit', 34, '2020-11-04 09:39:45', 21);
+(16, 1, 8, '2020-01-21', 'cash', 1, '2020-11-06 11:12:08', 21);
 
 -- --------------------------------------------------------
 
@@ -153,7 +163,40 @@ CREATE TABLE `sales` (
 --
 
 INSERT INTO `sales` (`id`, `storeid`, `productid`, `qty`, `date_purchased`, `other_details`, `date_created`) VALUES
-(1, 21, 11, 32, '3333-02-02', '', '2020-10-18 06:09:06');
+(4, 21, 11, 22, '2020-02-21', '', '2020-11-06 14:34:32'),
+(5, 21, 11, 22, '2020-01-21', '', '2020-11-06 14:34:36'),
+(6, 21, 12, 224, '2020-01-21', '', '2020-11-06 14:34:41'),
+(7, 21, 12, 2, '2020-02-21', '', '2020-11-06 14:34:49'),
+(8, 21, 11, 23, '2020-12-01', '', '2020-11-06 16:03:01'),
+(9, 21, 11, 534, '2020-11-01', '', '2020-11-06 16:03:26');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `slides`
+--
+
+CREATE TABLE `slides` (
+  `id` int(11) NOT NULL,
+  `title` varchar(255) NOT NULL,
+  `content` varchar(255) NOT NULL,
+  `status` int(11) NOT NULL DEFAULT 1,
+  `photo` varchar(255) NOT NULL,
+  `date_created` timestamp NOT NULL DEFAULT current_timestamp(),
+  `type` varchar(255) NOT NULL DEFAULT 'slide'
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+--
+-- Dumping data for table `slides`
+--
+
+INSERT INTO `slides` (`id`, `title`, `content`, `status`, `photo`, `date_created`, `type`) VALUES
+(9, 'Lorem ipsum dolor sit amet', 'Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.', 1, 'uploads/admin/banner6.jpg', '2020-11-08 12:04:17', 'slider'),
+(10, 'Excepteur sint occaecat', 'Non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.', 1, 'uploads/admin/banner3.jpg', '2020-11-08 12:04:39', 'slider'),
+(11, 'Promo #1', 'laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehen', 1, 'uploads/admin/banner1.jpg', '2020-11-08 12:06:34', 'news'),
+(12, 'Promo #2', 'laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehen', 1, 'uploads/admin/banner5.png', '2020-11-08 12:06:40', 'news'),
+(13, 'Promo #3', 'laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehen', 1, 'uploads/admin/banner4.jpg', '2020-11-08 12:06:45', 'news'),
+(14, 'Promo Optional', 'laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehen', 0, 'uploads/admin/banner2.jpg', '2020-11-08 12:06:59', 'news');
 
 -- --------------------------------------------------------
 
@@ -199,7 +242,7 @@ CREATE TABLE `user` (
 --
 
 INSERT INTO `user` (`id`, `username`, `password`, `usertype`, `verified`, `date_created`) VALUES
-(36, 'jojor', '5c07f19fdd6ce3b1a588f71d11ee2b23', 'basic', 0, '2020-10-12 15:56:55'),
+(36, 'admin', 'eed57216df3731106517ccaf5da2122d', 'admin', 0, '2020-10-12 15:56:55'),
 (37, 'cyborg999', '5c07f19fdd6ce3b1a588f71d11ee2b23', 'basic', 0, '2020-10-17 04:48:06');
 
 -- --------------------------------------------------------
@@ -224,8 +267,8 @@ CREATE TABLE `userinfo` (
 --
 
 INSERT INTO `userinfo` (`id`, `fullname`, `address`, `contact`, `email`, `bday`, `date_created`, `userid`) VALUES
-(2, 'fullname2', 'add2', '09232342', 'sad2@mail.com', '1991-02-24', '2020-10-12 15:56:56', 36),
-(3, NULL, NULL, NULL, NULL, NULL, '2020-10-17 04:48:06', 37);
+(2, 'Jordan Sadiwa', '1852 Sandejas Pasay City', '09287655606', 'JORDAN-E14NWI096B87359TFWN@TEST.INFO', '0000-00-00', '2020-10-12 15:56:56', 36),
+(3, 'Jordan Sadiwa', '1852 Sandejas Pasay City', '09287655606', 'JORDAN-E14NWI096B87359TFWN@TEST.INFO', '0000-00-00', '2020-10-17 04:48:06', 37);
 
 -- --------------------------------------------------------
 
@@ -291,6 +334,12 @@ ALTER TABLE `sales`
   ADD PRIMARY KEY (`id`);
 
 --
+-- Indexes for table `slides`
+--
+ALTER TABLE `slides`
+  ADD PRIMARY KEY (`id`);
+
+--
 -- Indexes for table `store`
 --
 ALTER TABLE `store`
@@ -340,19 +389,25 @@ ALTER TABLE `product`
 -- AUTO_INCREMENT for table `production`
 --
 ALTER TABLE `production`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=19;
 
 --
 -- AUTO_INCREMENT for table `purchase`
 --
 ALTER TABLE `purchase`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=14;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=17;
 
 --
 -- AUTO_INCREMENT for table `sales`
 --
 ALTER TABLE `sales`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
+
+--
+-- AUTO_INCREMENT for table `slides`
+--
+ALTER TABLE `slides`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=15;
 
 --
 -- AUTO_INCREMENT for table `store`

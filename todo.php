@@ -16,6 +16,9 @@
 //add window if new
 
 todo
+admin logo
+admin dashboard (charts)
+
 material search render undefined
 https://themes.getbootstrap.com/preview/?theme_id=19799
 https://themes.getbootstrap.com/preview/?theme_id=35287

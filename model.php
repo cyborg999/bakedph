@@ -92,6 +92,26 @@ class Model {
 		return $this->db->query($sql)->fetchAll();
 	}
 
+	public function getAllSlidesIdx($news = false, $idx = false){
+		$sql = "
+			SELECT *
+			FROM slides
+			WHERE type = '".(($news) ? "news" : "slider")."'
+		";
+
+		if($idx){
+			$sql = "
+				SELECT *
+				FROM slides
+				WHERE type = '".(($news) ? "news" : "slider")."'
+				AND status = 1
+		";
+
+		}
+
+		return $this->db->query($sql)->fetchAll();
+	}
+
 	public function addSliderListener(){
 		if(isset($_POST['addSlider'])){
 			$sql = "

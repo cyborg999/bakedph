@@ -140,7 +140,7 @@
 							url : "ajax.php",
 							data : {
 								addSlider :true,
-								addNews : true,s
+								addNews : true,
 								photo : img.attr("src"),
 								title : $("#title").val(),
 								subtext : $("#subtext").val()

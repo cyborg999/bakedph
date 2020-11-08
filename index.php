@@ -54,8 +54,8 @@
         }
       </style>
       <?php
-        $slides = $model->getAllSlides();
-        $news = $model->getAllSlides(true);
+        $slides = $model->getAllSlidesIdx(false,true);
+        $news = $model->getAllSlidesIdx(true, true);
       ?>
 			<div class="col-sm">
 				 <div id="myCarousel" class="carousel slide" data-ride="carousel">
@@ -97,7 +97,7 @@
 
             <?php foreach($news as $idx => $s): ?>
             <div class="col-lg-4">
-              <img  width="140" height="140" class="rounded-circle" src="<?= $s['photo'];?>">
+              <figure class="rounded-circle" style="background:url(<?= $s['photo'];?>) center no-repeat;height: 200px;width: 200px;background-size: cover;display: block;margin: 0 auto;"></figure>
               <h2><?= $s['title'];?></h2>
               <p><?= $s['content'];?></p>
               <p><a class="btn btn-secondary" href="signup.php" role="button">View details &raquo;</a></p>
