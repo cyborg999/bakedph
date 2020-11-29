@@ -61,6 +61,26 @@
 				  </div>
 
 				  <div class="card">
+				    <div class="card-header" id="headingOne">
+				      <h2 class="mb-0">
+				        <button class="btn btn-link btn-block text-left" type="button" data-toggle="collapse" data-target="#ccollapseOne" aria-expanded="true" aria-controls="ccollapseOne">
+				          <svg class="bi" width="18" height="18" fill="currentColor"><use xlink:href="./node_modules/bootstrap-icons/bootstrap-icons.svg#clipboard-plus"/></svg> Subscription
+				        </button>
+				      </h2>
+				    </div>
+
+				    <div id="ccollapseOne" class="<?= ($active == "sub") ? "show" : ""; ?> collapse" aria-labelledby="headingOne" data-parent="#accordionExample">
+				      <div class="card-body">
+				      	<ul class="list-group list-group-flush">
+						  <li class="list-group-item">
+						  	<a href="plan.php" class="black">Plan</a>
+						  </li>
+						</ul>
+				      </div>
+				    </div>
+				  </div>
+
+				  <div class="card">
 				    <div class="card-header" id="headingTwo">
 				      <h2 class="mb-0">
 				        <button class="btn btn-link btn-block text-left collapsed" type="button" data-toggle="collapse" data-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">

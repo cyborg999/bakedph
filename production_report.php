@@ -1,4 +1,5 @@
 <?php include_once "./head.php"; ?>
+<?php $model->checkAccess(); ?>
 <body>
 	<div class="container-sm">
 		<?php include_once "./dashboardnav.php"; ?>

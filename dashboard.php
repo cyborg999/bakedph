@@ -1,7 +1,7 @@
 <?php include_once "./head.php"; ?>
 <body>
 	<div class="container-sm">
-		<?php include_once "./dashboardnav.php"; ?>
+		<?php include "./dashboardnav.php"; ?>
 		<div class="row">
 			<br>
 			<div class="col-sm-3">

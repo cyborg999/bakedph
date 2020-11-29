@@ -81,33 +81,20 @@
 			<h5>Choose Your Subscription Plan</h5>
 
 			<div class="row">
-				<div class="col-sm">
-					<div class="card mb-3" data-plan="3 Months" style="max-width: 18rem;">
-					  <div class="card-header">Plan #1</div>
-					  <div class="card-body">
-					    <h5 class="card-title">3 Months</h5>
-					    <p class="card-text">P600/<small>Month</small></p>
-					  </div>
+				<?php 
+				$subscription = $model->getActiveSubscriptions();
+
+				foreach($subscription as $idx => $sub): ?>
+					<div class="col-sm-3 cardd">
+						<div class="card mb-3"   data-plan="<?= $sub['id'];?>" style="max-width: 18rem;">
+						  <div class="card-header"><?= $sub['title'];?></div>
+						  <div class="card-body">
+						    <h5 class="card-title"><?= $sub['caption'];?></h5>
+						    <p class="card-text"><?= $sub['cost'];?>/<small>Month</small></p>
+						  </div>
+						</div>
 					</div>
-				</div>
-				<div class="col-sm">
-					<div class="card border-success mb-3" data-plan="6 Months" style="max-width: 18rem;">
-					  <div class="card-header">Plan #2</div>
-					  <div class="card-body text-success">
-					    <h5 class="card-title">6 Months</h5>
-					    <p class="card-text">P550/<small>Month</small></p>
-					  </div>
-					</div>
-				</div>
-				<div class="col-sm">
-					<div class="card mb-3" data-plan="1 Year" style="max-width: 18rem;">
-					  <div class="card-header">Plan #3</div>
-					  <div class="card-body">
-					    <h5 class="card-title">1 Year Supply</h5>
-					    <p class="card-text">P500/<small>Month</small></p>
-					  </div>
-					</div>
-				</div>
+				<?php endforeach ?>
 			</div>
 			<div class="row">
 				<div class="col-sm">

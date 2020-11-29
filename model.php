@@ -54,6 +54,77 @@ class Model {
 		$this->deleteSlideListener();
 		$this->updateSliderStatus();
 		$this->addLogoListener();
+		$this->addPlanListener();
+		$this->deletePlanListener();
+		$this->activatePlanListener();
+	}
+
+	public function activatePlanListener(){
+		if(isset($_POST['activatePlan'])){
+			$sql = "
+				UPDATE subscription
+				SET active = ?
+				WHERE id = ?
+			";
+
+			$this->db->prepare($sql)->execute(array($_POST['toggle'],$_POST['id']));
+
+			die(json_encode(array("Updated")));
+		}
+	}
+
+	public function deletePlanListener(){
+		if(isset($_POST['deletePlan'])){
+			$sql = "
+				UPDATE subscription
+				SET deleted = 1
+				WHERE id = ?
+			";
+
+			$this->db->prepare($sql)->execute(array($_POST['id']));
+
+			die(json_encode(array("Deleted")));
+		}
+	}
+
+	public function getActiveSubscriptions(){
+		$sql = "
+			SELECT *
+			FROM subscription
+			WHERE deleted = 0
+			AND active = 1
+		";
+
+		return $this->db->query($sql)->fetchAll();
+	}
+
+	public function getAllSubscription(){
+		$sql = "
+			SELECT *
+			FROM subscription
+			WHERE deleted = 0
+		";
+
+		return $this->db->query($sql)->fetchAll();
+	}
+
+	public function addPlanListener(){
+		if(isset($_POST['addPlan'])){
+			$sql = "
+				INSERT INTO subscription(duration,cost,title,caption)
+				VALUES(?,?,?,?)
+			";
+
+			$this->db->prepare($sql)->execute(array($_POST['planduration'],$_POST['planfee'],$_POST['title'],$_POST['plancaption'],));
+
+			header("Location:plan.php");
+		}
+	}
+
+	public function checkAccess(){
+		if(!$_SESSION['verified']){
+			header("Location:activate.php");
+		}
 	}
 
 	public function deleteSlideListener(){
@@ -1162,7 +1233,7 @@ class Model {
 			//d2
 			$sql = "
 				UPDATE store
-				SET subscription = ? 
+				SET subscriptionid = ? 
 				WHERE id = ? 
 			";
 
@@ -1243,6 +1314,7 @@ class Model {
 				$_SESSION['username'] = $exists['username'];
 				$_SESSION['storeid'] = $exists['storeId'];
 				$_SESSION['usertype'] = $exists['usertype'];
+				$_SESSION['verified'] = $exists['verified'];
 
 				if($exists['usertype'] == "admin"){
 					header("Location:admindashboard.php");
@@ -1295,7 +1367,6 @@ class Model {
 			INSERT INTO user(username,password)
 			VALUES(?,?)
 		";
-
 		$this->db->prepare($sql)->execute(array($_SESSION['setup']['username'], md5($_SESSION['setup']['password'])));
 		
 		$_SESSION['lastinsertedid'] = $this->db->lastInsertId();

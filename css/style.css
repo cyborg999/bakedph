@@ -19,3 +19,9 @@
 	display: block;
 	margin: 20% auto 0;
 }
+#accordionExample .inactive,
+.inactive button {
+	color: black;
+	cursor: not-allowed;
+	text-decoration: none;
+}
