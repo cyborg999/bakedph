@@ -16,7 +16,15 @@
 				        <small>
 				        <a href="profile.php">edit profile</a>
 				        <br>
-				        <a href="activate.php">verify account</a>
+				        <?php
+				        $pending = $model->checkIfPayed();
+
+				        ?>
+				        <?php if(!$_SESSION['verified']): ?>
+					        <?php if(!$pending): ?>
+					        <a href="activate.php">verify account</a>
+					        <?php endif ?>
+				        <?php endif ?>
 				        </small>
 				      </div>
 				    </div>

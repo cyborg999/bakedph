@@ -1,5 +1,6 @@
 <?php
 require_once "config.php";
+session_start();
   
 if (isset($_POST['stripeToken']) && !empty($_POST['stripeToken'])) {
  
@@ -19,18 +20,21 @@ if (isset($_POST['stripeToken']) && !empty($_POST['stripeToken'])) {
             $amount = $_POST['amount'];
  
             // Insert transaction data into the database
-            $isPaymentExist = $db->query("SELECT * FROM payments WHERE payment_id = '".$payment_id."'");
-     
-            if($isPaymentExist->num_rows == 0) { 
-                $insert = $db->query("INSERT INTO payments(payment_id, amount, currency, payment_status) VALUES('$payment_id', '$amount', 'PHP', 'Captured')");
-            }
- 
-            echo "Payment is successful. Your payment id is: ". $payment_id;
+            $isPaymentExist = $db->query("SELECT * FROM payments WHERE payment_id = '".$payment_id."'")->fetch();
+
+            if(!$isPaymentExist) { 
+                $sql = "INSERT INTO payments(payment_id, amount, currency, payment_status,userid) VALUES(?,?,?,?,?)
+                ";
+
+                $db->prepare($sql)->execute(array($payment_id, $amount, 'PHP', 'Captured', $_SESSION['id']));
+            } 
+            
+            header("Location:success.php");
         } else {
             // payment failed: display message to customer
-            echo $response->getMessage();
+            echo ' <div class="alert alert-danger" role="alert">'.$response->getMessage().'</div>';
         }
     } catch(Exception $e) {
-        echo $e->getMessage();
+            echo ' <div class="alert alert-danger" role="alert">'.$response->getMessage().'</div>';
     }
 }

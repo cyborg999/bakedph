@@ -1209,10 +1209,34 @@ class Model {
 		}
 	}
 
+	public function checkIfPayed(){
+		$sql = "
+			SELECT *
+			FROM payments
+			WHERE userid = ".$_SESSION['id']."
+			LIMIT 1
+		";
+
+		return $this->db->query($sql)->fetch();
+			$exists = $this->db->query($sql)->fetch();
+	}
+
 	public function showSuccessMessage(){
 		return $this->success;
 	}
 	
+	public function getUserStore(){
+		$sql = "
+			SELECT t1.*,t2.duration, t2.cost
+			FROM store t1
+			LEFT JOIN subscription t2
+			ON t1.subscriptionid = t2.id
+			WHERE t1.userid = ". $_SESSION['id']."
+			LIMIT 1
+		";
+
+		return $this->db->query($sql)->fetch();
+	}
 
 	public function getAllUnverifiedStores(){
 		$sql = "
