@@ -27,6 +27,17 @@ if (isset($_POST['stripeToken']) && !empty($_POST['stripeToken'])) {
                 ";
 
                 $db->prepare($sql)->execute(array($payment_id, $amount, 'PHP', 'Captured', $_SESSION['id']));
+
+                //update store subscription
+                $subId = $_POST['subscriptionid'];
+                $sql = "
+                    UPDATE store
+                    SET subscriptionid = ?,
+                    last_payment_id = ?
+                    WHERE userid = ?
+                ";
+
+                $db->prepare($sql)->execute(array($subId, $payment_id, $_SESSION['id']));
             } 
             
             header("Location:success.php");

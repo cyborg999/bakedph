@@ -18,11 +18,13 @@
 				        <br>
 				        <?php
 				        $pending = $model->checkIfPayed();
-
+						$expiration = $model->getSubscriptionExpiration();
 				        ?>
 				        <?php if(!$_SESSION['verified']): ?>
 					        <?php if(!$pending): ?>
 					        <a href="activate.php">verify account</a>
+					        <?php else: ?>
+					        <i>valid till <?= $expiration;?></i>
 					        <?php endif ?>
 				        <?php endif ?>
 				        </small>

@@ -1209,6 +1209,34 @@ class Model {
 		}
 	}
 
+	public function preventReaccessIfPayed(){
+		$current = date('Y-m-d');
+		$planEnd = $this->getSubscriptionExpiration();
+
+		//redirect if d paexpire
+		if(strtotime($current) < strtotime($planEnd)){
+			header("Location:dashboard.php");
+
+		} 
+	}
+
+	public function getSubscriptionExpiration(){
+		$sql = "
+			SELECT t1.duration, t3.captured_at
+			FROM subscription t1
+			LEFT JOIN store t2
+			ON t1.id = t2.subscriptionid
+			LEFT JOIN payments t3
+			ON t3.payment_id = t2.last_payment_id
+			WHERE t2.userid = ".$_SESSION['id']."
+			LIMIT 1
+		";
+
+		$data = $this->db->query($sql)->fetch();
+
+		return $effectiveDate = date('Y-m-d', strtotime("+".$data['duration']." months", strtotime($data['captured_at'])));
+	}
+
 	public function checkIfPayed(){
 		$sql = "
 			SELECT *

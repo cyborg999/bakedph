@@ -1,6 +1,12 @@
-<?php include_once "./head.php"; ?> 
+<?php 
+
+include_once "./head.php";
+
+$check = $model->preventReaccessIfPayed();
+ ?> 
 <body>
-	<div class="container-sm">
+  <?php include_once "./spinner.php"; ?>
+	<div class="container-sm">s
 		<?php include "./dashboardnav.php"; ?>
 		<div class="row">
 			<br>
@@ -12,14 +18,14 @@
 				<br>
 				<h3>Activate your account</h3>
 				<div class="row">
-					<?php 
+					<?php 					
 					$store = $model->getUserStore();
 					$amount = $store['cost'] * $store['duration'];
 					$subscription = $model->getActiveSubscriptions();
 
 					foreach($subscription as $idx => $sub): ?>
 						<div class="col-sm-4 cardd">
-							<div class="card mb-3 <?= ($sub['id'] == $store['subscriptionid']) ? 'border-success' : '';?>"   data-price="<?= $sub['cost'] * $sub['duration'];?>" style="max-width: 18rem;">
+							<div class="card mb-3 <?= ($sub['id'] == $store['subscriptionid']) ? 'border-success' : '';?>"  data-id="<?= $sub['id'];?>" data-price="<?= $sub['cost'] * $sub['duration'];?>" style="max-width: 18rem;">
 							  <div class="card-header"><?= $sub['title'];?></div>
 							  <div class="card-body <?= ($sub['id'] == $store['subscriptionid']) ? 'text-success' : '';?>">
 							    <h5 class="card-title"><?= $sub['caption'];?></h5>
@@ -89,6 +95,7 @@
 					<script src="https://js.stripe.com/v3/"></script>
 					<form action="charge.php" method="post" id="payment-form">
 					    <div class="form-row">
+					        <input type="hidden" name="subscriptionid" id="subscriptionid" value="<?= $store['subscriptionid'];?>" />
 					        <input type="text" name="amount" id="amount" placeholder="Enter Amount" value="<?= $amount;?>" />
 					        <label for="card-element">Credit/Debit Card</label>
 					        <div id="card-element">
@@ -98,7 +105,7 @@
 					        <!-- Used to display form errors. -->
 					        <div id="card-errors" class="alert alert-danger" role="alert"></div>
 					    </div>
-					    <button>Submit Payment</button>
+					    <button  id="submitpayment">Submit Payment</button>
 					</form>
 				</div>
 			</div>
@@ -121,8 +128,13 @@
 					me.find(".card-body").addClass("text-success");
 
 					$("#amount").val(price);
-					console.log(price);
-				});   
+					$("#subscriptionid").val(me.data("id"));
+					console.log(me.data);
+				});  
+
+		         $("#payment-form").on("submit", function(){
+         			$(".preloader").removeClass("hidden");
+		         });
 			});
 		})(jQuery);
 	</script>

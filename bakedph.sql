@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Nov 08, 2020 at 02:06 PM
+-- Generation Time: Dec 03, 2020 at 07:56 AM
 -- Server version: 10.4.13-MariaDB
 -- PHP Version: 7.4.8
 
@@ -57,6 +57,31 @@ CREATE TABLE `material_inventory` (
 
 INSERT INTO `material_inventory` (`id`, `storeid`, `name`, `qty`, `price`, `expiry_date`, `date_created`) VALUES
 (8, 21, 'material1', 191, 2, '0011-02-11', '2020-11-02 02:54:05');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `payments`
+--
+
+CREATE TABLE `payments` (
+  `id` int(11) NOT NULL,
+  `payment_id` varchar(255) NOT NULL,
+  `amount` float(10,2) NOT NULL,
+  `currency` varchar(255) NOT NULL,
+  `payment_status` varchar(255) NOT NULL,
+  `captured_at` datetime NOT NULL DEFAULT current_timestamp(),
+  `userid` int(11) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+--
+-- Dumping data for table `payments`
+--
+
+INSERT INTO `payments` (`id`, `payment_id`, `amount`, `currency`, `payment_status`, `captured_at`, `userid`) VALUES
+(11, 'ch_1HuBIbJmfnsrzK57UqMzcfqG', 1800.00, 'PHP', 'Captured', '2020-12-03 15:28:21', 37),
+(12, 'ch_1HuBMhJmfnsrzK5769NNWqzx', 1800.00, 'PHP', 'Captured', '2020-12-03 15:32:33', 37),
+(13, 'ch_1HuBTwJmfnsrzK573SpNZBoV', 3000.00, 'PHP', 'Captured', '2020-12-03 15:40:03', 37);
 
 -- --------------------------------------------------------
 
@@ -230,16 +255,51 @@ CREATE TABLE `store` (
   `logo` varchar(255) DEFAULT NULL,
   `date_creaed` timestamp NULL DEFAULT current_timestamp(),
   `userid` int(11) NOT NULL,
-  `subscription` varchar(255) NOT NULL DEFAULT '6 Months'
+  `subscriptionid` int(255) DEFAULT NULL,
+  `last_payment_id` varchar(255) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 --
 -- Dumping data for table `store`
 --
 
-INSERT INTO `store` (`id`, `name`, `description`, `logo`, `date_creaed`, `userid`, `subscription`) VALUES
-(20, 'jorjor', NULL, NULL, '2020-10-12 15:57:01', 36, '6 Months'),
-(21, 'cyborg999', NULL, NULL, '2020-10-17 04:48:07', 37, '1 Year');
+INSERT INTO `store` (`id`, `name`, `description`, `logo`, `date_creaed`, `userid`, `subscriptionid`, `last_payment_id`) VALUES
+(20, 'jorjor', NULL, NULL, '2020-10-12 15:57:01', 36, 30, NULL),
+(21, 'cyborg999', NULL, NULL, '2020-10-17 04:48:07', 37, 32, 'ch_1HuBTwJmfnsrzK573SpNZBoV'),
+(22, 'User2 Store', NULL, NULL, '2020-11-29 14:50:17', 38, 32, NULL);
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `subscription`
+--
+
+CREATE TABLE `subscription` (
+  `id` int(11) NOT NULL,
+  `duration` int(11) NOT NULL,
+  `cost` float NOT NULL,
+  `active` int(11) NOT NULL DEFAULT 1,
+  `title` varchar(255) NOT NULL,
+  `caption` varchar(255) NOT NULL,
+  `deleted` int(11) NOT NULL DEFAULT 0
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+--
+-- Dumping data for table `subscription`
+--
+
+INSERT INTO `subscription` (`id`, `duration`, `cost`, `active`, `title`, `caption`, `deleted`) VALUES
+(24, 23, 2, 1, '1', '2', 1),
+(25, 1, 1, 1, '1', '1', 1),
+(26, 1, 1, 1, '1', '1', 1),
+(27, 23, 23, 1, 'q', '3', 1),
+(28, 234, 242, 1, '4', '2344', 1),
+(29, 234, 324, 1, '34', '42', 1),
+(30, 3, 600, 1, 'Plan #1', '3 Months', 0),
+(31, 1, 800, 1, 'Plan #2', '1 Month', 0),
+(32, 6, 500, 1, 'Plan #3', '6 Months', 0),
+(33, 12, 450, 0, 'Plan #4', '1 Year', 0),
+(34, 7, 550, 0, 'Plan #5', '7 Months', 0);
 
 -- --------------------------------------------------------
 
@@ -262,7 +322,8 @@ CREATE TABLE `user` (
 
 INSERT INTO `user` (`id`, `username`, `password`, `usertype`, `verified`, `date_created`) VALUES
 (36, 'admin', 'eed57216df3731106517ccaf5da2122d', 'admin', 0, '2020-10-12 15:56:55'),
-(37, 'cyborg999', '5c07f19fdd6ce3b1a588f71d11ee2b23', 'basic', 0, '2020-10-17 04:48:06');
+(37, 'cyborg999', '5c07f19fdd6ce3b1a588f71d11ee2b23', 'basic', 0, '2020-10-17 04:48:06'),
+(38, 'user2', '5c07f19fdd6ce3b1a588f71d11ee2b23', 'basic', 1, '2020-11-29 14:50:17');
 
 -- --------------------------------------------------------
 
@@ -287,7 +348,8 @@ CREATE TABLE `userinfo` (
 
 INSERT INTO `userinfo` (`id`, `fullname`, `address`, `contact`, `email`, `bday`, `date_created`, `userid`) VALUES
 (2, 'Jordan Sadiwa', '1852 Sandejas Pasay City', '09287655606', 'JORDAN-E14NWI096B87359TFWN@TEST.INFO', '0000-00-00', '2020-10-12 15:56:56', 36),
-(3, 'Jordan Sadiwa', '1852 Sandejas Pasay City', '09287655606', 'JORDAN-E14NWI096B87359TFWN@TEST.INFO', '0000-00-00', '2020-10-17 04:48:06', 37);
+(3, 'Jordan Sadiwa', '1852 Sandejas Pasay City', '09287655606', 'JORDAN-E14NWI096B87359TFWN@TEST.INFO', '0000-00-00', '2020-10-17 04:48:06', 37),
+(15, NULL, NULL, NULL, NULL, NULL, '2020-11-29 14:50:17', 38);
 
 -- --------------------------------------------------------
 
@@ -326,6 +388,12 @@ ALTER TABLE `material`
 -- Indexes for table `material_inventory`
 --
 ALTER TABLE `material_inventory`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Indexes for table `payments`
+--
+ALTER TABLE `payments`
   ADD PRIMARY KEY (`id`);
 
 --
@@ -371,6 +439,12 @@ ALTER TABLE `store`
   ADD PRIMARY KEY (`id`);
 
 --
+-- Indexes for table `subscription`
+--
+ALTER TABLE `subscription`
+  ADD PRIMARY KEY (`id`);
+
+--
 -- Indexes for table `user`
 --
 ALTER TABLE `user`
@@ -403,6 +477,12 @@ ALTER TABLE `material`
 --
 ALTER TABLE `material_inventory`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
+
+--
+-- AUTO_INCREMENT for table `payments`
+--
+ALTER TABLE `payments`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=14;
 
 --
 -- AUTO_INCREMENT for table `product`
@@ -444,19 +524,25 @@ ALTER TABLE `slides`
 -- AUTO_INCREMENT for table `store`
 --
 ALTER TABLE `store`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=22;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=23;
+
+--
+-- AUTO_INCREMENT for table `subscription`
+--
+ALTER TABLE `subscription`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=35;
 
 --
 -- AUTO_INCREMENT for table `user`
 --
 ALTER TABLE `user`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=38;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=39;
 
 --
 -- AUTO_INCREMENT for table `userinfo`
 --
 ALTER TABLE `userinfo`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=16;
 
 --
 -- AUTO_INCREMENT for table `vendor`
