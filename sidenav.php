@@ -121,8 +121,6 @@
 				    </div>
 				  </div>
 
-
-
 				 <?php if(!$_SESSION['verified']): ?>
 				<div class="card">
 				    <div class="card-header" id="headingThreen">
@@ -146,7 +144,7 @@
 				 					  <div class="card">
 				    <div class="card-header" id="headingTwo">
 				      <h2 class="mb-0">
-				        <button class="btn btn-link btn-block text-left collapsed inactive" type="button" data-toggle="collapse" data-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
+				        <button class="btn btn-link btn-block text-left collapsed " type="button" data-toggle="collapse" data-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
 				          <svg class="bi" width="18" height="18" fill="currentColor"><use xlink:href="./node_modules/bootstrap-icons/bootstrap-icons.svg#receipt"/></svg> Sales
 				        </button>
 				      </h2>
@@ -170,7 +168,7 @@
 				  <div class="card">
 				    <div class="card-header" id="headingThree">
 				      <h2 class="mb-0">
-				        <button class="btn btn-link btn-block text-left collapsed inactive" type="button" data-toggle="collapse" data-target="#collapseThree" aria-expanded="false" aria-controls="collapseThree">
+				        <button class="btn btn-link btn-block text-left collapsed " type="button" data-toggle="collapse" data-target="#collapseThree" aria-expanded="false" aria-controls="collapseThree">
 				         <svg class="bi" width="18" height="18" fill="currentColor"><use xlink:href="./node_modules/bootstrap-icons/bootstrap-icons.svg#clipboard-data"/></svg>  Reports
 				        </button>
 				      </h2>

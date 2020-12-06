@@ -17,7 +17,18 @@
 
 todo
 admin dashboard (charts)
-
-if paid, auto verify or no?
+admin changepassword, changes to user sidenav
+admin slider, checked include checkbox	
 https://themes.getbootstrap.com/preview/?theme_id=19799
 https://themes.getbootstrap.com/preview/?theme_id=35287
+
+
+STRIP ACCOUNT
+https://dashboard.stripe.com/test/apikeys
+
+sadiwajordan1991@gmail.com
+Cyborg99912@
+
+
+VISA TESTING
+https://stripe.com/docs/testing
