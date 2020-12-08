@@ -25,8 +25,14 @@
           </thead>
           <tbody>
             <tr id="search">
-              <td colspan="4">
+              <td colspan="2">
                 <input type="text" class="form-control" id="searchName" placeholder="Name search..."/>
+              </td>
+              <td colspan="2">
+                <input type="number" class="form-control" id="searchQuantity" placeholder="Quantity"/>
+              </td>
+              <td>
+                <button id="filter" class="btn btn-sm btn-primary"> <= Filter</button>
               </td>
             </tr>
             <?php foreach($products as $idx => $product): ?>
@@ -147,7 +153,7 @@
       $(document).ready(function(){
         $("#editvendorname").chosen();
         function __listen(){
-          $("#editform").on("submit", function(e){
+          $("#editform").off().on("submit", function(e){
             e.preventDefault();
 
             var me = $(this);
@@ -312,6 +318,44 @@
             }
           });
         });
+
+
+         $("#filter").on("click", function(e){
+            e.preventDefault();
+
+            var qty = $("#searchQuantity").val();
+
+            $(".result").remove();
+            $(".preloader").removeClass("hidden");
+
+             $.ajax({
+                url : "ajax.php"
+                , data : { searchmaterialByQuantity : true, quantity : qty }
+                , type : "post"
+                , dataType : "json"
+                , success : function(response){
+                  // productTPL
+                  console.log(response);
+                  for(var i in response){
+                    console.log(response[i].name);
+                    var tpl = $("#productTPL").html();
+
+                    tpl = tpl.replace("[ID]", response[i].id).replace("[ID]", response[i].id).replace("[ID]", response[i].id).replace("[NAME]", response[i].name).replace("[NAME]", response[i].name).
+                    replace("[EXPIRY]", response[i].expiry_date)
+                    .replace("[SRP]", response[i].price).replace("[SRP]", response[i].price).replace("[QTY]", response[i].qty).replace("[QTY]", response[i].qty);
+
+                    $("#search").after(tpl);
+                  }
+                  
+                  __listen();
+                  setTimeout(function(){
+                    $(".preloader").addClass("hidden");
+                  },200);
+
+
+                }
+              });
+          });
 
       });
 

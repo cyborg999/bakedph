@@ -25,8 +25,14 @@
           </thead>
           <tbody>
             <tr id="search">
-              <td colspan="4">
+              <td colspan="2">
                 <input type="text" class="form-control" id="searchName" placeholder="Name search..."/>
+              </td>
+              <td >
+                <input type="number" class="form-control" id="searchQuantity" placeholder="Quantity"/>
+              </td>
+              <td>
+                <button id="filter" class="btn btn-sm btn-primary"> <= Filter</button>
               </td>
             </tr>
             <?php foreach($products as $idx => $product): ?>
@@ -52,7 +58,7 @@
 
 <!-- Modal -->
 <div class="modal fade" id="editProductModal" data-id="" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-  <div class="modal-dialog modal-lg">
+  <div class="modal-dialog modal-xl">
     <div class="modal-content">
       <div class="modal-header">
         <h5 class="modal-title" id="exampleModalLabel">Edit Product</h5>
@@ -65,82 +71,120 @@
           <div class="col-sm msg hidden"></div>
         </div>
         <div class="row">
-          <div class="col-sm-4">
+          <div class="col-sm-5">
             <h5>Product Information</h5>
             <form method="post" id="editform">
               <input type="hidden" name="editproduct" id="editid" value="">
               <div class="form-group">
-                <label>Product Name:
-                  <input type="text" id="editname" required class="form-control" name="name" value="" placeholder="Product Name..."/>
-                </label>
+                <label>Product Name:</label>
+                <input type="text" id="editname" required class="form-control" name="name" value="" placeholder="Product Name..."/>
               </div>
               <div class="form-group">
-                <label>Price:
-                  <input type="text" id="editprice" required class="form-control" name="price" placeholder="Price..."/>
-                </label>
+                <label>Price:</label>
+                <input type="text" id="editprice" required class="form-control" name="price" placeholder="Price..."/>
               </div>
               <div class="form-group">
-                <label>Quantity:
-                  <input type="number" id="editqty" required class="form-control" name="qty" placeholder="Quantity..."/>
-                </label>
+                <label>Quantity:</label>
+                <input type="number" id="editqty" required class="form-control" name="qty" placeholder="Quantity..."/>
+
               </div>
               <div class="form-group">
-                <label>Expiry Date:
-                  <input type="date" id="editexpiry" required class="form-control" name="expiry" placeholder="Expiry Date..."/>
-                </label>
+                <label>Expiry Date:</label>
+                <input type="date" id="editexpiry" required class="form-control" name="expiry" placeholder="Expiry Date..."/>
               </div>
               <input type="submit" class="btn btn-lg btn-success" value="Update">
 
             </form>
           </div>
+          <div class="col-sm-7">
+            <ul class="nav nav-tabs" id="myTab" role="tablist">
+              <li class="nav-item">
+                <a class="nav-link active" id="home-tab" data-toggle="tab" href="#raw" role="tab" aria-controls="home" aria-selected="true">Raw Materials</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" id="profile-tab" data-toggle="tab" href="#expenses" role="tab" aria-controls="profile" aria-selected="false">Expenses</a>
+              </li>
+            </ul>
+            <div class="tab-content" id="myTabContent">
+              <div class="tab-pane fade show active" id="raw" role="raw" aria-labelledby="home-tab">
+                <table class="table table-hover table-sm" id="material">
+                  <thead>
+                    <tr>
+                      <th scope="col">Name</th>
+                      <th scope="col">Price</th>
+                      <th scope="col">Quantity</th>
+                      <th scope="col">Action</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    
+                  </tbody>
+                  <tfoot>
+                    <tr>
+                      <td style="width: 200px;">
+                        <style type="text/css">
+                          .chosen-container-single .chosen-single,
+                          .chosen-container {
+                            width: 200px!important;
+                          }
+                        </style>
+                        <select  id="materialName" class="form-control" >
+                          <?php foreach($materials as $idx => $material): ?>
+                            <?php if($idx == 0): ?>
+                            <option selected>Select</option>
+                            <?php endif ?>
+                            <option data-price="<?= $material['price'];?>"  data-max="<?= $material['qty'];?>"  data-name="<?= $material['name'];?>" value="<?= $material['id'];?>"><?= $material['name'];?></option>
+                          <?php endforeach ?>
+                        </select>
 
+                      </td>
+                      <td>
+                        <input type="text" id="materialSrp" readonly class="form-control" name="price" placeholder="SRP..." required />
+                      </td>
+                      <td>
+                        <input type="number" id="materialQty" class="form-control" name="qty" placeholder="Quantity..." min="1" required/>
+                      </td>
+                      <td>
+                        <button id="addMaterial" class="btn btn-sm btn-primary" ><svg class="bi" width="18" height="18" fill="currentColor"><use xlink:href="./node_modules/bootstrap-icons/bootstrap-icons.svg#plus"/></svg></button>
+                      </td>
+                    </tr>
+                  </tfoot> 
+                </table>
+                <h4 >Total Material Cost : P<span id="total">0.00</span></h4>
+              </div>
+              <div class="tab-pane fade " id="expenses" role="tabpanel" aria-labelledby="home-tab">
+                  <table class="table table-hover table-sm" id="expensesTbl">
+                    <thead>
+                      <tr>
+                        <th scope="col">Name</th>
+                        <th scope="col">Cost</th>
+                        <th scope="col">Date</th>
+                        <th scope="col">Action</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      
+                    </tbody>
+                    <tfoot>
+                      <tr>
+                        <td style="width: 200px;">
+                          <input type="text" class="form-control" id="expName" placeholder="name">
 
-          <div class="col-sm-8">
-            <h5>Raw Materials</h5>
-            <table class="table table-hover table-sm" id="material">
-              <thead>
-                <tr>
-                  <th scope="col">Name</th>
-                  <th scope="col">Price</th>
-                  <th scope="col">Quantity</th>
-                  <th scope="col">Action</th>
-                </tr>
-              </thead>
-              <tbody>
-                
-              </tbody>
-              <tfoot>
-                <tr>
-                  <td style="width: 200px;">
-                    <style type="text/css">
-                      .chosen-container-single .chosen-single,
-                      .chosen-container {
-                        width: 200px!important;
-                      }
-                    </style>
-                    <select  id="materialName" class="form-control" >
-                      <?php foreach($materials as $idx => $material): ?>
-                        <?php if($idx == 0): ?>
-                        <option selected>Select</option>
-                        <?php endif ?>
-                        <option data-price="<?= $material['price'];?>"  data-max="<?= $material['qty'];?>"  data-name="<?= $material['name'];?>" value="<?= $material['id'];?>"><?= $material['name'];?></option>
-                      <?php endforeach ?>
-                    </select>
-
-                  </td>
-                  <td>
-                    <input type="text" id="materialSrp" readonly class="form-control" name="price" placeholder="SRP..." required />
-                  </td>
-                  <td>
-                    <input type="number" id="materialQty" class="form-control" name="qty" placeholder="Quantity..." min="1" required/>
-                  </td>
-                  <td>
-                    <button id="addMaterial" class="btn btn-sm btn-primary" ><svg class="bi" width="18" height="18" fill="currentColor"><use xlink:href="./node_modules/bootstrap-icons/bootstrap-icons.svg#plus"/></svg></button>
-                  </td>
-                </tr>
-              </tfoot> 
-            </table>
-            <h4 >Total Material Cost : P<span id="total">0.00</span></h4>
+                        </td>
+                        <td>
+                          <input type="number" id="expCost" class="form-control" name="cost" placeholder="Cost..." min="1" required/>
+                        </td>
+                        <td>
+                          <input type="date" id="dateProduced" class="form-control" name="date" placeholder="Date..."  required/>
+                        </td>
+                        <td>
+                          <button id="addExpenses" class="btn btn-sm btn-primary" ><svg class="bi" width="18" height="18" fill="currentColor"><use xlink:href="./node_modules/bootstrap-icons/bootstrap-icons.svg#plus"/></svg></button>
+                        </td>
+                      </tr>
+                    </tfoot> 
+                  </table>
+              </div>
+            </div>
           </div>
         </div>
       </div>
@@ -169,6 +213,16 @@
     <td>[QTY]</td>
     <td>
       <button  class="btn btn-sm btn-danger deleteMaterial" data-mid="[MID]" data-id="[ID]" data-price="[PRICE]" data-qty="[QTY]"><svg class="bi" width="18" height="18" fill="currentColor"><use xlink:href="./node_modules/bootstrap-icons/bootstrap-icons.svg#trash"/></svg></button>
+    </td>
+  </tr>
+</script>
+<script type="text/html" id="expensesTpl">
+  <tr>
+    <td>[NAME]</td>
+    <td>[COST]</td>
+    <td>[DATE]</td>
+    <td>
+      <button  class="btn btn-sm btn-danger deleteExpenses"  data-id="[ID]"><svg class="bi" width="18" height="18" fill="currentColor"><use xlink:href="./node_modules/bootstrap-icons/bootstrap-icons.svg#trash"/></svg></button>
     </td>
   </tr>
 </script>
@@ -215,6 +269,27 @@
 
           });
 
+          $(".deleteExpenses").off().on("click", function(e){
+            e.preventDefault();
+
+            var me = $(this);
+
+            $(".preloader").removeClass("hidden");
+
+            $.ajax({
+              url : "ajax.php",
+              data : { deleteExpenses : true, id : me.data("id")},
+              type : "post",
+              dataType : "json",
+              success : function(response){
+                $(".preloader").addClass("hidden");
+
+                me.parents("tr").remove();
+              }
+            });
+
+          });
+
           $("#editform").on("submit", function(e){
             e.preventDefault();
 
@@ -252,13 +327,37 @@
             $("#editprice").attr("value", data.srp);
             $("#editid").attr("value", data.id);
             $("#addMaterial").data("id", data.id);
+            $("#addExpenses").data("id", data.id);
             $("#editexpiry").attr("value", data.expiry);
             $(".msg").addClass("hidden");
             $(".preloader").removeClass("hidden");
             $("#material").find("tbody").html("");
             $("#total").html("");
+            $("#expensesTbl tbody").html("");
             
-            console.log(data);
+            //get expenses
+            $.ajax({
+              url : "ajax.php",
+              data : { getExpensesById : true, id : data.id},
+              type : "post",
+              dataType : 'json',
+              success : function(response){
+
+                for(var i in response){
+                  var tpl = $("#expensesTpl").html();
+                  tpl = tpl.replace("[NAME]", response[i].name).
+                    replace("[ID]", response[i].id).
+                    replace("[DATE]", response[i].date_produced).
+                    replace("[COST]", response[i].cost);
+
+                  $("#expensesTbl tbody").append(tpl);
+                }
+
+                __listen();
+                $(".preloader").addClass("hidden");
+
+              }
+            });
             //get materials
             $.ajax({
               url : "ajax.php",
@@ -389,14 +488,14 @@
           var qty = $("#materialQty").val();
           var id = $(this).data("id");
           var max = $("#materialQty option:selected").data();
-          console.log("D2",material.max);
+
           if(qty == ""){
             alert("Please Input Quantity");
+            
           } else if(qty > material.max) {
             alert("Not enough stocks");
-          } else {
-            // $(".preloader").removeClass("hidden");
 
+          } else {
             $.ajax({
               url : "ajax.php",
               data : { 
@@ -430,10 +529,90 @@
             });
 
           }
-
-          console.log(material);
       
         });
+
+        $("#filter").on("click", function(e){
+          e.preventDefault();
+
+          var qty = $("#searchQuantity").val();
+
+          $(".result").remove();
+          $(".preloader").removeClass("hidden");
+
+           $.ajax({
+              url : "ajax.php"
+              , data : { searchProductByQuantity : true, qty : qty }
+              , type : "post"
+              , dataType : "json"
+              , success : function(response){
+                // productTPL
+                console.log(response);
+                for(var i in response){
+                  console.log(response[i].name);
+                  var tpl = $("#productTPL").html();
+
+                  tpl = tpl.replace("[ID]", response[i].id).replace("[ID]", response[i].id).replace("[ID]", response[i].id).replace("[NAME]", response[i].name).replace("[NAME]", response[i].name)
+                  .replace("[SRP]", response[i].srp).replace("[SRP]", response[i].srp).replace("[QTY]", response[i].qty).replace("[QTY]", response[i].qty);
+
+                  $("#search").after(tpl);
+                }
+                
+                __listen();
+                setTimeout(function(){
+                  $(".preloader").addClass("hidden");
+                },200);
+
+
+              }
+            });
+        });
+
+        $("#addExpenses").on("click", function(e){
+          e.preventDefault();
+
+          var name = $("#expName").val();
+          var cost = $("#expCost").val();
+          var date = $("#dateProduced").val();
+          var productId = $(this).data("id");
+
+          $(".preloader").removeClass("hidden");
+
+          $.ajax({
+            url : "ajax.php",
+            data : { 
+              addExpenses : true, 
+              name : name,
+              date : date,
+              id : productId,
+              cost : cost
+            },
+            type : "post",
+            dataType : "json",
+            success :  function(response){
+
+              if(response.added){
+                var tpl = $("#expensesTpl").html();
+
+                tpl = tpl.replace("[NAME]", name).
+                  replace("[ID]", response.id).
+                  replace("[DATE]", date).
+                  replace("[COST]", cost);
+
+                $("#expensesTbl tbody").append(tpl);
+
+                __listen();
+              } else {
+                alert("You already added this material to this product.");
+              }
+              
+              $(".preloader").addClass("hidden");
+              
+            }
+          });
+      
+        });
+
 
       });
 

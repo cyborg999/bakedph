@@ -18,10 +18,15 @@
 			          $vendors = $model->getAllVendors();
 			          $purchasedOrders = $model->getPurchaseOrders();
 			        ?>
+			        <div class="row">
+			        	<div class="col-sm message">
+			        		
+			        	</div>
+			        </div>
 					<div class="row">
 						<div class="col-sm-4">
 							<h5>Purchase Information</h5>
-							<form method="post">
+							<form method="post" class="form">
 								<input type="hidden" name="addPurchase" value="true">
 								<div class="form-group">
 									<label>Vendor Name:</label>
@@ -50,13 +55,13 @@
 								</div>
 								<div class="form-group">
 									<label>Quantity:</label>
-									<input type="number" class="form-control" value="" required name="qty" placeholder="Quantity..."/>
+									<input type="number" class="form-control" value="" required  id="quantity" name="qty" placeholder="Quantity..."/>
 								</div>
 								<div class="form-group">
 									<label>Date of purchase:</label>
-									<input type="date" required class="form-control" value="" name="date_purchased" placeholder="Date..."/>
+									<input type="date" required class="form-control" value="" id="date_purchased" name="date_purchased" placeholder="Date..."/>
 								</div>
-								<input type="submit" value="Submit" class="btn btn-lg btn-primary">
+								<input type="submit" value="Add" class="btn btn-lg btn-primary">
 							</form>
 						</div>
 						<div class="col-sm-8">
@@ -72,8 +77,17 @@
 										<th>Action</th>
 									</tr>
 								</thead>
-
-            					<?php foreach($purchasedOrders as $idx => $p): ?>
+								<tbody>
+									
+								</tbody>
+								<tfoot>
+									<tr>
+										<td colspan="4">
+											<a href="" class="btn btn-success submit">Submit</a>
+										</td>
+									</tr>
+								</tfoot>
+            					<!-- <?php foreach($purchasedOrders as $idx => $p): ?>
             						<tr>
 										<td><?= $p['vendorname']; ?></td>
 										<td><?= $p['materialname']; ?></td>
@@ -84,7 +98,7 @@
 											<a href="" class="delete btn btn-danger" data-qty="<?= $p['qty']; ?>"  data-id="<?= $p['id']; ?>" data-mid="<?= $p['materialid']; ?>"><svg class="bi" width="18" height="18" fill="currentColor"><use xlink:href="./node_modules/bootstrap-icons/bootstrap-icons.svg#trash"/></svg></a>
 										</td>
 									</tr>
-            					<?php endforeach ?>
+            					<?php endforeach ?> -->
 
 								
 							</table>
@@ -95,6 +109,39 @@
 		</div>
 	</div>
 
+	<!-- tpl script -->
+	<script type="text/html" id="tpl">
+		<tr>
+			<td class="vendorname" data-id="[VENDORID]">[VENDORNAME]</td>
+			<td class="materialname" data-id="[MATERIALID]">[MATERIALNAME]</td>
+			<td class="type" data-id="[TYPEID]">[TYPE]</td>
+			<td  class="quantity">[QUANTITY]</td>
+			<td class="date_purchased">[DATE_PURCHASED]</td>
+			<td>
+				<a href="" class="delete btn btn-danger" ><svg class="bi" width="18" height="18" fill="currentColor"><use xlink:href="./node_modules/bootstrap-icons/bootstrap-icons.svg#trash"/></svg></a>
+			</td>
+		</tr>
+	</script>
+	<!-- end tpl script -->
+	<!-- alert script -->
+	<script type="text/html" id="success">
+	      <div class="alert alert-success alert-dismissible fade show" role="alert">
+	        <strong>Success!!</strong> You have sucessfully added this record.
+	        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+	          <span aria-hidden="true">&times;</span>
+	        </button>
+	      </div>
+	</script>
+
+	<script type="text/html" id="error">
+	      <div class="alert alert-danger alert-dismissible fade show" role="alert">
+	        <strong>Error!!</strong> [ERROR]
+	        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+	          <span aria-hidden="true">&times;</span>
+	        </button>
+	      </div>
+	</script>
+	<!-- end alert script -->
 	<?php include_once "./foot.php"; ?>
     <script src="./node_modules/chosen-js/chosen.jquery.min.js" ></script>
     <script type="text/javascript">
@@ -104,27 +151,114 @@
     			$("#slctMaterial").chosen();
     			$("#type").chosen();
 
-    			$(".delete").on("click", function(e){
+    			function __listen(){
+    				$(".delete").off().on("click", function(e){
+    					e.preventDefault();
+
+    					var me = $(this);
+
+    					me.parents("tr").remove();
+    				});
+    			}
+
+    			__listen();
+
+    			$(".submit").on("click", function(e){
     				e.preventDefault();
 
-    				var me = $(this);
-    				console.log(me.data("id"));
+    				var data = Array();
+    				var tr = $("tbody tr");
 
-    				$.ajax({
-    					url : "ajax.php"
-    					, data : { 
-    						deletePurchase : true , 
-    						id : me.data("id"),
-    						qty : me.data("qty"),
-    						materialid : me.data("mid")
-    					}
-    					, type : 'post'
-    					, dataType : 'json'
-    					, success : function(response){
-    						me.parents("tr").remove();
-    					}
+    				tr.each(function(x, y){
+    					var tr = $(y);
+
+    					var vendorName = tr.find(".vendorname").data("id");
+    					var materialName = tr.find(".materialname").data("id");
+    					var type = tr.find(".type").data("id");
+    					var quantity = tr.find(".quantity").html();
+    					var dateProduced = tr.find(".date_purchased").html();
+
+
+    					var production = Array(vendorName,materialName,type,quantity,dateProduced);
+
+    					data.push(production);
+
     				});
 
+    				$(".message").html("");
+    				
+    				if(tr.length){
+    					$.ajax({
+							url : "ajax.php"
+							, data : { addPurchase : true , data : data}
+							, type : 'post'
+							, dataType : 'json'
+							, success : function(response){
+								tr.html("");
+
+								$(".message").append($("#success").html());
+							}
+						});	
+    				}
+    			});
+
+    			$(".form").on("submit", function(e){
+    				e.preventDefault();
+
+    				var vendorId = $("#slcProduct").val();
+    				var vendorName = $("#slcProduct :selected").html();
+    				var materialId = $("#slctMaterial").val();
+    				var materialName = $("#slctMaterial :selected").html();
+    				var typeId = $("#type").val();
+    				var typeName = $("#type :selected").html();
+
+    				var quantity = $("#quantity").val();
+    				var dateProduced = $("#date_purchased").val();
+
+    				var errCount = 0;
+
+    				if(materialId == null){
+    					var tpl = $("#error").html();
+
+    					tpl = tpl.replace("[ERROR]", "Please add material first");
+
+						$(".message").append(tpl);
+						errCount++;
+    				}
+    				if(typeId == null){
+    					var tpl = $("#error").html();
+
+    					tpl = tpl.replace("[ERROR]", "Please add type first");
+
+						$(".message").append(tpl);
+
+						errCount++;
+    				}
+    				if(vendorId == null){
+    					var tpl = $("#error").html();
+
+    					tpl = tpl.replace("[ERROR]", "Please add vendor first");
+
+						$(".message").append(tpl);
+
+						errCount++;
+    				}
+
+    				if(errCount == 0){
+						var tpl = $("#tpl").html();
+						tpl = tpl.replace("[MATERIALID]", materialId).
+							replace("[MATERIALNAME]", materialName).
+							replace("[TYPEID]", typeId).
+							replace("[VENDORNAME]", vendorName).
+							replace("[VENDORID]", vendorId).
+							replace("[TYPE]", typeName).
+							replace("[QUANTITY]", quantity).
+							replace("[DATE_PURCHASED]", dateProduced);
+
+						$("tbody").append(tpl);
+
+						__listen();
+    				}
     			});
     		});
     	})(jQuery);

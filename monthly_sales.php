@@ -2,6 +2,7 @@
 <?php $model->checkAccess(); ?>
 <body>
 	<div class="container-sm">
+		<?php include_once "./spinner.php"; ?>
 		<?php include_once "./dashboardnav.php"; ?>
 		<div class="row">
 			<br>
@@ -13,47 +14,241 @@
 				<?php include_once "./error.php"; ?>
 				<div class="row">
 					<div class="col-sm">
-					  <div class="form-row">
-				  		<?php
-				          $products = $model->getAllProducts();
-				        ?>
-						<div class="form-group col-sm-3">
-							<label>Year
-								<input type="number" class="form-control" placeholder="Year" id="year">
-							</label>
-						</div>
-						<div class="form-group col-sm-6">
-							<label>Products
-								<select id="products" placeholder="Products" class="form-control" multiple style="width: 400px;">
-									<?php foreach($products as $idx => $product): ?>
-									<option value="<?= $product['id']; ?>"><?= $product['name']; ?></option>
-	            					<?php endforeach ?>
-								</select>
-							</label>
-						</div>
-						<div class="form-group col-sm-3">
-							<br>
-							<button id="filter" class="btn btn-md btn-primary">Filter <svg class="bi" width="18" height="18" fill="currentColor"><use xlink:href="./node_modules/bootstrap-icons/bootstrap-icons.svg#search"/></svg></button>
-						</div>
-					  </div>
-					</div>
-				</div>
-				<div class="row">
-					<?php
-			          $monthlyData = $model->getMonthlyProductionReport();
+						<ul class="nav nav-tabs" id="myTab" role="tablist">
+						  <li class="nav-item">
+						    <a class="nav-link active" id="home-tab" data-toggle="tab" href="#home" role="tab" aria-controls="home" aria-selected="true">Chart</a>
+						  </li>
+						  <li class="nav-item">
+						    <a class="nav-link" id="profile-tab" data-toggle="tab" href="#profile" role="tab" aria-controls="profile" aria-selected="false">Sales Record</a>
+						  </li>
+						  <li class="nav-item">
+						    <a class="nav-link" id="expenses-tab" data-toggle="tab" href="#expenses" role="tab" aria-controls="exepenses" aria-selected="false">Expenses</a>
+						  </li>
+						</ul>
+						<div class="tab-content" id="myTabContent">
+							<div class="tab-pane fade show active" id="home" role="tabpanel" aria-labelledby="home-tab">
+								<br>
+								<div class="form-row">
+							  		<?php  $products = $model->getAllProducts(); ?>
+									<div class="form-group col-sm-3">
+										<label>Year
+											<input type="text" class="form-control" placeholder="Year" id="year">
+										</label>
+									</div>
+									<div class="form-group col-sm-6">
+										<label>Products
+											<select id="products" placeholder="Products" class="form-control" multiple style="width: 400px;">
+												<?php foreach($products as $idx => $product): ?>
+												<option value="<?= $product['id']; ?>"><?= $product['name']; ?></option>
+				            					<?php endforeach ?>
+											</select>
+										</label>
+									</div>
+									<div class="form-group col-sm-3">
+										<br>
+										<button id="filter" class="btn btn-md btn-primary">Filter <svg class="bi" width="18" height="18" fill="currentColor"><use xlink:href="./node_modules/bootstrap-icons/bootstrap-icons.svg#search"/></svg></button>
+									</div>
+							  	</div>
+							  	<div class="row">
+									<?php $monthlyData = $model->getMonthlyProductionReport(); ?>
+									<div class="col-sm">
+										<figure class="highcharts-figure">
+										    <div id="container"></div>
+										</figure>
+									</div>
+								</div>
 
-			          // opd($monthlyData);
+							</div>
+							
+							<div class="tab-pane fade" id="profile" role="tabpanel" aria-labelledby="home-tab">
+								<div class="row">
+									<div class="col-sm-4">
+										<br>
+										<label><b>Filter By:</b> </label>
+										<br>
+										<label> Day
+											<input type="radio" class="filter" checked name="filter" value="day">
+										</label>
+										<label> Date Range
+											<input type="radio" class="filter" name="filter" value="daterange">
+										</label>
+										<label> Year
+											<input type="radio" class="filter" name="filter" value="year">
+										</label>
+										<br>
+									</div>
+									<div class="col-sm-6">
+									
+										<div class="row  onedate">
+											<div class="col-sm">
+												<br>
+												<br>
+												<input type="date" id="date" class="form-control" placeholder="Enter date">
+											</div>
+										</div>
+										<div class="row  yearRow">
+											<div class="col-sm">
+												<br>
+												<br>
+												<input type="year" id="yeardate" class="form-control" placeholder="Enter date">
+											</div>
+										</div>
+										<div class="row twodate">
+											<div class="col-sm-6">
+												<br>
+												<label>Date Start:</label>
+												<input type="date" id="datestart" class="form-control" placeholder="Enter date">
+											</div>
+											<div class="col-sm-6">
+												<br>
+												<label>Date End:</label>
+												<input type="date" id="dateend" class="form-control" placeholder="Enter date">
+											</div>
+											
+										</div>
+										<br>
+									</div>
+									<div class="col-sm-2">
+										<br>
+										<br>
+										<button id="salesFilter" class="btn btn-md btn-primary">Filter <svg class="bi" width="18" height="18" fill="currentColor"><use xlink:href="./node_modules/bootstrap-icons/bootstrap-icons.svg#search"/></svg></button>
+									</div>
+								</div>
+								<?php $sales = $model->getAllSales(); 
+								$total = 0;
+								?>
+								<table class="table table-hover">
+									<thead>
+										<tr>
+											<th>Product Name</th>
+											<th>Quantity</th>
+											<th>Date Purchased</th>
+										</tr>
+									</thead>
+									<tbody id="saleTbody">
+										<?php foreach($sales as $idx => $p): ?>
+											<?php $total += $p['revenue']; ?>
+		            						<tr>
+												<td><?= $p['name']; ?></td>
+												<td><?= $p['qty']; ?></td>
+												<td><?= $p['date_purchased']; ?></td>
+											</tr>
+		            					<?php endforeach ?>
+									</tbody>
+									<tfoot>
+										<tr>
+											<td colspan="3">
+												<h2>Sales Total: <span id="salestotal"><?= $total;?></span></h2>
+											</td>
+										</tr>
+									</tfoot>
+								</table>
+							</div>
 
-					?>
-					<div class="col-sm">
-						<figure class="highcharts-figure">
-						    <div id="container"></div>
-						</figure>
-					</div>
-				</div>
+							<div class="tab-pane fade" id="expenses" role="tabpanel" aria-labelledby="expenses-tab">
+								<div class="row">
+									<div class="col-sm-4">
+										<br>
+										<label><b>Filter By:</b> </label>
+										<br>
+										<label> Day
+											<input type="radio" class="filter" checked name="filter" value="day">
+										</label>
+										<label> Date Range
+											<input type="radio" class="filter" name="filter" value="daterange">filter
+										</label>
+										<label> Year
+											<input type="radio" class="filter" name="filter" value="year">
+										</label>
+										<br>
+									</div>
+									<div class="col-sm-6">
+									
+										<div class="row onedate">
+											<div class="col-sm">
+												<br>
+												<br>
+												<input type="date" id="exepensesDate" class="form-control" placeholder="Enter date">
+											</div>
+										</div>
+										<div class="row yearRow">
+											<div class="col-sm">
+												<br>
+												<br>
+												<input type="year" id="expensesYeardate" class="form-control" placeholder="Enter date">
+											</div>
+										</div>
+										<div class="row twodate">
+											<div class="col-sm-6">
+												<br>
+												<label>Date Start:</label>
+												<input type="date" id="expensesDatestart" class="form-control" placeholder="Enter date">
+											</div>
+											<div class="col-sm-6">
+												<br>
+												<label>Date End:</label>
+												<input type="date" id="expensesDateend" class="form-control" placeholder="Enter date">
+											</div>
+											
+										</div>
+										<br>
+									</div>
+									<div class="col-sm-2">
+										<br>
+										<br>
+										<button id="expensesFilter" class="btn btn-md btn-primary">Filter <svg class="bi" width="18" height="18" fill="currentColor"><use xlink:href="./node_modules/bootstrap-icons/bootstrap-icons.svg#search"/></svg></button>
+									</div>
+								</div>
+								<?php $expenses = $model->getAllExpenses(); 
+								$total = 0;
+								?>
+								<table class="table table-hover">
+									<thead>
+										<tr>
+											<th>Name</th>
+											<th>Cost</th>
+											<th>Date Produced</th>
+										</tr>
+									</thead>
+									<tbody id="expensesTbody">
+										<?php foreach($expenses as $idx => $p): ?>
+		            						<tr>
+												<td><?= $p['name']; ?></td>
+												<td><?= $p['cost']; ?></td>
+												<td><?= $p['date_produced']; ?></td>
+											</tr>
+		            					<?php endforeach ?>
+									</tbody>
+									<tfoot>
+									<!-- 	<tr>
+											<td colspan="3">
+												<h2>Sales Total: <?= $total;?></h2>
+											</td>
+										</tr> -->
+									</tfoot>
+								</table>
+							</div>
+						</div>
 			</div>
 		</div>
 	</div>
+
+	<!-- start tpl -->
+	<script type="text/html" id="tpl">
+		<tr>
+			<td>[NAME]</td>
+			<td>[QUANTITY]</td>
+			<td>[DATE_PURCHASED]</td>
+		</tr>
+	</script>
+	<script type="text/html" id="expensesTpl">
+		<tr>
+			<td>[NAME]</td>
+			<td>[COST]</td>
+			<td>[DATE_PRODUCED]</td>
+		</tr>
+	</script>
+	<!-- end tpl -->
 	<script src="./node_modules/highcharts/highcharts.js"></script>
 	<script src="./node_modules/highcharts/modules/exporting.js"></script>
 	<script src="./node_modules/highcharts/modules/export-data.js"></script>
@@ -126,6 +321,116 @@
     					var d = new Date();
     					loadChart(response, d.getFullYear());
     				}
+    			});
+
+				$(".twodate, .yearRow").hide();
+    		
+
+    			$(".filter").on("click", function(){
+    				var me = $(this);
+
+    				if(me.val() == "daterange"){
+    					$(this).parents(".row").find(".onedate").hide();
+    					$(this).parents(".row").find(".twodate").show();
+    					$(this).parents(".row").find(".yearRow").hide();
+    				} else if (me.val() == "day") {
+    					$(this).parents(".row").find(".onedate").show();
+    					$(this).parents(".row").find(".twodate").hide();
+    					$(this).parents(".row").find(".yearRow").hide();
+    				} else {
+    					$(this).parents(".row").find(".onedate").hide();
+    					$(this).parents(".row").find(".twodate").hide();
+    					$(this).parents(".row").find(".yearRow").show();
+    				}
+    			});
+
+    			$("#salesFilter").on("click", function(e){
+    				e.preventDefault();
+
+    				var filter = $(".filter:checked").val();
+    				var date = $("#date").val();
+    				var dateStart = $("#datestart").val();
+    				var dateEnd = $("#dateend").val();
+    				var yeardate = $("#yeardate").val();
+
+    				$("#saleTbody").html("");
+    				$(".preloader").removeClass("hidden");
+    				$("#salestotal").html("");
+    				$.ajax({
+    					url  : "ajax.php",
+    					data : { 
+    						filterSale : true, 
+    						filter : filter, 
+    						date1 : date, 
+    						date2: dateStart, 
+    						date3 : dateEnd , 
+    						year : yeardate
+    					},
+    					type : "post",
+    					dataType : "json",
+    					success : function(response){
+    						var total = 0;
+    						for(var i in response){
+    							var tpl = $("#tpl").html();
+
+    							tpl = tpl.replace("[NAME]", response[i].name).
+    							replace("[QUANTITY]", response[i].qty).
+    							replace("[DATE_PURCHASED]", response[i].date_purchased);
+    							console.log(response[i]);
+    							total += parseInt(response[i].revenue);
+
+    							$("#saleTbody").append(tpl);
+    						}
+
+    						$("#salestotal").html(total);
+    						setTimeout(function(){
+	    						$(".preloader").addClass("hidden");
+    						},200);
+    					}
+    				});	
+    			});
+
+    			$("#expensesFilter").on("click", function(e){
+    				e.preventDefault();
+
+    				var filter = $(this).parents(".row").find(".filter:checked").val();
+    				var date = $("#exepensesDate").val();
+    				var dateStart = $("#expensesDatestart").val();
+    				var dateEnd = $("#expensesDateend").val();
+    				var yeardate = $("#expensesYeardate").val();
+
+    				$("#expensesTbody").html("");
+    				$(".preloader").removeClass("hidden");
+
+    				$.ajax({
+    					url  : "ajax.php",
+    					data : { 
+    						filterExpenses : true, 
+    						filter : filter, 
+    						date1 : date, 
+    						date2: dateStart, 
+    						date3 : dateEnd , 
+    						year : yeardate
+    					},
+    					type : "post",
+    					dataType : "json",
+    					success : function(response){
+    						for(var i in response){
+    							var tpl = $("#expensesTpl").html();
+
+    							tpl = tpl.replace("[NAME]", response[i].name).
+    							replace("[COST]", response[i].cost).
+    							replace("[DATE_PRODUCED]", response[i].date_produced);
+    							console.log(response[i]);
+
+    							$("#expensesTbody").append(tpl);
+    						}
+
+    						setTimeout(function(){
+	    						$(".preloader").addClass("hidden");
+    						},200);
+    					}
+    				});	
     			});
 
     			$("#filter").on("click", function(){

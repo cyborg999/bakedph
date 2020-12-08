@@ -57,6 +57,228 @@ class Model {
 		$this->addPlanListener();
 		$this->deletePlanListener();
 		$this->activatePlanListener();
+		$this->filterSaleListener();
+		$this->filterProductionListener();
+		$this->addExpensesListener();
+		$this->deleteExpensesListener();
+		$this->getAllExpensesListener();
+		$this->seachProductByQuantityListener();
+		$this->searchmaterialByQuantityListener();
+	}
+
+	public function searchmaterialByQuantityListener(){
+		if(isset($_POST['searchmaterialByQuantity'])) {
+
+			$sql = "
+				SELECT *
+				FROM material_inventory 
+				WHERE storeid = '".$_SESSION['storeid']."'
+				AND qty <= ".$_POST['quantity']."
+			";
+
+			$data = $this->db->query($sql)->fetchAll();
+
+			die(json_encode($data));
+		}
+	}
+
+	public function seachProductByQuantityListener(){
+		if(isset($_POST['searchProductByQuantity'])) {
+			$sql = "
+				SELECT *
+				FROM product
+				WHERE qty <= ".$_POST['qty']."
+				AND storeid = '".$_SESSION['storeid']."'
+			";
+
+			$data = $this->db->query($sql)->fetchAll();
+
+			die(json_encode($data));
+		}
+	}
+
+	public function filterExpensesListener(){
+		if(isset($_POST['filterExpenses'])){
+			if($_POST['filter'] == "day"){
+				$sql = "
+					SELECT t1.* 
+					FROM expenses t1
+					WHERE t1.date_produced = '".$_POST['date1']."'
+					AND t1.storeid = ".$_SESSION['storeid']."
+				";
+			} elseif($_POST['filter'] == "daterange"){
+				$sql = "
+					SELECT t1.* 
+					FROM expenses t1
+					WHERE t1.date_produced BETWEEN '".$_POST['date2']."' AND '".$_POST['date3']."'
+					AND t1.storeid = ".$_SESSION['storeid']."
+				";
+			} else {
+				//year
+				$sql = "
+					SELECT t1.* 
+					FROM expenses t1
+					WHERE YEAR(t1.date_produced) = '".$_POST['year']."' 
+					AND t1.storeid = ".$_SESSION['storeid']."
+				";
+			}
+
+			$records = $this->db->query($sql)->fetchAll();
+
+			die(json_encode($records));
+		}
+	}
+
+	public function getAllExpenses(){
+		$sql = "
+			SELECT t1.*
+			FROM expenses t1
+			LEFT JOIN product t2
+			ON t1.productid = t2.id
+			WHERE t2.storeid = ".$_SESSION['storeid']."
+		";
+
+		return $this->db->query($sql)->fetchAll();
+	}
+
+	public function getAllExpensesListener(){
+		if(isset($_POST['getExpensesById'])){
+			$sql = "
+				SELECT *
+				FROM expenses
+				WHERE productid = ".$_POST['id']."
+			";
+
+			$record = $this->db->query($sql)->fetchAll();
+
+			die(json_encode($record));
+		}
+
+	}
+
+	public function deleteExpensesListener(){
+		if(isset($_POST['deleteExpenses'])){
+			$sql = "
+				DELETE 
+				FROM expenses
+				WHERE id = ?
+			";
+
+			$this->db->prepare($sql)->execute(array($_POST['id']));
+
+			die(json_encode(array("deleted")));
+		}
+	}
+
+	public function addExpensesListener(){
+		if(isset($_POST['addExpenses'])){
+			$data = array();
+
+			if($this->findExpensesByProductIdandName($_POST['name'], $_POST['id'])){
+
+				$data['added'] = false;
+			} else {
+				$sql = "
+					INSERT INTO expenses(name,cost,productid,storeid,date_produced)
+					VALUES(?,?,?,?,?)
+				";	
+
+				$this->db->prepare($sql)->execute(array($_POST['name'],  $_POST['cost'], $_POST['id'], $_SESSION['storeid'], $_POST['date']));
+
+				$data['added'] = true;
+				$data['id'] = $this->db->lastInsertId();
+			}
+
+			die(json_encode($data));
+		}
+	}
+
+	public function findExpensesByProductIdandName($name, $id){
+		$sql = "
+			SELECT *
+			FROM expenses
+			WHERE id = ".$id."
+			AND name = '".$name."'
+			LIMIT 1
+		";
+
+		return $this->db->query($sql)->fetch();
+	}
+
+	public function filterProductionListener(){
+		if(isset($_POST['filterProduction'])){
+			if($_POST['filter'] == "day"){
+				$sql = "
+					SELECT t1.* , t2.name
+					FROM production t1
+					LEFT JOIN  product t2 
+					ON t1.productid = t2.id
+					WHERE t1.date_produced = '".$_POST['date1']."'
+					AND t1.storeid = ".$_SESSION['storeid']."
+				";
+			} elseif($_POST['filter'] == "daterange"){
+				$sql = "
+					SELECT t1.* , t2.name
+					FROM production t1
+					LEFT JOIN  product t2 
+					ON t1.productid = t2.id
+					WHERE t1.date_produced BETWEEN '".$_POST['date2']."' AND '".$_POST['date3']."'
+					AND t1.storeid = ".$_SESSION['storeid']."
+				";
+			} else {
+				//year
+				$sql = "
+					SELECT t1.* , t2.name
+					FROM production t1
+					LEFT JOIN  product t2 
+					ON t1.productid = t2.id
+					WHERE YEAR(t1.date_produced) = '".$_POST['year']."' 
+					AND t1.storeid = ".$_SESSION['storeid']."
+				";
+			}
+
+			$records = $this->db->query($sql)->fetchAll();
+
+			die(json_encode($records));
+		}
+	}
+
+	public function filterSaleListener(){
+		if(isset($_POST['filterSale'])){
+			if($_POST['filter'] == "day"){
+				$sql = "
+					SELECT t1.* , t2.name, t2.srp * t1.qty as 'revenue'
+					FROM sales t1
+					LEFT JOIN  product t2 
+					ON t1.productid = t2.id
+					WHERE t1.date_purchased = '".$_POST['date1']."'
+					AND t1.storeid = ".$_SESSION['storeid']."
+				";
+			} elseif($_POST['filter'] == "daterange"){
+				$sql = "
+					SELECT t1.* , t2.name
+					FROM sales t1
+					LEFT JOIN  product t2 
+					ON t1.productid = t2.id
+					WHERE t1.date_purchased BETWEEN '".$_POST['date2']."' AND '".$_POST['date3']."'
+					AND t1.storeid = ".$_SESSION['storeid']."
+				";
+			} else {
+				//year
+				$sql = "
+					SELECT t1.* , t2.name
+					FROM sales t1
+					LEFT JOIN  product t2 
+					ON t1.productid = t2.id
+					WHERE YEAR(t1.date_purchased) = '".$_POST['year']."' 
+					AND t1.storeid = ".$_SESSION['storeid']."
+				";
+			}
+
+			$records = $this->db->query($sql)->fetchAll();
+
+			die(json_encode($records));
+		}
 	}
 
 	public function activatePlanListener(){
@@ -519,14 +741,19 @@ class Model {
 
 	public function addPurchaseListener(){
 		if(isset($_POST['addPurchase'])){
-			$sql = "
-				INSERT INTO purchase(vendorid,materialid,type,date_purchased,qty, storeid)
-				VALUES(?,?,?,?,?,?)
-			";
+			foreach($_POST['data'] as $idx => $d){
+				$sql = "
+					INSERT INTO purchase(vendorid,materialid,type,qty,date_purchased,storeid)
+					VALUES(?,?,?,?,?,?)
+				";
 
-			$this->db->prepare($sql)->execute(array($_POST['vendorid'],$_POST['materialid'],$_POST['type'],$_POST['date_purchased'],$_POST['qty'], $_SESSION['storeid']));
+				$this->db->prepare($sql)->execute(array($d[0],$d[1],$d[2],$d[3],$d[4], $_SESSION['storeid']));
+				
+				$this->updateMaterialInventory($d[1], $d[3], true);
+			}
 			
-			$this->updateMaterialInventory($_POST['materialid'], $_POST['qty'], true);
+			die(json_encode(array("added")));
+			
 
 			return $this;
 		}
@@ -534,12 +761,19 @@ class Model {
 
 	public function addSaleListener(){
 		if(isset($_POST['addSale'])){
-			$sql = "
-				INSERT INTO sales(storeid,productid,qty,date_purchased)
-				VALUES(?,?,?,?)
-			";
+			foreach($_POST['data'] as $idx => $d){
+				$sql = "
+					INSERT INTO sales(storeid,productid,qty,date_purchased)
+					VALUES(?,?,?,?)
+				";
 
-			$this->db->prepare($sql)->execute(array($_SESSION['storeid'], $_POST['productid'], $_POST['qty'], $_POST['date_purchased']));
+				$this->db->prepare($sql)->execute(array($_SESSION['storeid'], $d[0], $d[1], $d[2]));
+			}
+			
+			die(json_encode(array("added")));
+			return $this;
+
+			
 
 			return $this;
 		}
@@ -613,7 +847,7 @@ class Model {
 
 	public function getAllSales(){
 		$sql = "
-			SELECT t1.*, t2.name 
+			SELECT t1.*, t2.name ,t2.srp * t1.qty as 'revenue'
 			FROM sales t1
 			LEFT JOIN product t2
 			ON t1.productid = t2.id
@@ -659,13 +893,16 @@ class Model {
 
 	public function addProductionListener(){
 		if(isset($_POST['addProduction'])){
-			$sql = "
-				INSERT INTO production(productid,batchnumber,quantity,date_produced,storeid)
-				VALUES(?,?,?,?,?)
-			";
+			foreach($_POST['data'] as $idx => $d){
+				$sql = "
+					INSERT INTO production(productid,batchnumber,quantity,date_produced,storeid)
+					VALUES(?,?,?,?,?)
+				";
 
-			$this->db->prepare($sql)->execute(array($_POST['productid'], $_POST['batchnumber'],$_POST['qty'],$_POST['date_produced'],$_SESSION['storeid']));
-
+				$this->db->prepare($sql)->execute(array($d[0],$d[2],$d[1],$d[3],$_SESSION['storeid']));
+			}
+			
+			die(json_encode(array("added")));
 			return $this;
 		}
 	}
