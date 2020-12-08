@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Dec 03, 2020 at 07:56 AM
+-- Generation Time: Dec 08, 2020 at 09:28 AM
 -- Server version: 10.4.13-MariaDB
 -- PHP Version: 7.4.8
 
@@ -24,6 +24,30 @@ SET time_zone = "+00:00";
 -- --------------------------------------------------------
 
 --
+-- Table structure for table `expenses`
+--
+
+CREATE TABLE `expenses` (
+  `id` int(11) NOT NULL,
+  `name` varchar(255) NOT NULL,
+  `cost` varchar(255) NOT NULL,
+  `productid` int(11) NOT NULL,
+  `date_added` timestamp NOT NULL DEFAULT current_timestamp(),
+  `storeid` int(11) NOT NULL,
+  `date_produced` date DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+--
+-- Dumping data for table `expenses`
+--
+
+INSERT INTO `expenses` (`id`, `name`, `cost`, `productid`, `date_added`, `storeid`, `date_produced`) VALUES
+(9, 'ASD', '1', 11, '2020-12-08 06:49:42', 21, '0111-11-11'),
+(10, 'ASD2', '1', 11, '2020-12-08 06:49:47', 21, '0234-11-11');
+
+-- --------------------------------------------------------
+
+--
 -- Table structure for table `material`
 --
 
@@ -34,6 +58,13 @@ CREATE TABLE `material` (
   `productid` int(11) NOT NULL,
   `date_created` timestamp NOT NULL DEFAULT current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+--
+-- Dumping data for table `material`
+--
+
+INSERT INTO `material` (`id`, `materialid`, `qty`, `productid`, `date_created`) VALUES
+(66, 10, 1, 12, '2020-12-08 04:24:22');
 
 -- --------------------------------------------------------
 
@@ -56,7 +87,7 @@ CREATE TABLE `material_inventory` (
 --
 
 INSERT INTO `material_inventory` (`id`, `storeid`, `name`, `qty`, `price`, `expiry_date`, `date_created`) VALUES
-(8, 21, 'material1', 191, 2, '0011-02-11', '2020-11-02 02:54:05');
+(10, 21, 'mat', 110, 1, '0011-11-11', '2020-12-07 09:53:00');
 
 -- --------------------------------------------------------
 
@@ -129,19 +160,14 @@ CREATE TABLE `production` (
 --
 
 INSERT INTO `production` (`id`, `productid`, `batchnumber`, `quantity`, `date_produced`, `storeid`, `date_created`) VALUES
-(6, 11, '23', 24, '2020-01-01', 21, '2020-11-06 11:14:26'),
-(7, 11, '23', 23, '2020-01-22', 21, '2020-11-06 11:25:54'),
-(8, 11, '23', 23, '2020-02-21', 21, '2020-11-06 11:27:24'),
-(9, 12, '23', 23, '2020-02-21', 21, '2020-11-06 11:27:40'),
-(10, 11, '23', 23, '2020-01-21', 21, '2020-11-06 11:27:47'),
-(11, 12, '23', 23, '2020-01-21', 21, '2020-11-06 11:28:12'),
-(12, 11, '23', 23, '2021-01-21', 21, '2020-11-06 13:09:40'),
-(13, 12, '23', 23, '2021-01-21', 21, '2020-11-06 13:09:56'),
-(14, 11, '23', 100, '2020-11-11', 21, '2020-11-06 15:15:46'),
-(15, 11, '23', 120, '2020-12-11', 21, '2020-11-06 15:23:35'),
-(16, 12, '23', 120, '2020-12-11', 21, '2020-11-06 15:23:38'),
-(17, 12, '23', 120, '2020-11-11', 21, '2020-11-06 15:23:46'),
-(18, 11, '23', 420, '2020-11-11', 21, '2020-11-06 15:23:57');
+(19, 11, '1', 1, '0111-11-11', 21, '2020-12-06 12:51:55'),
+(20, 11, '1', 1, '0111-11-11', 21, '2020-12-06 12:51:55'),
+(21, 11, 'batch Number', 999, '0111-11-11', 21, '2020-12-06 12:52:20'),
+(22, 11, 'batch 2', 999, '0111-11-11', 21, '2020-12-06 12:52:20'),
+(23, 11, '1', 11, '0011-11-11', 21, '2020-12-06 12:56:25'),
+(24, 11, '1', 11, '0011-11-11', 21, '2020-12-06 12:57:22'),
+(25, 11, '1', 11, '0011-11-11', 21, '2020-12-06 12:57:22'),
+(26, 11, '1', 11, '0111-11-11', 21, '2020-12-06 12:58:18');
 
 -- --------------------------------------------------------
 
@@ -165,7 +191,10 @@ CREATE TABLE `purchase` (
 --
 
 INSERT INTO `purchase` (`id`, `vendorid`, `materialid`, `date_purchased`, `type`, `qty`, `date_created`, `storeid`) VALUES
-(16, 1, 8, '2020-01-21', 'cash', 1, '2020-11-06 11:12:08', 21);
+(19, 1, 0, '0111-11-11', 'cash', 12, '2020-12-07 09:35:24', 21),
+(20, 1, 0, '0111-11-11', 'cash', 12, '2020-12-07 09:35:25', 21),
+(21, 1, 10, '0111-11-11', 'cash', 1, '2020-12-07 09:53:21', 21),
+(22, 1, 10, '0111-11-11', 'cash', 1, '2020-12-07 09:53:21', 21);
 
 -- --------------------------------------------------------
 
@@ -188,12 +217,11 @@ CREATE TABLE `sales` (
 --
 
 INSERT INTO `sales` (`id`, `storeid`, `productid`, `qty`, `date_purchased`, `other_details`, `date_created`) VALUES
-(4, 21, 11, 22, '2020-02-21', '', '2020-11-06 14:34:32'),
-(5, 21, 11, 22, '2020-01-21', '', '2020-11-06 14:34:36'),
-(6, 21, 12, 224, '2020-01-21', '', '2020-11-06 14:34:41'),
-(7, 21, 12, 2, '2020-02-21', '', '2020-11-06 14:34:49'),
-(8, 21, 11, 23, '2020-12-01', '', '2020-11-06 16:03:01'),
-(9, 21, 11, 534, '2020-11-01', '', '2020-11-06 16:03:26');
+(10, 21, 11, 1, '1111-11-11', '', '2020-12-06 13:16:46'),
+(11, 21, 11, 2, '1111-10-10', '', '2020-12-06 13:16:46'),
+(12, 21, 12, 2, '1111-11-11', '', '2020-12-06 13:16:46'),
+(13, 21, 11, 1, '0001-11-11', '', '2020-12-06 13:17:24'),
+(14, 21, 11, 1, '0001-11-11', '', '2020-12-06 13:17:24');
 
 -- --------------------------------------------------------
 
@@ -322,8 +350,8 @@ CREATE TABLE `user` (
 
 INSERT INTO `user` (`id`, `username`, `password`, `usertype`, `verified`, `date_created`) VALUES
 (36, 'admin', 'eed57216df3731106517ccaf5da2122d', 'admin', 0, '2020-10-12 15:56:55'),
-(37, 'cyborg999', '5c07f19fdd6ce3b1a588f71d11ee2b23', 'basic', 0, '2020-10-17 04:48:06'),
-(38, 'user2', '5c07f19fdd6ce3b1a588f71d11ee2b23', 'basic', 1, '2020-11-29 14:50:17');
+(37, 'cyborg999', '5c07f19fdd6ce3b1a588f71d11ee2b23', 'basic', 1, '2020-10-17 04:48:06'),
+(38, 'user2', '5c07f19fdd6ce3b1a588f71d11ee2b23', 'basic', 0, '2020-11-29 14:50:17');
 
 -- --------------------------------------------------------
 
@@ -377,6 +405,12 @@ INSERT INTO `vendor` (`id`, `name`, `address`, `contact`, `date_created`, `store
 --
 -- Indexes for dumped tables
 --
+
+--
+-- Indexes for table `expenses`
+--
+ALTER TABLE `expenses`
+  ADD PRIMARY KEY (`id`);
 
 --
 -- Indexes for table `material`
@@ -467,16 +501,22 @@ ALTER TABLE `vendor`
 --
 
 --
+-- AUTO_INCREMENT for table `expenses`
+--
+ALTER TABLE `expenses`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
+
+--
 -- AUTO_INCREMENT for table `material`
 --
 ALTER TABLE `material`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=63;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=67;
 
 --
 -- AUTO_INCREMENT for table `material_inventory`
 --
 ALTER TABLE `material_inventory`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
 
 --
 -- AUTO_INCREMENT for table `payments`
@@ -494,19 +534,19 @@ ALTER TABLE `product`
 -- AUTO_INCREMENT for table `production`
 --
 ALTER TABLE `production`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=19;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=27;
 
 --
 -- AUTO_INCREMENT for table `purchase`
 --
 ALTER TABLE `purchase`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=17;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=23;
 
 --
 -- AUTO_INCREMENT for table `sales`
 --
 ALTER TABLE `sales`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=15;
 
 --
 -- AUTO_INCREMENT for table `settings`
