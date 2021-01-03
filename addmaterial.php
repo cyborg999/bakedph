@@ -26,7 +26,7 @@
 								</label>
 							</div>
 							<div class="form-group">
-								<label>Price:
+								<label>Price<small>/qty</small>:
 									<input type="text" class="form-control" value="<?= isset($_POST['price']) ? $_POST['price'] : '';?>" required name="price" placeholder="Price..."/>
 								</label>
 							</div>

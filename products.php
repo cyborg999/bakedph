@@ -150,7 +150,7 @@
                     </tr>
                   </tfoot> 
                 </table>
-                <h4 >Total Material Cost : P<span id="total">0.00</span></h4>
+                <h4 >Total Material Cost/<small>product quantity</small> : P<span id="total">0.00</span></h4>
               </div>
               <div class="tab-pane fade " id="expenses" role="tabpanel" aria-labelledby="home-tab">
                   <table class="table table-hover table-sm" id="expensesTbl">

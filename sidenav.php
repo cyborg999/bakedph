@@ -23,9 +23,9 @@
 				        <?php if(!$_SESSION['verified']): ?>
 					        <?php if(!$pending): ?>
 					        <a href="activate.php">verify account</a>
-					        <?php else: ?>
-					        <i>valid till <?= $expiration;?></i>
 					        <?php endif ?>
+					    <?php else: ?>
+					        <i>valid till <?= $expiration;?></i>
 				        <?php endif ?>
 				        </small>
 				      </div>
@@ -86,7 +86,7 @@
 				      <div class="card-body">
 				      	<ul class="list-group list-group-flush">
 						  <li class="list-group-item">
-						  	<a href="materials.php" class="black">All Materials <span class="badge badge-primary badge-pill"><?= $model->getMaterialCount(); ?></span></a>
+						  	<a href="materials.php" class="black">Material Inventory <span class="badge badge-primary badge-pill"><?= $model->getMaterialCount(); ?></span></a>
 						  </li>
 						  <li class="list-group-item">
 						  	<a href="addmaterial.php" class="black">Add Material</a>
@@ -111,7 +111,7 @@
 				      <div class="card-body">
 				      	<ul class="list-group list-group-flush">
 						  <li class="list-group-item">
-						  	<a href="products.php" class="black">All Products <span class="badge badge-primary badge-pill"><?= $model->getProductCount(); ?></span></a>
+						  	<a href="products.php" class="black">Product Inventory <span class="badge badge-primary badge-pill"><?= $model->getProductCount(); ?></span></a>
 						  </li>
 						  <li class="list-group-item">
 						  	<a href="addproduct.php" class="black">Add New</a>

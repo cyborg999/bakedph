@@ -15,7 +15,6 @@
 				  	<?php
 			          $products = $model->getAllProducts();
 			          $production = $model->getAllProduction();
-
 			        ?>
 			        <div class="row">
 			        	<div class="col-sm message">

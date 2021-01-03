@@ -45,6 +45,7 @@
 								<div class="form-group col-sm-3">
 									<br>
 									<button id="filter" class="btn btn-md btn-primary">Filter <svg class="bi" width="18" height="18" fill="currentColor"><use xlink:href="./node_modules/bootstrap-icons/bootstrap-icons.svg#search"/></svg></button>
+									<a href="" class="btn btn-info clear">Clear</a>
 								</div>
 							  </div>
 
@@ -75,7 +76,7 @@
 										</label>
 										<br>
 									</div>
-									<div class="col-sm-6">
+									<div class="col-sm-5">
 									
 										<div class="row " id="onedate">
 											<div class="col-sm">
@@ -106,10 +107,11 @@
 										</div>
 										<br>
 									</div>
-									<div class="col-sm-2">
+									<div class="col-sm-3">
 										<br>
 										<br>
 										<button id="salesFilter" class="btn btn-md btn-primary">Filter <svg class="bi" width="18" height="18" fill="currentColor"><use xlink:href="./node_modules/bootstrap-icons/bootstrap-icons.svg#search"/></svg></button>
+										<a href="" class="btn btn-info clear">Clear</a>
 									</div>
 								</div>
 						  	<?php $production = $model->getAllProduction(); ?>
@@ -226,6 +228,14 @@
     					var d = new Date();
     					loadChart(response, d.getFullYear());
     				}
+    			});
+
+    			$(".clear").on("click", function(e){
+    				e.preventDefault();
+
+    				$("#year").val("");
+    				$("#date").val("");
+    				$("#products").val('').trigger("chosen:updated");
     			});
 
     			$("#twodate").hide();

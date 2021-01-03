@@ -10,7 +10,6 @@ class Model {
 		require_once "config.php";
 
 		$this->db = $db;
-
 		$this->signUpListener();
 		$this->loginListener();
 		$this->addStoreListener();
@@ -768,6 +767,8 @@ class Model {
 				";
 
 				$this->db->prepare($sql)->execute(array($_SESSION['storeid'], $d[0], $d[1], $d[2]));
+
+				$this->updateProductInventory($d[0], $d[1]);
 			}
 			
 			die(json_encode(array("added")));
@@ -900,11 +901,44 @@ class Model {
 				";
 
 				$this->db->prepare($sql)->execute(array($d[0],$d[2],$d[1],$d[3],$_SESSION['storeid']));
+
+				$this->updateProductInventory($d[0], $d[1], true);
+
+				// update material qty
+				$materials = $this->getMaterialById($d[0]);
+
+				foreach($materials as $midx => $m){
+					$this->updateMaterialInventory($m['materialid'], ($m['qty']*$d[1]));
+				}
 			}
 			
 			die(json_encode(array("added")));
 			return $this;
 		}
+	}
+
+
+	public function updateProductInventory($id,$qty, $add = false){
+		if($add){
+			//delete material of product
+			//purchase order
+			$sql = "
+				UPDATE product
+				SET qty = qty + ?
+				WHERE id = ?
+			";
+		} else {
+			// add material to product
+			$sql = "
+				UPDATE product
+				SET qty = qty - ?
+				WHERE id = ?
+			";
+		}
+
+		$this->db->prepare($sql)->execute(array($qty, $id));
+
+		return $this;
 	}
 
 	public function addVendorListener(){
