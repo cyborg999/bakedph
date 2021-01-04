@@ -10,6 +10,7 @@
 			<div class="col-sm-9">
 				<div class="jumbotron">
 					<div class="row">
+						
 						<div class="col-sm">
 							<figure class="highcharts-figure">
 							    <div id="container"></div>

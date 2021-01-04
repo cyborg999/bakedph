@@ -482,12 +482,14 @@ class Model {
 
 	public function addPlanListener(){
 		if(isset($_POST['addPlan'])){
+			$isTrial = (isset($_POST['isTrial'])) ? 1 : 0;
+
 			$sql = "
-				INSERT INTO subscription(duration,cost,title,caption)
-				VALUES(?,?,?,?)
+				INSERT INTO subscription(duration,cost,title,caption, is_trial)
+				VALUES(?,?,?,?,?)
 			";
 
-			$this->db->prepare($sql)->execute(array($_POST['planduration'],$_POST['planfee'],$_POST['title'],$_POST['plancaption'],));
+			$this->db->prepare($sql)->execute(array($_POST['planduration'],$_POST['planfee'],$_POST['title'],$_POST['plancaption'],$isTrial));
 
 			header("Location:plan.php");
 		}
@@ -763,7 +765,7 @@ class Model {
 			$output = fopen('php://output', 'w');
 
 			// output the column headings
-			fputcsv($output, array('Purchase Type', 'Material', 'Vendor', "Date Purchased", "Quantity"));
+			fputcsv($output, array('Purchase Type', 'Material', 'Supplier', "Date Purchased", "Quantity"));
 
 			$records = $this->db->query($_SESSION['lastQuery'])->fetchAll();
 			
@@ -897,12 +899,11 @@ class Model {
 		if(isset($_POST['addPurchase'])){
 			foreach($_POST['data'] as $idx => $d){
 				$sql = "
-					INSERT INTO purchase(vendorid,materialid,type,qty,date_purchased,storeid)
-					VALUES(?,?,?,?,?,?)
+					INSERT INTO purchase(vendorid,materialid,type,qty,date_purchased,storeid,credit_date,expiry_date)
+					VALUES(?,?,?,?,?,?,?,?)
 				";
 
-				$this->db->prepare($sql)->execute(array($d[0],$d[1],$d[2],$d[3],$d[4], $_SESSION['storeid']));
-				
+				$this->db->prepare($sql)->execute(array($d[0],$d[1],$d[2],$d[3],$d[4], $_SESSION['storeid'], $d[5], $d[6]));
 				$this->updateMaterialInventory($d[1], $d[3], true);
 			}
 			
@@ -1816,6 +1817,10 @@ class Model {
 
 			} else {
 				$_SESSION['setup']['store'] = $_POST['name'];
+				$_SESSION['setup']['b_address'] = $_POST['adddress'];
+				$_SESSION['setup']['dti'] = $_POST['dti'];
+				$_SESSION['setup']['b_email'] = $_POST['email'];
+				$_SESSION['setup']['b_contact'] = $_POST['contact'];
 
 				$data = array("added" => true);
 			}
@@ -1826,11 +1831,11 @@ class Model {
 
 	public function addStore(){
 		$sql = "
-			INSERT INTO store(name,userid)
-			VALUES(?,?)
+			INSERT INTO store(name,userid,b_address,dti,b_email,b_contact)
+			VALUES(?,?,?,?,?,?)
 		";
 
-		$this->db->prepare($sql)->execute(array($_SESSION['setup']['store'], $_SESSION['lastinsertedid']));
+		$this->db->prepare($sql)->execute(array($_SESSION['setup']['store'], $_SESSION['lastinsertedid'],$_SESSION['setup']['b_address'],$_SESSION['setup']['dti'],$_SESSION['setup']['b_email'],$_SESSION['setup']['b_contact']));
 
 		$_SESSION['laststoreid'] = $this->db->lastInsertId();
 
@@ -1840,10 +1845,12 @@ class Model {
 	public function loginListener(){
 		if(isset($_POST['login'])){
 			$sql = "
-				SELECT t1.*, t2.id as 'storeId'
+				SELECT t1.*, t2.id as 'storeId', t3.is_trial, t3.duration
 				FROM user t1
 				LEFT JOIN store t2
 				ON t1.id = t2.userid
+				left join subscription t3
+				on t2.subscriptionid = t3.id
 				WHERE username = '".$_POST['username']."'
 				AND password = '".md5($_POST['password'])."'
 
@@ -1860,7 +1867,21 @@ class Model {
 				$_SESSION['username'] = $exists['username'];
 				$_SESSION['storeid'] = $exists['storeId'];
 				$_SESSION['usertype'] = $exists['usertype'];
-				$_SESSION['verified'] = $exists['verified'];
+
+				//check if trial
+				if($exists['is_trial']){
+					//check if expired
+					$effectiveDate = date('Y-m-d', strtotime("+".$exists['duration']." months", strtotime($exists['date_created'])));
+					$current = date('Y-m-d');
+
+					if(strtotime($current) <= (strtotime($effectiveDate))){
+						$_SESSION['verified'] = 1;
+						$_SESSION['isTrial'] = 1;
+						$_SESSION['trialEnd'] = $effectiveDate;
+					}
+				} else {
+					$_SESSION['verified'] = $exists['verified'];
+				}
 
 				if($exists['usertype'] == "admin"){
 					header("Location:admindashboard.php");

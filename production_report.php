@@ -34,7 +34,7 @@
 			        		<tr>
 			        			<th>Purchase Type</th>
 			        			<th>Material</th>
-			        			<th>Vendor</th>
+			        			<th>Supplier</th>
 			        			<th>Date Purchased</th>
 			        			<th>Quantity</th>
 			        		</tr>

@@ -16,7 +16,7 @@
         <table class="table">
           <thead>
             <tr>
-              <th scope="col">Vendor Name</th>
+              <th scope="col">Supplier Name</th>
               <th scope="col">Contact #</th>
               <th scope="col">Address</th>
               <th scope="col">Action</th>
@@ -54,7 +54,7 @@
   <div class="modal-dialog modal-md">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title" id="exampleModalLabel">Edit Vendor</h5>
+        <h5 class="modal-title" id="exampleModalLabel">Edit Supplier</h5>
         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
           <span aria-hidden="true">&times;</span>
         </button>
@@ -65,11 +65,11 @@
         </div>
         <div class="row">
           <div class="col-sm-12">
-            <h5>Vendor Information</h5>
+            <h5>Supplier Information</h5>
             <form method="post" id="editform">
               <input type="hidden" name="editvendor" id="editid" value="">
               <div class="form-group">
-                <label>Vendor Name:
+                <label>Supplier Name:
                   <input type="text" id="editname" required class="form-control" name="name" value="" placeholder="Vendor Name..."/>
                 </label>
               </div>

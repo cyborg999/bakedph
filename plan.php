@@ -24,6 +24,9 @@
 					.delete {
 						float: right;
 					}
+					.hidden {
+						display: none;
+					}
 				</style>
 				<?php  include_once "./error.php"; ?>
 				<a href="" class="add" data-toggle="modal" data-target="#addPlan"><svg class="bi" width="50" height="50" fill="currentColor"><use xlink:href="./node_modules/bootstrap-icons/bootstrap-icons.svg#plus"/></svg></a>
@@ -81,6 +84,10 @@
             		<input type="text" class="form-control" required name="plancaption">
             	</div>
             	<div class="form-group">
+            		<label>Trial?</label>
+            		<input type="checkbox" class="form-checkbox" id="isTrial" name="isTrial">
+            	</div>
+            	<div class="form-group" id="fee">
             		<label>Fee</label>
             		<input type="text" class="form-control" required name="planfee">
             	</div>
@@ -103,6 +110,20 @@
 	<script type="text/javascript">
 		(function($){
 			$(document).ready(function(){
+				$("#isTrial").on("click", function(){
+					var me = $(this);
+					var checked = me.is(":checked");
+
+					console.log(checked);
+					if(checked){
+						$("#fee").addClass("hidden");
+						$("#fee input").val(0);
+					} else {
+						$("#fee").removeClass("hidden");
+						$("#fee input").val("");
+					}
+				});
+
 			     $(".card").on("click", function(){
 					var me = $(this);
 
@@ -112,7 +133,10 @@
 
 			    	$.ajax({
 			    		url : "ajax.php",
-			    		data : { activatePlan : true, id : me.data("id"), toggle : (me.hasClass("border-success") ? 1 : 0)},
+			    		data : { 
+			    			activatePlan : true, 
+			    			id : me.data("id"), 
+			    			toggle : (me.hasClass("border-success") ? 1 : 0)},
 			    		type : "post",
 			    		dataType : "json",
 			    		success : function(){

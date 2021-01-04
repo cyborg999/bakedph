@@ -25,39 +25,10 @@ remove input ng qty
 
 
 round 3
-* purchase return if damage
-* notify if subscription is almost over
-* list all expired items, deduct din
-sales
-	* add export file sa sales record
-	* add din sa expenses
-production/product/material inventory
-	* add export file
-reports
-	* add column amount sa tbl
-
 
 
 
 REMOVE ADDED JS files
-
-
-
-
-
-
-
-	
-sales tab
-(naka normalize sa database, kung alin yung expenses at material ng chosen product, un ang magagamit)
-* production
-	- add raw material used (material name, qty) add button, submit button
-	(ito yung ibabawas dun sa current stocks sa materials inventory)
-
-
-	sales
-	- add expenses (expenses details, amount) add btn, submit button
-
 
 
 
@@ -72,3 +43,65 @@ Cyborg99912@
 
 VISA TESTING
 https://stripe.com/docs/testing
+
+done]
+* default all date field value to current date
+* added credit date sa sales>purchase order
+* changed 'vendor' to 'supplier'
+* removed qty and expiry date on addproduct/addmaterial page (editable padin yung sa edit page)
+* added business profile on step 2 signup
+* removed birthday
+* added trial subscription, update signup,sidenav,adminpage
+* sales > purchase , added expiry date
+
+
+sales purchase add expiration, remove sa material page
+material unit/product unit/sales
+batch number auto generated
+
+
+
+
+
+
+
+
+
+
+
+notification list]
+add fb notif
+* addpurchase, credit date notify pag malapit na credit date
+* end of subscription
+
+
+if wala na material/product, bawal magproduce
+admin terms and condition
+signup add checkbox for terms and condition
+report purchase order
+sales return/purchase return
+notify expired product/material
+admin backupdata
+
+
+
+todo
+add edit business profile
+
+
+sales purchase order, price vary
+sale reserve/priority
+redesign
+date purchase default current date lahat
+clearfilter amount datepurchase
+* purchase return if damage
+* notify if subscription is almost over
+* list all expired items, deduct din
+sales
+	* add export file sa sales record
+	* add din sa expenses
+production/product/material inventory
+	* add export file
+reports
+	* add column amount sa tbl
+

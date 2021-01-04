@@ -23,12 +23,12 @@
 							<input type="text" required class="form-control" name="price" placeholder="Price..."/>
 						</label>
 					</div>
-					<div class="form-group">
+					<div class="form-group hidden">
 						<label>Quantity:
-							<input type="number" required class="form-control" name="qty" placeholder="Quantity..."/>
+							<input type="number" required class="form-control" name="qty" placeholder="Quantity..." value="0" />
 						</label>
 					</div>
-					<div class="form-group">
+					<div class="form-group hidden">
 						<label>Expiry Date:
 							<input type="date" required class="form-control" name="expiry" placeholder="Expiry Date..."/>
 						</label>

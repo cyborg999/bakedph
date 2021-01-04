@@ -1,6 +1,7 @@
 <?php include_once "./headchosen.php"; ?>
 <?php $model->checkAccess(); ?>
 <body>
+	<?php include_once "./spinner.php"; ?>
 	<div class="container-sm">
 		<?php include_once "./dashboardnav.php"; ?>
 		<div class="row">
@@ -29,7 +30,7 @@
 							<form method="post" class="form">
 								<input type="hidden" name="addPurchase" value="true">
 								<div class="form-group">
-									<label>Vendor Name:</label>
+									<label>Supplier Name:</label>
 									<select id="slcProduct"  name="vendorid" class="form-control">
 		            					<?php foreach($vendors as $idx => $v): ?>
 
@@ -53,6 +54,10 @@
 										<option value="credit">Credit</option>
 									</select>
 								</div>
+								<div class="form-group cDate hidden">
+									<label for="type">Credit Date</label>
+									<input type="date" class="form-control" id="creditDate" placeholder="Credit Date..." name="">
+								</div>
 								<div class="form-group">
 									<label>Quantity:</label>
 									<input type="number" class="form-control" value="" required  id="quantity" name="qty" placeholder="Quantity..."/>
@@ -60,6 +65,10 @@
 								<div class="form-group">
 									<label>Date of purchase:</label>
 									<input type="date" required class="form-control" value="" id="date_purchased" name="date_purchased" placeholder="Date..."/>
+								</div>
+								<div class="form-group">
+									<label>Expiry Date:</label>
+									<input type="date" required class="form-control" value="" id="expiry_date" name="expiry_date" placeholder="Date..."/>
 								</div>
 								<input type="submit" value="Add" class="btn btn-lg btn-primary">
 							</form>
@@ -69,7 +78,7 @@
 							<table class="table">
 								<thead>
 									<tr>
-										<th>Vendor</th>
+										<th>Supplier</th>
 										<th>Material</th>
 										<th>Type</th>
 										<th>Quantity</th>
@@ -82,7 +91,7 @@
 								</tbody>
 								<tfoot>
 									<tr>
-										<td colspan="4">
+										<td colspan="6">
 											<a href="" class="btn btn-success submit">Submit</a>
 										</td>
 									</tr>
@@ -114,9 +123,9 @@
 		<tr>
 			<td class="vendorname" data-id="[VENDORID]">[VENDORNAME]</td>
 			<td class="materialname" data-id="[MATERIALID]">[MATERIALNAME]</td>
-			<td class="type" data-id="[TYPEID]">[TYPE]</td>
+			<td class="type" data-credit=[CREDIT_DATE] data-id="[TYPEID]">[TYPE]</td>
 			<td  class="quantity">[QUANTITY]</td>
-			<td class="date_purchased">[DATE_PURCHASED]</td>
+			<td data-expiry_date=[EXPIRY_DATE] class="date_purchased">[DATE_PURCHASED]</td>
 			<td>
 				<a href="" class="delete btn btn-danger" ><svg class="bi" width="18" height="18" fill="currentColor"><use xlink:href="./node_modules/bootstrap-icons/bootstrap-icons.svg#trash"/></svg></a>
 			</td>
@@ -151,6 +160,17 @@
     			$("#slctMaterial").chosen();
     			$("#type").chosen();
 
+    			$("#type").on("change", function(){
+    				var val = $(this).val();
+
+    				console.log(val);
+    				if(val == "credit"){
+    					$(".cDate").removeClass("hidden");
+    				} else {
+    					$(".cDate").addClass("hidden");
+    				}
+    			});
+
     			function __listen(){
     				$(".delete").off().on("click", function(e){
     					e.preventDefault();
@@ -176,17 +196,17 @@
     					var materialName = tr.find(".materialname").data("id");
     					var type = tr.find(".type").data("id");
     					var quantity = tr.find(".quantity").html();
+    					var expiryDate = tr.find(".date_purchased").data("expiry_date");
     					var dateProduced = tr.find(".date_purchased").html();
-
-
-    					var production = Array(vendorName,materialName,type,quantity,dateProduced);
+    					var creditDate = tr.find(".type").data("credit");
+    					var production = Array(vendorName,materialName,type,quantity,dateProduced, creditDate, expiryDate);
 
     					data.push(production);
 
     				});
 
     				$(".message").html("");
-    				
+    				console.log(data);
     				if(tr.length){
     					$.ajax({
 							url : "ajax.php"
@@ -211,9 +231,11 @@
     				var materialName = $("#slctMaterial :selected").html();
     				var typeId = $("#type").val();
     				var typeName = $("#type :selected").html();
+    				var creditDate = $("#creditDate").val();
 
     				var quantity = $("#quantity").val();
     				var dateProduced = $("#date_purchased").val();
+    				var expiryDate = $("#expiry_date").val();
 
     				var errCount = 0;
 
@@ -237,7 +259,7 @@
     				if(vendorId == null){
     					var tpl = $("#error").html();
 
-    					tpl = tpl.replace("[ERROR]", "Please add vendor first");
+    					tpl = tpl.replace("[ERROR]", "Please add Supplier first");
 
 						$(".message").append(tpl);
 
@@ -251,8 +273,10 @@
 							replace("[TYPEID]", typeId).
 							replace("[VENDORNAME]", vendorName).
 							replace("[VENDORID]", vendorId).
+							replace("[CREDIT_DATE]", creditDate).
 							replace("[TYPE]", typeName).
 							replace("[QUANTITY]", quantity).
+							replace("[EXPIRY_DATE]", expiryDate).
 							replace("[DATE_PURCHASED]", dateProduced);
 
 						$("tbody").append(tpl);

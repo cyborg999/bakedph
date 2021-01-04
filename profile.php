@@ -64,8 +64,8 @@
 					    <label for="inputAddress">Address</label>
 					    <input type="text" class="form-control" id="inputAddress" value="<?= isset($profile['address']) ? $profile['address'] : '';?>" name="address" placeholder="1234 Main St">
 					  </div>
-					  <div class="form-row">
-					    <div class="form-group col-md-4">
+					  <div class="form-row ">
+					    <div class="form-group col-md-4 hidden">
 					      <label for="inputCity">Birthday</label>
 					      <input type="date" value="<?= isset($profile['bday']) ? $profile['bday'] : '';?>" name="birthday" class="form-control" id="inputCity">
 					    </div>

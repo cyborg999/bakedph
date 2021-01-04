@@ -9,12 +9,14 @@
 
   <script type="text/javascript">
  	function hidePreloader(){
- 		setTimeout(function(){
-			$(".preloader").addClass("hidden");
-			}, 200);
-	 	}
+		setTimeout(function(){
+		$(".preloader").addClass("hidden");
+		}, 200);
+ 	}
 
-	 	function showPreloader(){
-			$(".preloader").removeClass("hidden");
-	 	}
+ 	function showPreloader(){
+		$(".preloader").removeClass("hidden");
+ 	}
+
+
  </script>

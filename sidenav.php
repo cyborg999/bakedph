@@ -20,12 +20,16 @@
 				        $pending = $model->checkIfPayed();
 						$expiration = $model->getSubscriptionExpiration();
 				        ?>
-				        <?php if(!$_SESSION['verified']): ?>
-					        <?php if(!$pending): ?>
-					        <a href="activate.php">verify account</a>
-					        <?php endif ?>
+				        <?php if(isset($_SESSION['trialEnd'])): ?>
+					        <i>valid till <?= $_SESSION['trialEnd'];?></i>
 					    <?php else: ?>
-					        <i>valid till <?= $expiration;?></i>
+					    	<?php if(!$_SESSION['verified']): ?>
+						        <?php if(!$pending): ?>
+						        <a href="activate.php">verify account</a>
+						        <?php endif ?>
+						    <?php else: ?>
+						        <i>valid till <?= $expiration;?></i>
+					        <?php endif ?>
 				        <?php endif ?>
 				        </small>
 				      </div>
@@ -53,7 +57,7 @@
 				    <div class="card-header" id="headingOne">
 				      <h2 class="mb-0">
 				        <button class="btn btn-link btn-block text-left" type="button" data-toggle="collapse" data-target="#collapseVendor" aria-expanded="true" aria-controls="collapseVendor">
-				          <svg class="bi" width="18" height="18" fill="currentColor"><use xlink:href="./node_modules/bootstrap-icons/bootstrap-icons.svg#clipboard-plus"/></svg> Vendors
+				          <svg class="bi" width="18" height="18" fill="currentColor"><use xlink:href="./node_modules/bootstrap-icons/bootstrap-icons.svg#clipboard-plus"/></svg> Suppliers
 				        </button>
 				      </h2>
 				    </div>
@@ -62,7 +66,7 @@
 				      <div class="card-body">
 				      	<ul class="list-group list-group-flush">
 						  <li class="list-group-item">
-						  	<a href="vendor.php" class="black">All Vendors <span class="badge badge-primary badge-pill"><?= $model->getVendorCount(); ?></span></a>
+						  	<a href="vendor.php" class="black">All Supplier <span class="badge badge-primary badge-pill"><?= $model->getVendorCount(); ?></span></a>
 						  </li>
 						  <li class="list-group-item">
 						  	<a href="addvendor.php" class="black">Add New</a>

@@ -20,9 +20,9 @@
 									<input type="text" class="form-control"  value="<?= isset($_POST['name']) ? $_POST['name'] : '';?>" name="name" placeholder="Name..." required />
 								</label>
 							</div>
-							<div class="form-group">
+							<div class="form-group hidden">
 								<label>Quantity:
-									<input type="number" class="form-control" value="<?= isset($_POST['qty']) ? $_POST['qty'] : '';?>" required name="qty" placeholder="Quantity..."/>
+									<input type="number" class="form-control" value="<?= isset($_POST['qty']) ? $_POST['qty'] : 0;?>" required name="qty" placeholder="Quantity..."/>
 								</label>
 							</div>
 							<div class="form-group">
@@ -30,7 +30,7 @@
 									<input type="text" class="form-control" value="<?= isset($_POST['price']) ? $_POST['price'] : '';?>" required name="price" placeholder="Price..."/>
 								</label>
 							</div>
-							<div class="form-group">
+							<div class="form-group hidden">
 								<label>Expiry Date:
 									<input type="date" required class="form-control" value="<?= isset($_POST['expiry_date']) ? $_POST['expiry_date'] : '';?>" name="expiry_date" placeholder="Expiry Date..."/>
 								</label>

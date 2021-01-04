@@ -21,7 +21,7 @@
 			left: 0;
 			top: 0;
 			width: 100%;
-			min-height: 300px;
+			min-height: 500px;
 			z-index: 0;
 			background: white;
 		}
@@ -43,15 +43,12 @@
 			<form method="post"  class="form">
 				<div class="err"></div>
 				<input type="hidden" name="signup" value="true"/>
-				<label>Username
-					<input type="text" value="<?= isset($_POST['username']) ? $_POST['username'] : '';?>" class="form-control" name="username" placeholder="Username..." required/>
-				</label>
-				<label>Password
-					<input type="password" value="<?= isset($_POST['password']) ? $_POST['password'] : '';?>" class="form-control" name="password" placeholder="Password..." required/>
-				</label>
-				<label>Retype Password
-					<input type="password" value="<?= isset($_POST['password1']) ? $_POST['password1'] : '';?>" class="form-control" name="password1" placeholder="Password..." required/>
-				</label>
+				<label>Username</label>
+				<input type="text" value="<?= isset($_POST['username']) ? $_POST['username'] : '';?>" class="form-control" name="username" placeholder="Username..." required/>
+				<label>Password</label>
+				<input type="password" value="<?= isset($_POST['password']) ? $_POST['password'] : '';?>" class="form-control" name="password" placeholder="Password..." required/>
+				<label>Retype Password</label>
+				<input type="password" value="<?= isset($_POST['password1']) ? $_POST['password1'] : '';?>" class="form-control" name="password1" placeholder="Password..." required/>
 				<br>
 				<br>
 				<button class="btn btn-primary btn-lg float-right">Next <svg class="bi" width="30" height="30" fill="currentColor"><use xlink:href="./node_modules/bootstrap-icons/bootstrap-icons.svg#chevron-compact-right"/></svg></button>
@@ -64,9 +61,40 @@
 		<div class="store slide col-sm">
 			<form method="post" class="form">
 				<input type="hidden" name="addstore" value="true">
-				<h4>Enter Store Name</h4>
-				<input type="text" class="form-control" name="name" value="" placeholder="Store Name..." required/>
+				<div class="row">
+					<div class="form-group col-sm">
+						<h5>Business Name</h5>
+						<input type="text" class="form-control" name="name" value="" placeholder="Store Name..." required/>
+					</div>
+				</div>
+				<div class="row">
+					<div class="col-sm">
+						<h5>Details</h5>
+					</div>
+				</div>
+				<div class="row">
+					<div class="col-sm">
+						<label>Address</label>
+						<input type="text" required class="form-control" placeholder="Business Address..." name="adddress">
+					</div>
+				</div>
 				<br>
+				<div class="row">
+					<div class="col-sm-4">
+						<label>DTI</label>
+						<input type="text" required class="form-control" placeholder="DTI..." name="dti">
+					</div>
+					<div class="col-sm-4">
+						<label>Email</label>
+						<input type="email" required class="form-control" name="email">
+					</div>
+					<div class="col-sm-4">
+						<label>Contact #</label>
+						<input type="text" placeholder="Contact #..." class="form-control" name="contact" required>
+					</div>
+				</div>
+
+				
 				<br>
 				<a href="" data-target=".signup" class="next enabled"><svg class="bi" width="50" height="50" fill="currentColor"><use xlink:href="./node_modules/bootstrap-icons/bootstrap-icons.svg#chevron-compact-left"/></svg></a>
 
