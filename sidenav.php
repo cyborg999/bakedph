@@ -88,6 +88,12 @@
 						  <li class="list-group-item">
 						  	<a href="materials.php" class="black">Material Inventory <span class="badge badge-primary badge-pill"><?= $model->getMaterialCount(); ?></span></a>
 						  </li>
+						   <li class="list-group-item">
+						  	<?php
+          						$materialLow = $model->getAllMaterialInventory(true);
+						  	?>
+						  	<a href="material_low.php" class="black">Low In Stock <span class="badge badge-primary badge-pill"><?= count($materialLow) ?></span></a>
+						  </li>
 						  <li class="list-group-item">
 						  	<a href="addmaterial.php" class="black">Add Material</a>
 						  </li>
@@ -112,6 +118,12 @@
 				      	<ul class="list-group list-group-flush">
 						  <li class="list-group-item">
 						  	<a href="products.php" class="black">Product Inventory <span class="badge badge-primary badge-pill"><?= $model->getProductCount(); ?></span></a>
+						  </li>
+						  <li class="list-group-item">
+						  	<?php
+          						$productLow = $model->getAllProducts(true);
+						  	?>
+						  	<a href="product_low.php" class="black">Low In Stock <span class="badge badge-primary badge-pill"><?= count($productLow) ?></span></a>
 						  </li>
 						  <li class="list-group-item">
 						  	<a href="addproduct.php" class="black">Add New</a>

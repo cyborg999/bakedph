@@ -11,7 +11,9 @@
       <div class="col-sm-9">
         <?php
           $products = $model->getAllProducts();
+
           $materials = $model->getAllMaterialInventory();
+          $store = $model->getStoreStockLimit();
 
         ?>
         <table class="table">
@@ -24,20 +26,51 @@
             </tr>
           </thead>
           <tbody>
-            <tr id="search">
+            <style type="text/css">
+              .advance {
+                display: block;
+              }
+              tr.lowstock {
+                background: #e6e6e6;
+              }
+              .lowstock .editqty {
+                color: red;
+                font-weight: 700;
+              }
+              .export {
+                display: block;
+                margin-top: 10px;
+              }
+            </style>
+            <tr>
               <td colspan="2">
                 <input type="text" class="form-control" id="searchName" placeholder="Name search..."/>
+                <a href="" class="advance">
+                  <small>advance</small>
+                </a>
               </td>
               <td >
                 <input type="number" class="form-control" id="searchQuantity" placeholder="Quantity"/>
               </td>
               <td>
                 <button id="filter" class="btn btn-sm btn-primary"> <= Filter</button>
+               <a href="ajax.php?&export=true&products=true" class="export">export csv</a>
+              </td>
+            </tr>
+            <tr  id="search" class="advance_tr hidden">
+              <td colspan="2">
+                <small style="max-width: 100%;"><i>Set alert when the remaining stock is less than or equal to</i></small>
+              </td>
+              <td >
+                <input type="number" class="form-control" id="stock" value="<?= ($store) ? $store['product_low'] : 20;?>">
+              </td>
+              <td colspan="2">
+                <a href="" class="updateAlert btn btn-sm btn-primary">update</a>
               </td>
             </tr>
             <?php foreach($products as $idx => $product): ?>
 
-            <tr class="result" id="edit<?= $product['id']; ?>">
+            <tr class="result <?=($product['qty'] <= $store['product_low']) ? 'lowstock' : ''; ?>" id="edit<?= $product['id']; ?>">
               <td class="editname"><?= $product['name']; ?></td>
               <td class="editsrp"><?= $product['srp']; ?></td>
               <td class="editqty"><?= $product['qty']; ?></td>
@@ -196,7 +229,7 @@
 </div>
 
 <script type="text/html" id="productTPL">
-      <tr class="result" id="edit[ID]">
+      <tr class="result [LOWSTOCK]" id="edit[ID]">
           <td class="editname">[NAME]</td>
           <td class="editsrp">[SRP]</td>
           <td class="editqty">[QTY]</td>
@@ -458,7 +491,9 @@
                   console.log(response[i].name);
                   var tpl = $("#productTPL").html();
 
-                  tpl = tpl.replace("[ID]", response[i].id).replace("[ID]", response[i].id).replace("[ID]", response[i].id).replace("[NAME]", response[i].name).replace("[NAME]", response[i].name)
+                  tpl = tpl.replace("[ID]", response[i].id).replace("[ID]", response[i].id).replace("[ID]", response[i].id).replace("[NAME]", response[i].name).
+                  replace("[LOWSTOCK]", (response[i].qty <= $("#stock").val()) ? 'lowstock' : '').
+                  replace("[NAME]", response[i].name)
                   .replace("[SRP]", response[i].srp).replace("[SRP]", response[i].srp).replace("[QTY]", response[i].qty).replace("[QTY]", response[i].qty);
 
                   $("#search").after(tpl);
@@ -532,6 +567,27 @@
       
         });
 
+        $(".advance").on("click", function(e){
+          e.preventDefault();
+
+          $(".advance_tr").toggleClass("hidden");
+        });
+
+        $(".updateAlert").on("click", function(e){
+          e.preventDefault();
+
+          showPreloader();
+          $.ajax({
+            url : "ajax.php",
+            data : {updateStock :true, type :'product', val : $("#stock").val() },
+            type : "post",
+            dataType : "json",
+            success : function(response){
+              hidePreloader();
+            }
+          });
+        });
+
         $("#filter").on("click", function(e){
           e.preventDefault();
 
@@ -552,7 +608,9 @@
                   console.log(response[i].name);
                   var tpl = $("#productTPL").html();
 
-                  tpl = tpl.replace("[ID]", response[i].id).replace("[ID]", response[i].id).replace("[ID]", response[i].id).replace("[NAME]", response[i].name).replace("[NAME]", response[i].name)
+                  tpl = tpl.replace("[ID]", response[i].id).replace("[ID]", response[i].id).replace("[ID]", response[i].id).replace("[NAME]", response[i].name).
+                  replace("[LOWSTOCK]", (response[i].qty <= $("#stock").val()) ? 'lowstock' : '').
+                  replace("[NAME]", response[i].name)
                   .replace("[SRP]", response[i].srp).replace("[SRP]", response[i].srp).replace("[QTY]", response[i].qty).replace("[QTY]", response[i].qty);
 
                   $("#search").after(tpl);

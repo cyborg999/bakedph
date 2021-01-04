@@ -1,6 +1,6 @@
 <?php include_once "./head.php"; ?>
 <body>
-	<div class="container-sm">
+	<div class="container-fluid">
 		<?php include "./dashboardnav.php"; ?>
 		<div class="row">
 			<br>

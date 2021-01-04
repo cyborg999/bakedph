@@ -75,6 +75,7 @@
 											<input type="radio" class="filter" name="filter" value="year">
 										</label>
 										<br>
+                						<a href="ajax.php?&export=true&production=true" class="export">export csv</a>
 									</div>
 									<div class="col-sm-5">
 									
@@ -114,13 +115,17 @@
 										<a href="" class="btn btn-info clear">Clear</a>
 									</div>
 								</div>
-						  	<?php $production = $model->getAllProduction(); ?>
+						  	<?php $production = $model->getAllProduction();
+						  		// op($production);
+						  	 ?>
 						  	<table class="table table-hover">
 								<thead>
 									<tr>
 										<th>Product Name</th>
 										<th>Batch #</th>
+										<th>SRP</th>
 										<th>Quantity</th>
+										<th>Amount</th>
 										<th>Date Produced</th>
 									</tr>
 								</thead>
@@ -129,7 +134,9 @@
             						<tr>
 										<td><?= $p['name']; ?></td>
 										<td><?= $p['batchnumber']; ?></td>
+										<td><?= $p['srp']; ?></td>
 										<td><?= $p['quantity']; ?></td>
+										<td><?= $p['srp'] * $p['quantity']; ?></td>
 										<td><?= $p['date_produced']; ?></td>
 									</tr>
             					<?php endforeach ?>
@@ -151,7 +158,9 @@
 		<tr>
 			<td>[NAME]</td>
 			<td>[BATCH_NUMBER]</td>
+			<td>[SRP]</td>
 			<td>[QUANTITY]</td>
+			<td>[AMOUNT]</td>
 			<td>[DATE_PRODUCED]</td>
 		</tr>
 	</script>
@@ -218,10 +227,10 @@
     			}
 
 				$("#products").chosen({max_selected_options: 5});
-
+				var d = new Date();
     			$.ajax({
     				url : "ajax.php",
-    				data : { loadMonthlyProductChart : true},
+    				data : { loadMonthlyProductChart : true, year : d.getFullYear()},
     				type : "post",
     				dataType : "json",
     				success : function(response){
@@ -235,7 +244,14 @@
 
     				$("#year").val("");
     				$("#date").val("");
+    				$("#datestart").val("");
+    				$("#yeardate").val("");
+
     				$("#products").val('').trigger("chosen:updated");
+
+    				var tab = $(this).parents(".tab-pane");
+
+    				tab.find(".btn-primary").trigger("click");
     			});
 
     			$("#twodate").hide();
@@ -291,6 +307,8 @@
     							replace("[BATCH_NUMBER]", response[i].batchnumber).
     							replace("[DATE_PRODUCED]", response[i].date_produced).
     							replace("[QUANTITY]", response[i].quantity).
+    							replace("[SRP]", response[i].srp).
+    							replace("[AMOUNT]", response[i].srp * response[i].quantity).
     							replace("[DATE_PURCHASED]", response[i].date_purchased);
     							console.log(response[i]);
 
@@ -307,12 +325,6 @@
     			$("#filter").on("click", function(){
     				var year = $("#year").val();
     				var products = $("#products").val();
-
-    				if(year == ""){
-    					alert("Year is required!");
-
-    					return;
-    				}
 
 	    			$.ajax({
 	    				url : "ajax.php",

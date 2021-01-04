@@ -21,37 +21,31 @@ admin changepassword, changes to user sidenav
 admin slider, checked include checkbox	
 https://themes.getbootstrap.com/preview/?theme_id=19799
 https://themes.getbootstrap.com/preview/?theme_id=35287
+remove input ng qty
+
+
+round 3
+* purchase return if damage
+* notify if subscription is almost over
+* list all expired items, deduct din
+sales
+	* add export file sa sales record
+	* add din sa expenses
+production/product/material inventory
+	* add export file
+reports
+	* add column amount sa tbl
+
+
+
+
+REMOVE ADDED JS files
 
 
 
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-material tab
-* dapat naguupdate yung quantity sa materials inventory kapag kunwari nabawasan dahil sa nainput dun sa production
-
-products tab
-* update din quantity
-* dapat may nagnonotify kapag low na yung quantity ng certain products
-
-Quantity update
-Sales > production
-	*pag nag add, madadagdagan quantity ng product, mababawasan ng material 
-Sales > Sales
-	*pag nag add, mababawasan ang quantity ng sold product
-Sales > Purchase Order
-	* dagdag ng quantity ng material
 
 	
 sales tab

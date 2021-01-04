@@ -77,8 +77,10 @@
 											<input type="radio" class="filter" name="filter" value="year">
 										</label>
 										<br>
+                						<a href="ajax.php?&export=true&sales=true" class="export">export csv</a>
+										<br>
 									</div>
-									<div class="col-sm-4">
+									<div class="col-sm-5">
 									
 										<div class="row  onedate">
 											<div class="col-sm">
@@ -124,6 +126,8 @@
 										<tr>
 											<th>Product Name</th>
 											<th>Quantity</th>
+											<th>SRP</th>
+											<th>Amount</th>
 											<th>Date Purchased</th>
 										</tr>
 									</thead>
@@ -133,6 +137,8 @@
 		            						<tr>
 												<td><?= $p['name']; ?></td>
 												<td><?= $p['qty']; ?></td>
+												<td><?= $p['srp']; ?></td>
+												<td><?= $p['revenue']; ?></td>
 												<td><?= $p['date_purchased']; ?></td>
 											</tr>
 		            					<?php endforeach ?>
@@ -157,7 +163,7 @@
 											<input type="radio" class="filter" checked name="filter" value="day">
 										</label>
 										<label> Date Range
-											<input type="radio" class="filter" name="filter" value="daterange">filter
+											<input type="radio" class="filter" name="filter" value="daterange">
 										</label>
 										<label> Year
 											<input type="radio" class="filter" name="filter" value="year">
@@ -316,21 +322,33 @@
     			$(".clear").on("click", function(e){
     				e.preventDefault();
 
+    				$("#yeardate").val("");
     				$("#year").val("");
+    				$("#datestart").val("");
+    				$("#dateend").val("");
+    				$("#date").val("");
+    				$("#expensesYeardate").val("");
+    				$("#expensesDatestart").val("");
+    				$("#expensesDateend").val("");
     				$("#date").val("");
     				$("#exepensesDate").val("");
     				$("#products").val('').trigger("chosen:updated");
+
+    				var tab = $(this).parents(".tab-pane");
+
+    				tab.find(".btn-primary").trigger("click");
     			});
 
 				$("#products").chosen({max_selected_options: 5});
+				
+				var d = new Date();
 
     			$.ajax({
     				url : "ajax.php",
-    				data : { loadMonthlySalesChart : true},
+    				data : { loadMonthlySalesChart : true , year : d.getFullYear()},
     				type : "post",
     				dataType : "json",
     				success : function(response){
-    					var d = new Date();
     					loadChart(response, d.getFullYear());
     				}
     			});
@@ -366,8 +384,10 @@
     				var yeardate = $("#yeardate").val();
 
     				$("#saleTbody").html("");
-    				$(".preloader").removeClass("hidden");
     				$("#salestotal").html("");
+
+    				showPreloader();
+
     				$.ajax({
     					url  : "ajax.php",
     					data : { 
@@ -388,17 +408,18 @@
     							tpl = tpl.replace("[NAME]", response[i].name).
     							replace("[QUANTITY]", response[i].qty).
     							replace("[DATE_PURCHASED]", response[i].date_purchased);
-    							console.log(response[i]);
     							total += parseInt(response[i].revenue);
 
     							$("#saleTbody").append(tpl);
     						}
 
     						$("#salestotal").html(total);
-    						setTimeout(function(){
-	    						$(".preloader").addClass("hidden");
-    						},200);
-    					}
+    						
+    						hidePreloader();
+    					},
+    					error : function(){
+		                  hidePreloader();
+		                }
     				});	
     			});
 
@@ -412,8 +433,8 @@
     				var yeardate = $("#expensesYeardate").val();
 
     				$("#expensesTbody").html("");
-    				$(".preloader").removeClass("hidden");
 
+    				showPreloader();
     				$.ajax({
     					url  : "ajax.php",
     					data : { 
@@ -433,15 +454,15 @@
     							tpl = tpl.replace("[NAME]", response[i].name).
     							replace("[COST]", response[i].cost).
     							replace("[DATE_PRODUCED]", response[i].date_produced);
-    							console.log(response[i]);
 
     							$("#expensesTbody").append(tpl);
     						}
 
-    						setTimeout(function(){
-	    						$(".preloader").addClass("hidden");
-    						},200);
-    					}
+    						hidePreloader();
+    					},
+    					error : function(){
+		                  hidePreloader();
+		                }
     				});	
     			});
 
@@ -449,11 +470,11 @@
     				var year = $("#year").val();
     				var products = $("#products").val();
 
-    				if(year == ""){
-    					alert("Year is required!");
+    				// if(year == ""){
+    				// 	alert("Year is required!");
 
-    					return;
-    				}
+    				// 	return;
+    				// }
 
 	    			$.ajax({
 	    				url : "ajax.php",

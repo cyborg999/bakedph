@@ -63,6 +63,138 @@ class Model {
 		$this->getAllExpensesListener();
 		$this->seachProductByQuantityListener();
 		$this->searchmaterialByQuantityListener();
+		$this->updateStockListener();
+		$this->searchProductLowListener();
+		$this->exportListener();
+		$this->filterExpensesListener();
+	}
+
+	public function exportListener(){
+		if(isset($_GET['export'])){
+			if(isset($_GET['sales'])){
+				header('Content-Type: text/csv; charset=utf-8');
+				header('Content-Disposition: attachment; filename=Sales.csv');
+
+				$output = fopen('php://output', 'w');
+
+
+				fputcsv($output, array('Name', 'Batch #', 'SRP', "Quantity", "Amount"));
+
+				$records = $this->db->query($_SESSION['lastQuery'])->fetchAll();
+
+				foreach($records as $idx => $r){
+					$data = array($r['name'],$r['batchnumber'],$r['srp'],$r['quantity'], $r['quantity'] * $r['srp']);
+					fputcsv($output, $data);
+				}
+			}
+
+			if(isset($_GET['production'])){
+				header('Content-Type: text/csv; charset=utf-8');
+				header('Content-Disposition: attachment; filename=ProductionRecord.csv');
+
+				$output = fopen('php://output', 'w');
+
+
+				fputcsv($output, array('Name', 'Batch #', 'SRP', "Quantity", "Amount"));
+
+				$records = $this->db->query($_SESSION['lastQuery'])->fetchAll();
+
+				foreach($records as $idx => $r){
+					$data = array($r['name'],$r['batchnumber'],$r['srp'],$r['quantity'], $r['quantity'] * $r['srp']);
+					fputcsv($output, $data);
+				}
+			}
+
+			if(isset($_GET['materialLow'])){
+				header('Content-Type: text/csv; charset=utf-8');
+				header('Content-Disposition: attachment; filename=Low_Stock_Materials.csv');
+
+				$output = fopen('php://output', 'w');
+
+
+				fputcsv($output, array('Name', 'Price', 'Quantity', "Expiry Date"));
+
+				$records = $this->db->query($_SESSION['lastQuery'])->fetchAll();
+
+				foreach($records as $idx => $r){
+					$data = array($r['name'],$r['price'],$r['qty'],$r['expiry_date']);
+					fputcsv($output, $data);
+				}
+			}
+
+			if(isset($_GET['materials'])){
+				header('Content-Type: text/csv; charset=utf-8');
+				header('Content-Disposition: attachment; filename=MaterialInventory.csv');
+
+				$output = fopen('php://output', 'w');
+
+
+				fputcsv($output, array('Name', 'Price', 'Quantity', "Expiry Date"));
+
+				$records = $this->db->query($_SESSION['lastQuery'])->fetchAll();
+
+				foreach($records as $idx => $r){
+					$data = array($r['name'],$r['price'],$r['qty'],$r['expiry_date']);
+					fputcsv($output, $data);
+				}
+			}
+
+			if(isset($_GET['productLow'])){
+				header('Content-Type: text/csv; charset=utf-8');
+				header('Content-Disposition: attachment; filename=Low_Stock_Products.csv');
+
+				$output = fopen('php://output', 'w');
+
+
+				fputcsv($output, array('Name', 'SRP', 'Quantity', 'Expiry Date'));
+
+				$records = $this->db->query($_SESSION['lastQuery'])->fetchAll();
+
+				foreach($records as $idx => $r){
+					$data = array($r['name'],$r['price'],$r['qty'],$r['expiry_date']);
+					fputcsv($output, $data);
+				}
+			}
+
+			if(isset($_GET['products'])){
+				header('Content-Type: text/csv; charset=utf-8');
+				header('Content-Disposition: attachment; filename=Products.csv');
+
+				$output = fopen('php://output', 'w');
+
+
+				fputcsv($output, array('Name', 'SRP', 'Quantity', 'Expiry Date'));
+
+				$records = $this->db->query($_SESSION['lastQuery'])->fetchAll();
+
+				foreach($records as $idx => $r){
+					$data = array($r['name'],$r['price'],$r['qty'],$r['expiry_date']);
+					fputcsv($output, $data);
+				}
+			}
+		}
+	}
+
+	public function updateStockListener(){
+		if(isset($_POST['updateStock'])){
+			$sql = "
+				update store
+				set material_low = ?
+				where userid = ?
+			";
+
+			if($_POST['type'] == "product"){
+				$sql = "
+					update store
+					set product_low = ?
+					where userid = ?
+				";
+			}
+
+			$this->db->prepare($sql)->execute(array($_POST['val'], $_SESSION['id']));
+
+			die(json_encode(array("added")));
+		}
 	}
 
 	public function searchmaterialByQuantityListener(){
@@ -99,28 +231,35 @@ class Model {
 	public function filterExpensesListener(){
 		if(isset($_POST['filterExpenses'])){
 			if($_POST['filter'] == "day"){
+				$where = ($_POST['date1'] == "")  ? "" : " AND  t1.date_produced = '".$_POST['date1']."'";
 				$sql = "
 					SELECT t1.* 
 					FROM expenses t1
-					WHERE t1.date_produced = '".$_POST['date1']."'
-					AND t1.storeid = ".$_SESSION['storeid']."
+					where t1.storeid = ".$_SESSION['storeid']."
+					$where 
 				";
 			} elseif($_POST['filter'] == "daterange"){
+				$where = ($_POST['date2'] == "")  ? "" : " AND t1.date_produced BETWEEN '".$_POST['date2']."' AND '".$_POST['date3']."'";
 				$sql = "
 					SELECT t1.* 
 					FROM expenses t1
-					WHERE t1.date_produced BETWEEN '".$_POST['date2']."' AND '".$_POST['date3']."'
-					AND t1.storeid = ".$_SESSION['storeid']."
+					where t1.storeid = ".$_SESSION['storeid']."
+					$where
+					 
 				";
 			} else {
 				//year
+				$where = ($_POST['year'] == "")  ? "" : " AND YEAR(t1.date_produced) = '".$_POST['year']."' ";
 				$sql = "
 					SELECT t1.* 
 					FROM expenses t1
-					WHERE YEAR(t1.date_produced) = '".$_POST['year']."' 
-					AND t1.storeid = ".$_SESSION['storeid']."
+					where t1.storeid = ".$_SESSION['storeid']."
+					$where
+					 
 				";
 			}
+
+			$_SESSION['lastQuery'] = $sql;
 
 			$records = $this->db->query($sql)->fetchAll();
 
@@ -136,6 +275,8 @@ class Model {
 			ON t1.productid = t2.id
 			WHERE t2.storeid = ".$_SESSION['storeid']."
 		";
+		
+		$_SESSION['lastQuery'] = $sql;
 
 		return $this->db->query($sql)->fetchAll();
 	}
@@ -208,7 +349,7 @@ class Model {
 		if(isset($_POST['filterProduction'])){
 			if($_POST['filter'] == "day"){
 				$sql = "
-					SELECT t1.* , t2.name
+					SELECT t1.* , t2.name, t2.srp
 					FROM production t1
 					LEFT JOIN  product t2 
 					ON t1.productid = t2.id
@@ -217,7 +358,7 @@ class Model {
 				";
 			} elseif($_POST['filter'] == "daterange"){
 				$sql = "
-					SELECT t1.* , t2.name
+					SELECT t1.* , t2.name, t2.srp
 					FROM production t1
 					LEFT JOIN  product t2 
 					ON t1.productid = t2.id
@@ -226,15 +367,19 @@ class Model {
 				";
 			} else {
 				//year
+				$and = ($_POST['year'] =="") ? "" : " AND YEAR(t1.date_produced) = '".$_POST['year']."'";
 				$sql = "
-					SELECT t1.* , t2.name
+					SELECT t1.* , t2.name, t2.srp
 					FROM production t1
 					LEFT JOIN  product t2 
 					ON t1.productid = t2.id
-					WHERE YEAR(t1.date_produced) = '".$_POST['year']."' 
-					AND t1.storeid = ".$_SESSION['storeid']."
+					 
+					WHERE t1.storeid = ".$_SESSION['storeid']."
+					$and
 				";
 			}
+
+			$_SESSION['lastQuery'] = $sql;
 
 			$records = $this->db->query($sql)->fetchAll();
 
@@ -245,34 +390,40 @@ class Model {
 	public function filterSaleListener(){
 		if(isset($_POST['filterSale'])){
 			if($_POST['filter'] == "day"){
+				$where = ($_POST['date1'] == "")  ? "" : " AND t1.date_purchased = '".$_POST['date1']."'";
+
 				$sql = "
 					SELECT t1.* , t2.name, t2.srp * t1.qty as 'revenue'
 					FROM sales t1
 					LEFT JOIN  product t2 
 					ON t1.productid = t2.id
-					WHERE t1.date_purchased = '".$_POST['date1']."'
-					AND t1.storeid = ".$_SESSION['storeid']."
+					where t1.storeid = ".$_SESSION['storeid']."
+					$where
 				";
 			} elseif($_POST['filter'] == "daterange"){
+				$where = ($_POST['date2'] == "")  ? "" : " AND t1.date_purchased BETWEEN '".$_POST['date2']."' AND '".$_POST['date3']."'";
 				$sql = "
-					SELECT t1.* , t2.name
+					SELECT t1.* , t2.name, t2.srp * t1.qty as 'revenue'
 					FROM sales t1
 					LEFT JOIN  product t2 
 					ON t1.productid = t2.id
-					WHERE t1.date_purchased BETWEEN '".$_POST['date2']."' AND '".$_POST['date3']."'
-					AND t1.storeid = ".$_SESSION['storeid']."
+					where t1.storeid = ".$_SESSION['storeid']."
+					$where
 				";
 			} else {
 				//year
+				$where = ($_POST['year'] == "")  ? "" : " AND YEAR(t1.date_purchased) = '".$_POST['year']."' ";
 				$sql = "
-					SELECT t1.* , t2.name
+					SELECT t1.* , t2.name, t2.srp * t1.qty as 'revenue'
 					FROM sales t1
 					LEFT JOIN  product t2 
 					ON t1.productid = t2.id
-					WHERE YEAR(t1.date_purchased) = '".$_POST['year']."' 
-					AND t1.storeid = ".$_SESSION['storeid']."
+					where t1.storeid = ".$_SESSION['storeid']."
+					$where
 				";
 			}
+
+			$_SESSION['lastQuery'] = $sql;
 
 			$records = $this->db->query($sql)->fetchAll();
 
@@ -685,15 +836,19 @@ class Model {
 
 	public function getMonthlyProductionReport(){
 		if(isset($_POST['loadMonthlyProductChart'])){
-			$this->loadChart($this->getAllProduction());
+			if(isset($_POST['year'])){
+				$this->loadChart($this->getAllProductionByYear($_POST['year']));
+			} else {
+				$this->loadChart($this->getAllProduction());	
+		}
 		}
 	}
 
 	public function getMonthlySalesReportListener(){
 		if(isset($_POST['loadMonthlySalesChart'])){
-			$sales = $this->getAllSales();
-
-			$this->loadChart($sales, "date_purchased");
+			$this->loadChart($this->getAllProductionByYear($_POST['year']));
+			// $sales = $this->getAllSales();
+			// $this->loadChart($sales, "date_purchased");
 		}
 	}
 
@@ -795,12 +950,14 @@ class Model {
 
 	public function getAllProduction(){
 		$sql = "
-			SELECT t1.*, t2.name 
+			SELECT t1.*, t2.name ,t2.srp
 			FROM production t1
 			LEFT JOIN product t2
 			ON t1.productid = t2.id
 			WHERE t1.storeid = ".$_SESSION['storeid']."
 		";	
+
+		$_SESSION['lastQuery'] = $sql;
 
 		return $this->db->query($sql)->fetchAll();
 	}
@@ -821,40 +978,44 @@ class Model {
 
 	public function getAllProductionByYear($year){
 		if(isset($_POST['products'])){
+			$and = ($year == "") ? "" : "AND YEAR(t1.date_produced) = ".$year."
+			AND t1.productid in(".implode(",", $_POST['products']).")";
 			$sql = "
 			SELECT t1.*, t2.name 
 			FROM production t1
 			LEFT JOIN product t2
 			ON t1.productid = t2.id
 			WHERE t1.storeid = ".$_SESSION['storeid']."
-			AND YEAR(t1.date_produced) = ".$year."
-			AND t1.productid in(".implode(",", $_POST['products']).")
+			$and
 		";	
 
 		} else {
+			$and = ($year == "") ? "AND YEAR(t1.date_produced) = year(CURRENT_DATE)" : "AND YEAR(t1.date_produced) = ".$year;
 			$sql = "
 				SELECT t1.*, t2.name 
 				FROM production t1
 				LEFT JOIN product t2
 				ON t1.productid = t2.id
 				WHERE t1.storeid = ".$_SESSION['storeid']."
-				AND YEAR(t1.date_produced) = ".$year."
+				$and
 			";	
 		}
-
 
 		return $this->db->query($sql)->fetchAll();
 	}
 
 	public function getAllSales(){
 		$sql = "
-			SELECT t1.*, t2.name ,t2.srp * t1.qty as 'revenue'
+			SELECT t1.*, t2.name ,t2.srp,t2.srp * t1.qty as 'revenue'
 			FROM sales t1
 			LEFT JOIN product t2
 			ON t1.productid = t2.id
 			WHERE t1.storeid = ".$_SESSION['storeid']."
 			ORDER BY t1.id desc
 		";	
+
+
+		$_SESSION['lastQuery'] = $sql;
 
 		return $this->db->query($sql)->fetchAll();
 	}
@@ -996,6 +1157,27 @@ class Model {
 				LIMIT 20
 			";
 
+			$_SESSION['lastQuery'] = $sql;
+
+			$data = $this->db->query($sql)->fetchAll();
+
+			die(json_encode($data));
+		}
+	}
+
+	public function searchProductLowListener(){
+		if(isset($_POST['searchProductLow'])) {
+			$limit = $this->getStoreStockLimit();
+			$productLow = $limit['product_low'];
+
+			$sql = "
+				SELECT *
+				FROM product
+				WHERE name LIKE '%".$_POST['txt']."%'
+				AND storeid = '".$_SESSION['storeid']."'
+				and qty <= $productLow
+			";
+
 			$data = $this->db->query($sql)->fetchAll();
 
 			die(json_encode($data));
@@ -1011,6 +1193,8 @@ class Model {
 				AND storeid = '".$_SESSION['storeid']."'
 				LIMIT 20
 			";
+
+			$_SESSION['lastQuery'] = $sql;
 
 			$data = $this->db->query($sql)->fetchAll();
 
@@ -1345,22 +1529,50 @@ class Model {
 		}
 	}
 
-	public function getAllProducts(){
+	public function getAllProducts($lowStock = false){
 		$sql = "
 			SELECT *
 			FROM product
 			WHERE storeid = '".$_SESSION['storeid']."'
 		";
 
+		if($lowStock){
+			$limit = $this->getStoreStockLimit();
+			$productLow = $limit['product_low'];
+
+			$sql = "
+				SELECT *
+				FROM product
+				WHERE storeid = '".$_SESSION['storeid']."'
+				AND qty <= $productLow
+			";
+		}
+
+		$_SESSION['lastQuery'] = $sql;
+
 		return $this->db->query($sql)->fetchAll();
 	}
 
-	public function getAllMaterialInventory(){
+	public function getAllMaterialInventory($lowStock = false){
 		$sql = "
 			SELECT *
 			FROM material_inventory 
 			WHERE storeid = '".$_SESSION['storeid']."'
 		";
+
+		if($lowStock){
+			$limit = $this->getStoreStockLimit();
+			$materialLow = $limit['material_low'];
+
+			$sql = "
+				SELECT *
+				FROM material_inventory
+				WHERE storeid = '".$_SESSION['storeid']."'
+				AND qty <= $materialLow
+			";
+		}
+
+		$_SESSION['lastQuery'] = $sql;
 
 		return $this->db->query($sql)->fetchAll();
 	}
@@ -1524,6 +1736,17 @@ class Model {
 		return $this->success;
 	}
 	
+	public function getStoreStockLimit(){
+		$sql = "
+			SELECT t1.material_low, t1.product_low
+			FROM store t1
+			WHERE t1.userid = ". $_SESSION['id']."
+			LIMIT 1
+		";
+
+		return $this->db->query($sql)->fetch();
+	}
+
 	public function getUserStore(){
 		$sql = "
 			SELECT t1.*,t2.duration, t2.cost

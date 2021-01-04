@@ -1,7 +1,7 @@
 <?php include_once "./headchosen.php"; ?>
 <body>
   <?php include_once "./spinner.php"; ?>
-  <div class="container-sm">
+  <div class="container-fluid">
     <?php include_once "./dashboardnav.php"; ?>
     <div class="row">
       <br>
@@ -11,8 +11,8 @@
       <div class="col-sm-9">
         <?php
           $products = $model->getAllMaterialInventory();
+          $store = $model->getStoreStockLimit();
         ?>
-
         <table class="table">
           <thead>
             <tr>
@@ -24,20 +24,54 @@
             </tr>
           </thead>
           <tbody>
-            <tr id="search">
+            <style type="text/css">
+              .advance {
+                display: block;
+              }
+              tr.lowstock {
+                background: #e6e6e6;
+              }
+              .lowstock .editqty {
+                color: red;
+                font-weight: 700;
+              }
+              .export {
+                display: block;
+                margin-top: 10px;
+              }
+            </style>
+
+            <tr>
               <td colspan="2">
                 <input type="text" class="form-control" id="searchName" placeholder="Name search..."/>
+                <a href="" class="advance">
+                  <small>advance</small>
+                </a>
               </td>
               <td colspan="2">
                 <input type="number" class="form-control" id="searchQuantity" placeholder="Quantity"/>
               </td>
+
               <td>
                 <button id="filter" class="btn btn-sm btn-primary"> <= Filter</button>
+                <a href="ajax.php?&export=true&materials=true" class="export">export csv</a>
               </td>
+            </tr>
+            <tr  id="search" class="advance_tr hidden">
+              <td colspan="2">
+                <small style="max-width: 100%;"><i>Set alert when the remaining stock is less than or equal to</i></small>
+              </td>
+              <td >
+                <input type="number" class="form-control" id="stock" value="<?= ($store) ? $store['material_low'] : 20;?>">
+              </td>
+              <td colspan="2">
+                <a href="" class="updateAlert btn btn-sm btn-primary">update</a>
+              </td>
+             
             </tr>
             <?php foreach($products as $idx => $product): ?>
 
-            <tr class="result" id="edit<?= $product['id']; ?>">
+            <tr class="result <?=($product['qty'] <= $store['material_low']) ? 'lowstock' : ''; ?>" id="edit<?= $product['id']; ?>">
               <td class="editname"><?= $product['name']; ?></td>
               <td class="editprice"><?= $product['price']; ?></td>
               <td class="editqty"><?= $product['qty']; ?></td>
@@ -117,7 +151,7 @@
 </div>
 
 <script type="text/html" id="productTPL">
-      <tr class="result" id="edit[ID]">
+      <tr class="result [LOWSTOCK]" id="edit[ID]">
           <td class="editname">[NAME]</td>
           <td class="editsrp">[SRP]</td>
           <td class="editqty">[QTY]</td>
@@ -257,7 +291,9 @@
                   var tpl = $("#productTPL").html();
 
                   tpl = tpl.replace("[ID]", response[i].id).replace("[ID]", response[i].id).replace("[ID]", response[i].id).replace("[NAME]", response[i].name).replace("[NAME]", response[i].name)
-                  .replace("[SRP]", response[i].price).replace("[SRP]", response[i].price).replace("[QTY]", response[i].qty).replace("[QTY]", response[i].qty).replace("[EXPIRY]", response[i].expiry_date).replace("[EXPIRY]", response[i].expiry_date);
+                  .replace("[SRP]", response[i].price).
+                     replace("[LOWSTOCK]", (response[i].qty <= $("#stock").val()) ? 'lowstock' : '').
+                  replace("[SRP]", response[i].price).replace("[QTY]", response[i].qty).replace("[QTY]", response[i].qty).replace("[EXPIRY]", response[i].expiry_date).replace("[EXPIRY]", response[i].expiry_date);
 
                   $("#search").after(tpl);
                 }
@@ -276,6 +312,28 @@
         window.addEventListener('resize', returnedFunction);
 
         $('#searchName').on("keyup", returnedFunction);
+
+        $(".advance").on("click", function(e){
+          e.preventDefault();
+
+          $(".advance_tr").toggleClass("hidden");
+        });
+
+        $(".updateAlert").on("click", function(e){
+          e.preventDefault();
+
+          showPreloader();
+          $.ajax({
+            url : "ajax.php",
+            data : {updateStock :true, type :'material', val : $("#stock").val() },
+            type : "post",
+            dataType : "json",
+            success : function(response){
+              hidePreloader();
+              console.log(response);
+            }
+          });
+        });
 
         $("#addMaterial").on("click", function(e){
           e.preventDefault();
@@ -341,18 +399,19 @@
                     var tpl = $("#productTPL").html();
 
                     tpl = tpl.replace("[ID]", response[i].id).replace("[ID]", response[i].id).replace("[ID]", response[i].id).replace("[NAME]", response[i].name).replace("[NAME]", response[i].name).
-                    replace("[EXPIRY]", response[i].expiry_date)
-                    .replace("[SRP]", response[i].price).replace("[SRP]", response[i].price).replace("[QTY]", response[i].qty).replace("[QTY]", response[i].qty);
+                    replace("[EXPIRY]", response[i].expiry_date).
+                     replace("[LOWSTOCK]", (response[i].qty <= $("#stock").val()) ? 'lowstock' : '').
+                     replace("[SRP]", response[i].price).replace("[SRP]", response[i].price).replace("[QTY]", response[i].qty).replace("[QTY]", response[i].qty);
 
                     $("#search").after(tpl);
                   }
                   
                   __listen();
-                  setTimeout(function(){
-                    $(".preloader").addClass("hidden");
-                  },200);
-
-
+                  
+                  hidePreloader();
+                },
+                error : function(){
+                  hidePreloader();
                 }
               });
           });
