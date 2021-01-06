@@ -104,6 +104,12 @@
 						  	<a href="news.php" class="black">All News</a>
 						  </li>
 						  <li class="list-group-item">
+						  	<a href="terms.php" class="black">Terms & Conditions</a>
+						  </li>
+						   <li class="list-group-item">
+						  	<a href="privacy.php" class="black">Privacy & Policy</a>
+						  </li>
+						  <li class="list-group-item">
 						  	<a href="logo.php" class="black">Logo</a>
 						  </li>
 						</ul>

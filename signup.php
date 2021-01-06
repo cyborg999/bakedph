@@ -53,6 +53,7 @@
 				<br>
 				<button class="btn btn-primary btn-lg float-right">Next <svg class="bi" width="30" height="30" fill="currentColor"><use xlink:href="./node_modules/bootstrap-icons/bootstrap-icons.svg#chevron-compact-right"/></svg></button>
 			</form>
+
 			<br>
 			<a href="" data-target=".store" class="disabled next hidden">Next</a>
 		</div>
@@ -127,8 +128,12 @@
 			<div class="row">
 				<div class="col-sm">
 					<a href="" data-target=".store" class="next enabled"><svg class="bi" width="50" height="50" fill="currentColor"><use xlink:href="./node_modules/bootstrap-icons/bootstrap-icons.svg#chevron-compact-left"/></svg></a>
-
-					<a href="" class="btn btn-lg btn-success purchase float-right">Purchase</a>
+					<label>
+						<input type="checkbox" id="accept" name="">
+						Accept <a href="termsc.php" target="_blank" class="terms">Terms & Conditions</a>
+					</label>
+					
+					<a href="" id="purchase" class="btn btn-lg btn-secondary purchase float-right">Purchase</a>
 				</div>
 			</div>
 		</div>
@@ -176,12 +181,36 @@
 
 				__listen();
 
+				$("#accept").on("click", function(){
+					var me = $(this);
+					var val = me.is(":checked");
+					console.log(val);
+
+					if(val){
+						$("#purchase").addClass("btn-success");
+						$("#purchase").removeClass("btn-secondary");
+					} else {
+						$("#purchase").addClass("btn-secondary");
+						$("#purchase").removeClass("btn-success");
+					}
+				});
+
 				$(".purchase").on("click", function(e){
 					e.preventDefault();
+					var me = $(this);
+					
+					if(me.hasClass("btn-secondary")){
+						return;
+					}
 
 					var plan = $(".border-success").data("plan");
 
 					console.log(plan);
+					if($(".border-success").length == 0){
+						alert("Please select a subscription plan");
+
+						return ;
+					}
 
 					$.ajax({
 						url : "ajax.php",

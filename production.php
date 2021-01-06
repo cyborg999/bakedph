@@ -15,12 +15,22 @@
 				  	<?php
 			          $products = $model->getAllProducts();
 			          $production = $model->getAllProduction();
+			          $nextBatch = $model->getNextBatch();
 			        ?>
 			        <div class="row">
 			        	<div class="col-sm message">
 			        		
 			        	</div>
 			        </div>
+			        <style type="text/css">
+			        	#failedContent b {
+			        		font-weight: normal;
+			        	}
+			        	#failedContent .insufficient b {
+			        		font-weight: 700;
+			        		color: red;
+			        	}
+			        </style>
 					<div class="row">
 						<div class="col-sm-4">
 							<h5>Production Information</h5>
@@ -37,15 +47,23 @@
 								</div>
 								<div class="form-group">
 									<label>Batch Number:</label>
-									<input type="text" class="form-control" id="batchnumber" value="<?= isset($_POST['batchnumber']) ? $_POST['batchnumber'] : '';?>" required name="batchnumber" placeholder="Batch #..."/>
+									<input type="text" class="form-control" readonly id="batchnumber" value="<?= $nextBatch;?>" required name="batchnumber" placeholder="Batch #..."/>
 								</div>
 								<div class="form-group">
 									<label>Quantity:</label>
 									<input type="number" class="form-control" id="quantity" value="<?= isset($_POST['qty']) ? $_POST['qty'] : '';?>" required name="qty" placeholder="Quantity..."/>
 								</div>
 								<div class="form-group">
+									<label>Unit:</label>
+									<input type="text" class="form-control" id="unit" value="<?= isset($_POST['unit']) ? $_POST['unit'] : '';?>" required name="unit" placeholder="Unit..."/>
+								</div>
+								<div class="form-group">
 									<label>Date Produced:</label>
 									<input type="date" required class="form-control" id="date_produced" value="<?= isset($_POST['date_produced']) ? $_POST['date_produced'] : '';?>"" name="date_produced" placeholder="Date..."/>
+								</div>
+								<div class="form-group">
+									<label>Expiry Date:</label>
+									<input type="date" required class="form-control" id="expiry_date" value="<?= isset($_POST['expiry_date']) ? $_POST['expiry_date'] : '';?>" name="expiry_date" placeholder="Date..."/>
 								</div>
 								<input type="submit" value="Add" class="btn btn-lg btn-primary">
 							</form>
@@ -97,8 +115,8 @@
 		<tr>
 			<td class="name" data-id="[ID]">[NAME]</td>
 			<td class="batchnumber">[BATCHNUMBER]</td>
-			<td  class="quantity">[QUANTITY]</td>
-			<td class="date_produced">[DATE_PRODUCED]</td>
+			<td data-unit="[UNIT]" class="quantity">[QUANTITY]</td>
+			<td data-expiry="[EXPIRY]" class="date_produced">[DATE_PRODUCED]</td>
 			<td>
 				<a href="" class="delete btn btn-danger" ><svg class="bi" width="18" height="18" fill="currentColor"><use xlink:href="./node_modules/bootstrap-icons/bootstrap-icons.svg#trash"/></svg></a>
 			</td>
@@ -109,6 +127,15 @@
 	<script type="text/html" id="success">
 	      <div class="alert alert-success alert-dismissible fade show" role="alert">
 	        <strong>Success!!</strong> You have sucessfully added this record.
+	        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+	          <span aria-hidden="true">&times;</span>
+	        </button>
+	      </div>
+	</script>
+	<script type="text/html" id="failed">
+	      <div class="alert alert-danger alert-dismissible fade show" role="alert">
+	        <p><strong>Failed!!</strong> You dont have sufficient stock for some materials</p>
+	        <div id="failedContent">[FAILED]</div>
 	        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
 	          <span aria-hidden="true">&times;</span>
 	        </button>
@@ -142,10 +169,12 @@
     					var tr = $(y);
     					var name = tr.find(".name").data("id");
     					var quantity = tr.find(".quantity").html();
+    					var unit = tr.find(".quantity").data("unit");
     					var batchNumber = tr.find(".batchnumber").html();
     					var dateProduced = tr.find(".date_produced").html();
+    					var dateExpiry = tr.find(".date_produced").data("expiry");
 
-    					var production = Array(name,quantity,batchNumber,dateProduced);
+    					var production = Array(name,quantity,batchNumber,dateProduced,unit,dateExpiry, tr.find(".name").html());
 
     					data.push(production);
 
@@ -160,9 +189,18 @@
 							, type : 'post'
 							, dataType : 'json'
 							, success : function(response){
-								tr.html("");
+								if(response.added){
+									tr.html("");
 
-								$(".message").append($("#success").html());
+									$(".message").append($("#success").html());
+									window.location.href = "production.php";
+								} else {
+									var tpl = $("#failed").html();
+
+									tpl = tpl.replace("[FAILED]", response.msg);
+
+									$(".message").append(tpl);
+								}
 							}
 						});	
     				}
@@ -177,12 +215,17 @@
     				var productId = $("#slcProduct").val();
     				var batchNumber = $("#batchnumber").val();
     				var quantity = $("#quantity").val();
+    				var unit = $("#unit").val();
     				var dateProduced = $("#date_produced").val();
+    				var expiryDate = $("#expiry_date").val();
     				var productName = $("#slcProduct :selected").html();
+
     				tpl = tpl.replace("[NAME]", productName).
     					replace("[ID]", productId).
     					replace("[BATCHNUMBER]", batchNumber).
     					replace("[QUANTITY]", quantity).
+    					replace("[UNIT]", unit).
+    					replace("[EXPIRY]", expiryDate).
     					replace("[DATE_PRODUCED]", dateProduced);
 
     				$("tbody").append(tpl);

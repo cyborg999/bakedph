@@ -67,8 +67,48 @@ class Model {
 		$this->searchProductLowListener();
 		$this->exportListener();
 		$this->filterExpensesListener();
+		$this->updateTermsListener();
 	}
 
+	public function updateTermsListener(){
+		if(isset($_POST['updateTerms'])){
+			if($_POST['updateTerms'] == "terms"){
+				$sql = "
+					update settings
+					set terms = ?
+					where userid = ? 
+				";
+				
+				$this->db->prepare($sql)->execute(array($_POST['terms'], $_SESSION['id']));
+			} else {
+				$sql = "
+					update settings
+					set privacy = ?
+					where userid = ? 
+				";
+				$this->db->prepare($sql)->execute(array($_POST['privacy'], $_SESSION['id']));
+			}
+
+			$this->success = "You have succesfully update this record";
+
+			return $this;
+		}
+	}
+
+	public function getNextBatch(){
+		$sql = "
+			select id
+			from production
+			where storeid = ".$_SESSION['storeid']."
+			order by id desc
+			limit 1
+		";
+
+		$record = $this->db->query($sql)->fetch();
+
+		return ($record) ? "Batch #" . ++$record['id'] : "Batch #1";
+	}
+	
 	public function exportListener(){
 		if(isset($_GET['export'])){
 			if(isset($_GET['sales'])){
@@ -604,6 +644,18 @@ class Model {
 		return $this->db->query($sql)->fetch();
 	}
 
+	public function getAdminSetting($public){
+		$where = ($public) ? "" : "where userid = ".$_SESSION['id'];
+		$sql = "
+			SELECT *
+			FROM settings
+			$where
+			LIMIT 1
+		";
+
+		return $this->db->query($sql)->fetch();
+	}
+
 	public function addLogoListener(){
 		if(isset($_POST['addLogo'])){
 			$sql = "
@@ -899,11 +951,11 @@ class Model {
 		if(isset($_POST['addPurchase'])){
 			foreach($_POST['data'] as $idx => $d){
 				$sql = "
-					INSERT INTO purchase(vendorid,materialid,type,qty,date_purchased,storeid,credit_date,expiry_date)
-					VALUES(?,?,?,?,?,?,?,?)
+					INSERT INTO purchase(vendorid,materialid,type,qty,date_purchased,storeid,credit_date,expiry_date,unit)
+					VALUES(?,?,?,?,?,?,?,?,?)
 				";
 
-				$this->db->prepare($sql)->execute(array($d[0],$d[1],$d[2],$d[3],$d[4], $_SESSION['storeid'], $d[5], $d[6]));
+				$this->db->prepare($sql)->execute(array($d[0],$d[1],$d[2],$d[3],$d[4], $_SESSION['storeid'], $d[5], $d[6], $d[7]));
 				$this->updateMaterialInventory($d[1], $d[3], true);
 			}
 			
@@ -1054,15 +1106,85 @@ class Model {
 		return $this->db->query($sql)->fetchAll();
 	}
 
+	public function getProductById($id){
+		// $sql = "
+		// 	select *
+		// 	from product
+		// 	where id = ?
+		// 	limit 1
+		// ";
+
+		// return $this->db->query($sql)->fetch();
+	}
+
+	public function getAllMaterialInventoryByMaterialId($id){
+		$sql = "
+			select t1.*
+			from material_inventory t1
+			left join material t2
+			on t2.materialid = t1.id
+			where t2.id = $id
+			limit 1
+		";
+
+		return $this->db->query($sql)->fetch();
+	}
+
 	public function addProductionListener(){
 		if(isset($_POST['addProduction'])){
+			$products = array();
+
+			foreach($_POST['data'] as $idx => $d){
+				$materials = $this->getAllMaterials($d[0]);
+
+				@$products[$d[0]]['name'] = $d[6];
+				@$products[$d[0]]['qty'] += $d[1];
+
+				foreach($materials as $idx => $m){
+					$inventory = $this->getAllMaterialInventoryByMaterialId($m['id']);
+
+					@$products[$d[0]][$m['id']]['qty'] += $m['qty'];
+					@$products[$d[0]][$m['id']]['name'] = $inventory['name'];
+					@$products[$d[0]][$m['id']]['stock'] = $inventory['qty'];
+				}
+			}
+
+			$msg = "<ul>";
+			$failed = false;
+			// op();
+			// opd($products);
+			foreach($products as $idx => $p){
+				$msg .= "<li>". $p['name'] ."(".$p['qty'].")";
+				$msg .= "<ol>";
+
+				foreach($p as $idx2 => $pp){
+					if(is_array($pp)){
+						$neededQty = $pp['qty'] * $p['qty'];
+						$isSufficient = "";
+
+						if($neededQty > $pp['stock']){
+							$isSufficient = "insufficient";
+							$failed = true;
+						} 
+
+						$msg .= "<li class='". $isSufficient ."'>".$pp['name'] ." (<b>".$neededQty."</b>/".$pp['stock'].")</li>";
+					}
+
+				}
+				$msg .= "</ol></li>";
+			}
+
+			if($failed){
+				die(json_encode(array("added" => false, "msg" => $msg)));
+			} 
+
 			foreach($_POST['data'] as $idx => $d){
 				$sql = "
-					INSERT INTO production(productid,batchnumber,quantity,date_produced,storeid)
-					VALUES(?,?,?,?,?)
+					INSERT INTO production(productid,batchnumber,quantity,date_produced,storeid,unit,date_expired)
+					VALUES(?,?,?,?,?,?,?)
 				";
 
-				$this->db->prepare($sql)->execute(array($d[0],$d[2],$d[1],$d[3],$_SESSION['storeid']));
+				$this->db->prepare($sql)->execute(array($d[0],$d[2],$d[1],$d[3],$_SESSION['storeid'], $d[4], $d[5]));
 
 				$this->updateProductInventory($d[0], $d[1], true);
 
@@ -1074,8 +1196,7 @@ class Model {
 				}
 			}
 			
-			die(json_encode(array("added")));
-			return $this;
+			die(json_encode(array("added" => true, "msg" => $msg)));
 		}
 	}
 
@@ -1578,13 +1699,16 @@ class Model {
 		return $this->db->query($sql)->fetchAll();
 	}
 
-	public function getAllMaterials(){
+	public function getAllMaterials($productId = false){
+		$and = ($productId) ? " AND t2.id = $productId" : "";
+
 		$sql = "
 			SELECT t1.*
 			FROM material t1
 			LEFT JOIN product t2 
 			ON t1.productid = t2.id
 			WHERE t2.storeid = '".$_SESSION['storeid']."'
+			$and
 		";
 
 		return $this->db->query($sql)->fetchAll();

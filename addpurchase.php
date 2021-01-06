@@ -63,6 +63,10 @@
 									<input type="number" class="form-control" value="" required  id="quantity" name="qty" placeholder="Quantity..."/>
 								</div>
 								<div class="form-group">
+									<label>Unit:</label>
+									<input type="text" class="form-control" value="" required  id="unit" name="qty" placeholder="Unit..."/>
+								</div>
+								<div class="form-group">
 									<label>Date of purchase:</label>
 									<input type="date" required class="form-control" value="" id="date_purchased" name="date_purchased" placeholder="Date..."/>
 								</div>
@@ -124,7 +128,7 @@
 			<td class="vendorname" data-id="[VENDORID]">[VENDORNAME]</td>
 			<td class="materialname" data-id="[MATERIALID]">[MATERIALNAME]</td>
 			<td class="type" data-credit=[CREDIT_DATE] data-id="[TYPEID]">[TYPE]</td>
-			<td  class="quantity">[QUANTITY]</td>
+			<td  data-unit="[UNIT]" class="quantity">[QUANTITY]</td>
 			<td data-expiry_date=[EXPIRY_DATE] class="date_purchased">[DATE_PURCHASED]</td>
 			<td>
 				<a href="" class="delete btn btn-danger" ><svg class="bi" width="18" height="18" fill="currentColor"><use xlink:href="./node_modules/bootstrap-icons/bootstrap-icons.svg#trash"/></svg></a>
@@ -197,9 +201,10 @@
     					var type = tr.find(".type").data("id");
     					var quantity = tr.find(".quantity").html();
     					var expiryDate = tr.find(".date_purchased").data("expiry_date");
+    					var unit = tr.find(".quantity").data("unit");
     					var dateProduced = tr.find(".date_purchased").html();
     					var creditDate = tr.find(".type").data("credit");
-    					var production = Array(vendorName,materialName,type,quantity,dateProduced, creditDate, expiryDate);
+    					var production = Array(vendorName,materialName,type,quantity,dateProduced, creditDate, expiryDate, unit);
 
     					data.push(production);
 
@@ -236,6 +241,7 @@
     				var quantity = $("#quantity").val();
     				var dateProduced = $("#date_purchased").val();
     				var expiryDate = $("#expiry_date").val();
+    				var unit = $("#unit").val();
 
     				var errCount = 0;
 
@@ -276,6 +282,7 @@
 							replace("[CREDIT_DATE]", creditDate).
 							replace("[TYPE]", typeName).
 							replace("[QUANTITY]", quantity).
+							replace("[UNIT]", unit).
 							replace("[EXPIRY_DATE]", expiryDate).
 							replace("[DATE_PURCHASED]", dateProduced);
 
