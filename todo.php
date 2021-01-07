@@ -85,6 +85,16 @@ add fb notif
 
 
 
+new todo
+remove edit qty sa product edit
+incorrect filter sa expired  side nav, dapat sa production and check instead of product
+
+
+suggest edit/logic error
+* product>edit product> dapat i allow yung add ng material kahit out of stock pa yun kasi sa sales>production naman chinecheck yung stock ng material
+* productInventory , remove edit qty, remove expiration date( kasi iba iba yung expiration ng products na ginawa, monitoring lang ng qty dapat dito)
+* nag add ako ng price sa sales>production, since iba iba yung price kada magpoproduce ng bago
+
 
 
 

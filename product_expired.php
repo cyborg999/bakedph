@@ -10,19 +10,20 @@
       <div class="col-sm-10">
         <?php include_once "./dashboardnav.php"; ?>
         <?php
-          $products = $model->getAllProducts();
-
           $materials = $model->getAllMaterialInventory();
           $store = $model->getStoreStockLimit();
-
+          $products = $model->getExpiredProducts();
         ?>
+        <h5>Expired Products</h5>
         <table class="table">
           <thead>
             <tr>
+              <th scope="col">Batch #</th>
               <th scope="col">Product Name</th>
-              <th scope="col">SRP</th>
+              <th scope="col">Price</th>
               <th scope="col">Quantity</th>
-              <th scope="col">Action</th>
+              <th scope="col">Date Produced</th>
+              <th scope="col">Expiry Date</th>
             </tr>
           </thead>
           <tbody>
@@ -30,39 +31,28 @@
               .advance {
                 display: block;
               }
-              tr.lowstock {
+          /*    tr.lowstock {
                 background: #e6e6e6;
               }
               .lowstock .editqty {
                 color: red;
                 font-weight: 700;
-              }
-              .export {
-                display: block;
-                margin-top: 10px;
-              }
+              }*/
             </style>
             <tr>
-              <td colspan="2">
+              <td colspan="5">
                 <input type="text" class="form-control" id="searchName" placeholder="Name search..."/>
-                <a href="" class="advance">
-                  <small>advance</small>
-                </a>
-              </td>
-              <td >
-                <input type="number" class="form-control" id="searchQuantity" placeholder="Quantity"/>
               </td>
               <td>
-                <button id="filter" class="btn btn-sm btn-primary"> <= Filter</button>
-               <a href="ajax.php?&export=true&products=true" class="export">export csv</a>
-              </td>
+                 <a href="ajax.php?&export=true&productexpired=true">export csv</a>
+               </td>
             </tr>
             <tr  id="search" class="advance_tr hidden">
               <td colspan="2">
                 <small style="max-width: 100%;"><i>Set alert when the remaining stock is less than or equal to</i></small>
               </td>
               <td >
-                <input type="number" class="form-control" id="stock" value="<?= ($store) ? $store['product_low'] : 20;?>">
+                <input type="text" class="form-control" id="stock" value="<?= ($store) ? $store['product_low'] : 20;?>">
               </td>
               <td colspan="2">
                 <a href="" class="updateAlert btn btn-sm btn-primary">update</a>
@@ -71,13 +61,12 @@
             <?php foreach($products as $idx => $product): ?>
 
             <tr class="result <?=($product['qty'] <= $store['product_low']) ? 'lowstock' : ''; ?>" id="edit<?= $product['id']; ?>">
+              <td class="editbatch"><?= $product['batchnumber']; ?></td>
               <td class="editname"><?= $product['name']; ?></td>
-              <td class="editsrp"><?= $product['srp']; ?></td>
-              <td class="editqty"><?= $product['qty']; ?></td>
-              <td>
-                <a href="" data-qty="<?= $product['qty']; ?>" data-expiry="<?= $product['expiry_date']; ?>" data-srp="<?= $product['srp']; ?>" data-id="<?= $product['id']; ?>" data-name="<?= $product['name']; ?>"class="btn btn-sm btn-warning edit"  data-toggle="modal" data-target="#editProductModal" alt="Edit product"><svg class="bi" width="18" height="18" fill="currentColor"><use xlink:href="./node_modules/bootstrap-icons/bootstrap-icons.svg#pencil"/></svg> </a>
-                <a href="" data-id="<?= $product['id']; ?>" class="btn btn-sm btn-danger delete" alt="Delete Product"><svg class="bi" width="18" height="18" fill="currentColor"><use xlink:href="./node_modules/bootstrap-icons/bootstrap-icons.svg#trash"/></svg></a>
-              </td>
+              <td class="editsrp"><?= $product['price']; ?></td>
+              <td class="editqty"><?= $product['quantity']; ?></td>
+              <td class="editproduced"><?= $product['date_produced']; ?></td>
+              <td class="editexpiry"><?= $product['date_expired']; ?></td>
             </tr>
             <?php endforeach ?>
            
@@ -132,7 +121,7 @@
           <div class="col-sm-7">
             <ul class="nav nav-tabs" id="myTab" role="tablist">
               <li class="nav-item">
-                <a class="nav-link active" id="home-tab" data-toggle="tab" href="#raw" role="tab" aria-controls="home" aria-selected="true">Raw Materials Used</a>
+                <a class="nav-link active" id="home-tab" data-toggle="tab" href="#raw" role="tab" aria-controls="home" aria-selected="true">Raw Materials</a>
               </li>
               <li class="nav-item">
                 <a class="nav-link" id="profile-tab" data-toggle="tab" href="#expenses" role="tab" aria-controls="profile" aria-selected="false">Expenses</a>
@@ -230,13 +219,12 @@
 
 <script type="text/html" id="productTPL">
       <tr class="result [LOWSTOCK]" id="edit[ID]">
+          <td class="editname">[BATCH]</td>
           <td class="editname">[NAME]</td>
-          <td class="editsrp">[SRP]</td>
-          <td class="editqty">[QTY]</td>
-          <td>
-            <a href="" data-qty="[QTY]" data-expiry="[EXPIRY]" data-srp="[SRP]" data-id="[ID]" data-name="[NAME]" class="btn btn-sm btn-warning edit"  data-toggle="modal" data-target="#editProductModal" alt="Edit product"><svg class="bi" width="18" height="18" fill="currentColor"><use xlink:href="./node_modules/bootstrap-icons/bootstrap-icons.svg#pencil"/></svg> </a>
-            <a href="" data-id="[ID]"" class="btn btn-sm btn-danger delete" alt="Delete Product"><svg class="bi" width="18" height="18" fill="currentColor"><use xlink:href="./node_modules/bootstrap-icons/bootstrap-icons.svg#trash"/></svg></a>
-          </td>
+          <td class="editsrp">[PRICE]</td>
+          <td class="editqty">[QUANTITY]</td>
+          <td class="editqty">[DATE_PRODUCED]</td>
+          <td class="editqty">[EXPIRY_DATE]</td>
         </tr>
 </script>
 <script type="text/html" id="mats">
@@ -323,7 +311,7 @@
 
           });
 
-          $("#editform").off().on("submit", function(e){
+          $("#editform").on("submit", function(e){
             e.preventDefault();
 
             var me = $(this);
@@ -375,13 +363,16 @@
               type : "post",
               dataType : 'json',
               success : function(response){
-
+                console.log(response);
                 for(var i in response){
                   var tpl = $("#expensesTpl").html();
                   tpl = tpl.replace("[NAME]", response[i].name).
+                    replace("[BATCH]", response[i].batchnumber).
                     replace("[ID]", response[i].id).
-                    replace("[DATE]", response[i].date_produced).
-                    replace("[COST]", response[i].cost);
+                    replace("[QUANTITY]", response[i].quantity).
+                    replace("[DATE_PRODUCED]", response[i].date_produced).
+                    replace("[EXPIRY_DATE]", response[i].date_expired).
+                    replace("[PRICE]", response[i].price);
 
                   $("#expensesTbl tbody").append(tpl);
                 }
@@ -481,7 +472,7 @@
 
            $.ajax({
               url : "ajax.php"
-              , data : { searchProduct : true, txt : txt }
+              , data : { searchProductExpired : true, txt : txt }
               , type : "post"
               , dataType : "json"
               , success : function(response){
@@ -491,7 +482,14 @@
                   console.log(response[i].name);
                   var tpl = $("#productTPL").html();
 
-                  tpl = tpl.replace("[ID]", response[i].id).replace("[ID]", response[i].id).replace("[ID]", response[i].id).replace("[NAME]", response[i].name).
+                  tpl = tpl.replace("[ID]", response[i].id).replace("[ID]", response[i].id).replace("[ID]", response[i].id).
+                  replace("[NAME]", response[i].name).
+                   replace("[BATCH]", response[i].batchnumber).
+                    replace("[ID]", response[i].id).
+                    replace("[QUANTITY]", response[i].quantity).
+                    replace("[DATE_PRODUCED]", response[i].date_produced).
+                    replace("[EXPIRY_DATE]", response[i].date_expired).
+                    replace("[PRICE]", response[i].price).
                   replace("[LOWSTOCK]", (response[i].qty <= $("#stock").val()) ? 'lowstock' : '').
                   replace("[NAME]", response[i].name)
                   .replace("[SRP]", response[i].srp).replace("[SRP]", response[i].srp).replace("[QTY]", response[i].qty).replace("[QTY]", response[i].qty);

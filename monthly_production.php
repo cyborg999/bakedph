@@ -1,14 +1,14 @@
-<?php include_once "./headchosen.php"; ?>
+<?php include_once "./head.php"; ?>
 <body>
-	<div class="container-sm">
+	<div class="container-fluid">
 		<?php include_once "./spinner.php"; ?>
-		<?php include_once "./dashboardnav.php"; ?>
 		<div class="row">
 			<br>
-			<div class="col-sm-3">
+			<div class="col-sm-2">
 				<?php $active = "reports"; include "./sidenav.php"; ?>
 			</div>
-			<div class="col-sm-9">
+			<div class="col-sm-10">
+				<?php include_once "./dashboardnav.php"; ?>
 				<br>
 				<?php include_once "./error.php"; ?>
 				<div class="row">
@@ -34,6 +34,7 @@
 									</label>
 								</div>
 								<div class="form-group col-sm-6">
+									<br>
 									<label>Products
 										<select id="products" placeholder="Products" class="form-control" multiple style="width: 400px;">
 											<?php foreach($products as $idx => $product): ?>
@@ -125,6 +126,7 @@
 										<th>Batch #</th>
 										<th>SRP</th>
 										<th>Quantity</th>
+										<th>Unit</th>
 										<th>Amount</th>
 										<th>Date Produced</th>
 									</tr>
@@ -136,6 +138,7 @@
 										<td><?= $p['batchnumber']; ?></td>
 										<td><?= $p['srp']; ?></td>
 										<td><?= $p['quantity']; ?></td>
+										<td><?= $p['unit']; ?></td>
 										<td><?= $p['srp'] * $p['quantity']; ?></td>
 										<td><?= $p['date_produced']; ?></td>
 									</tr>

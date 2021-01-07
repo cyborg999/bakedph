@@ -1,13 +1,13 @@
 <?php include_once "./head.php"; ?>
 <body>
-	<div class="container-sm">
-		<?php include_once "./dashboardnav.php"; ?>
+	<div class="container-fluid">
 		<div class="row">
 			<br>
-			<div class="col-sm-3">
+			<div class="col-sm-2 sidenav">
 				<?php $active = "product"; include "./sidenav.php"; ?>
 			</div>
-			<div class="col-sm-9">
+			<div class="col-sm-10">
+				<?php include_once "./dashboardnav.php"; ?>
 				<?php include_once "./error.php"; ?>
 				<br>
 				<h5>Product Information</h5>

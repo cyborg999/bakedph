@@ -7,6 +7,7 @@
 		<ol class="breadcrumb">
 		  <li class="breadcrumb-item"><a href="#" data-target=".signup" class="next enabled">Account</a></li>
 		  <li class="breadcrumb-item"><a href="#" data-target=".store" class="next disabled store">Store</a></li>
+		  <li class="breadcrumb-item"><a href="#" data-target=".personal" class="next disabled personal">Personal</a></li>
 		  <li class="breadcrumb-item">
 		  	<a href="" data-target=".plan" class="next disabled plan">Plan</a>
 		  </li>
@@ -21,7 +22,7 @@
 			left: 0;
 			top: 0;
 			width: 100%;
-			min-height: 500px;
+			min-height: 600px;
 			z-index: 0;
 			background: white;
 		}
@@ -38,6 +39,7 @@
 		}
 	</style>
 	<div class="row slider final">
+
 		<div class="signup slide col-sm active">
 			<h4>Sign Up</h4>
 			<form method="post"  class="form">
@@ -57,6 +59,10 @@
 			<br>
 			<a href="" data-target=".store" class="disabled next hidden">Next</a>
 		</div>
+
+
+
+
 
 
 		<div class="store slide col-sm">
@@ -102,9 +108,39 @@
 				<button class="btn btn-primary btn-lg float-right">Next <svg class="bi" width="30" height="30" fill="currentColor"><use xlink:href="./node_modules/bootstrap-icons/bootstrap-icons.svg#chevron-compact-right"/></svg></button>
 				<div class="err"></div>
 			</form>
-			<a href="" data-target=".plan" data-target="store" class="disabled next hidden">Next</a>
+			<a href="" data-target=".personal" data-target="personal" class="disabled next hidden">Next</a>
 		</div>
 
+		<div class="personal slide col-sm">
+			<h5>Personal Information</h5>
+			<form method="post"  class="form">
+				<input type="hidden" name="addPersonal" value="1">
+				<div class="form-group">
+			      <label for="inputPassword4">Full Name</label>
+			      <input type="text" class="form-control" id="inputPassword4" value="" name="fullname" required>
+			    </div>
+			    <div class="form-group">
+					<label for="inputAddress">Address</label>
+					<input type="text" required class="form-control" id="inputAddress" value="" name="address" placeholder="1234 Main St">
+				</div>
+				<div class="form-row ">
+					<div class="form-group col-sm">
+						<label for="inputState">Contact Number</label>
+						<input type="number" required  class="form-control" id="inputState" value="" name="contact">
+					</div>
+					<div class="form-group col-sm">
+						<label for="inputEmail4">Email</label>
+						<input type="email" name="email" class="form-control" required value="" id="inputEmail4">
+					</div>
+				</div>
+				<br>
+				<a href="" data-target=".store" class="next enabled"><svg class="bi" width="50" height="50" fill="currentColor"><use xlink:href="./node_modules/bootstrap-icons/bootstrap-icons.svg#chevron-compact-left"/></svg></a>
+
+				<button class="btn btn-primary btn-lg float-right">Next <svg class="bi" width="30" height="30" fill="currentColor"><use xlink:href="./node_modules/bootstrap-icons/bootstrap-icons.svg#chevron-compact-right"/></svg></button>
+				<div class="err"></div>
+			</form>
+			<a href="" data-target=".plan" data-target="store" class="disabled next hidden">Next</a>
+	  	</div>
 
 		<div class="plan slide  col-sm final">
 			<h5>Choose Your Subscription Plan</h5>
@@ -127,7 +163,7 @@
 			</div>
 			<div class="row">
 				<div class="col-sm">
-					<a href="" data-target=".store" class="next enabled"><svg class="bi" width="50" height="50" fill="currentColor"><use xlink:href="./node_modules/bootstrap-icons/bootstrap-icons.svg#chevron-compact-left"/></svg></a>
+					<a href="" data-target=".personal" class="next enabled"><svg class="bi" width="50" height="50" fill="currentColor"><use xlink:href="./node_modules/bootstrap-icons/bootstrap-icons.svg#chevron-compact-left"/></svg></a>
 					<label>
 						<input type="checkbox" id="accept" name="">
 						Accept <a href="termsc.php" target="_blank" class="terms">Terms & Conditions</a>

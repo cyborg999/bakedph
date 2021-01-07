@@ -68,6 +68,9 @@ class Model {
 		$this->exportListener();
 		$this->filterExpensesListener();
 		$this->updateTermsListener();
+		$this->addPersonalListener();
+		$this->searchExpiredProductsListener();
+		$this->searchExpiredMaterialsListener();
 	}
 
 	public function updateTermsListener(){
@@ -111,6 +114,24 @@ class Model {
 	
 	public function exportListener(){
 		if(isset($_GET['export'])){
+			if(isset($_GET['productexpired'])){
+				header('Content-Type: text/csv; charset=utf-8');
+				header('Content-Disposition: attachment; filename=ExpiredProducts.csv');
+
+				$output = fopen('php://output', 'w');
+
+
+				fputcsv($output, array('Batch #', 'Product Name', 'Price', "Quantity", "Date Produced", "Expiry Date"));
+
+				$records = $this->db->query($_SESSION['lastQuery'])->fetchAll();
+
+				foreach($records as $idx => $r){
+					$data = array($r['batchnumber'],$r['name'],$r['price'],$r['quantity'], $r['date_produced'],$r['date_expired']);
+
+					fputcsv($output, $data);
+				}
+			}
+
 			if(isset($_GET['sales'])){
 				header('Content-Type: text/csv; charset=utf-8');
 				header('Content-Disposition: attachment; filename=Sales.csv');
@@ -128,6 +149,23 @@ class Model {
 				}
 			}
 
+			if(isset($_GET['materialExpired'])){
+				header('Content-Type: text/csv; charset=utf-8');
+				header('Content-Disposition: attachment; filename=ExpiredMaterials.csv');
+
+				$output = fopen('php://output', 'w');
+
+
+				fputcsv($output, array('Name', 'Price', 'Quantity', "Unit", "Date Purchased", "Expiry Date"));
+
+				$records = $this->db->query($_SESSION['lastQuery'])->fetchAll();
+
+				foreach($records as $idx => $r){
+					$data = array($r['name'],$r['price'],$r['qty'],$r['unit'], $r['date_purchased'],$r['expiry_date']);
+					fputcsv($output, $data);
+				}
+			}
+
 			if(isset($_GET['production'])){
 				header('Content-Type: text/csv; charset=utf-8');
 				header('Content-Disposition: attachment; filename=ProductionRecord.csv');
@@ -135,12 +173,12 @@ class Model {
 				$output = fopen('php://output', 'w');
 
 
-				fputcsv($output, array('Name', 'Batch #', 'SRP', "Quantity", "Amount"));
+				fputcsv($output, array('Name', 'Batch #', 'SRP', "Quantity", "Unit", "Amount"));
 
 				$records = $this->db->query($_SESSION['lastQuery'])->fetchAll();
 
 				foreach($records as $idx => $r){
-					$data = array($r['name'],$r['batchnumber'],$r['srp'],$r['quantity'], $r['quantity'] * $r['srp']);
+					$data = array($r['name'],$r['batchnumber'],$r['srp'],$r['quantity'], $r['unit'], $r['quantity'] * $r['srp']);
 					fputcsv($output, $data);
 				}
 			}
@@ -817,12 +855,22 @@ class Model {
 			$output = fopen('php://output', 'w');
 
 			// output the column headings
-			fputcsv($output, array('Purchase Type', 'Material', 'Supplier', "Date Purchased", "Quantity"));
+			if(isset($_GET['credit'])){
+				fputcsv($output, array('Purchase Type', 'Material', 'Supplier', "Date Purchased", "Credit Date", "Quantity", "Unit"));
+
+			} else {
+				fputcsv($output, array('Purchase Type', 'Material', 'Supplier', "Date Purchased", "Quantity", "Unit"));
+
+			}
 
 			$records = $this->db->query($_SESSION['lastQuery'])->fetchAll();
 			
 			foreach($records as $idx => $r){
-				$data = array($r['type'],$r['materialname'],$r['vendorname'],$r['date_purchased'],$r['qty'],);
+			if(isset($_GET['credit'])){
+				$data = array($r['type'],$r['materialname'],$r['vendorname'],$r['date_purchased'],$r['credit_date'],$r['qty'],$r['unit']);
+			} else {
+				$data = array($r['type'],$r['materialname'],$r['vendorname'],$r['date_purchased'],$r['qty'],$r['unit']);
+			}
 				fputcsv($output, $data);
 			}
 
@@ -926,6 +974,19 @@ class Model {
 		}
 	}
 
+	public function getStoreUnitsOfMeasurement(){
+		$id = $_SESSION['storeid'];
+
+		$sql = "
+			select distinct(unit)
+			from material_inventory
+			where storeid = $id
+			AND unit !=''
+		";
+
+		return $this->db->query($sql)->fetchAll(PDO::FETCH_ASSOC);
+	}
+
 	public function addMaterialInventoryListener(){
 		if(isset($_POST['addMaterialInventory'])){
 			$exists = $this->checkifMaterialInventoryExists($_SESSION['storeid'], $_POST['name']);
@@ -934,13 +995,12 @@ class Model {
 				$this->errors[] = "This material exists in this store already.";
 			} else {
 				$this->success = "You have succesfully added this material.";
-
 				$sql = "
-					INSERT INTO material_inventory(storeid,name,qty,price,expiry_date)
-					VALUES(?,?,?,?,?)
+					INSERT INTO material_inventory(storeid,name,unit)
+					VALUES(?,?,?)
 				";
 
-				$this->db->prepare($sql)->execute(array($_SESSION['storeid'],$_POST['name'],$_POST['qty'],$_POST['price'],$_POST['expiry_date']));
+				$this->db->prepare($sql)->execute(array($_SESSION['storeid'],$_POST['name'],$_POST['unit']));
 
 				return $this;
 			}
@@ -951,11 +1011,11 @@ class Model {
 		if(isset($_POST['addPurchase'])){
 			foreach($_POST['data'] as $idx => $d){
 				$sql = "
-					INSERT INTO purchase(vendorid,materialid,type,qty,date_purchased,storeid,credit_date,expiry_date,unit)
-					VALUES(?,?,?,?,?,?,?,?,?)
+					INSERT INTO purchase(vendorid,materialid,type,qty,date_purchased,storeid,credit_date,expiry_date,unit,price)
+					VALUES(?,?,?,?,?,?,?,?,?,?)
 				";
 
-				$this->db->prepare($sql)->execute(array($d[0],$d[1],$d[2],$d[3],$d[4], $_SESSION['storeid'], $d[5], $d[6], $d[7]));
+				$this->db->prepare($sql)->execute(array($d[0],$d[1],$d[2],$d[3],$d[4], $_SESSION['storeid'], $d[5], $d[6], $d[7], $d[8]));
 				$this->updateMaterialInventory($d[1], $d[3], true);
 			}
 			
@@ -1180,11 +1240,11 @@ class Model {
 
 			foreach($_POST['data'] as $idx => $d){
 				$sql = "
-					INSERT INTO production(productid,batchnumber,quantity,date_produced,storeid,unit,date_expired)
-					VALUES(?,?,?,?,?,?,?)
+					INSERT INTO production(productid,batchnumber,quantity,date_produced,storeid,unit,date_expired,price)
+					VALUES(?,?,?,?,?,?,?,?)
 				";
 
-				$this->db->prepare($sql)->execute(array($d[0],$d[2],$d[1],$d[3],$_SESSION['storeid'], $d[4], $d[5]));
+				$this->db->prepare($sql)->execute(array($d[0],$d[2],$d[1],$d[3],$_SESSION['storeid'], $d[4], $d[5], $d[7]));
 
 				$this->updateProductInventory($d[0], $d[1], true);
 
@@ -1306,13 +1366,47 @@ class Model {
 		}
 	}
 
+	public function searchExpiredMaterialsListener(){
+		if(isset($_POST['searchExpiredMaterial'])) {
+			$sql = "
+				SELECT t1.*, t2.name
+				FROM purchase t1 
+				left join material_inventory t2
+				on t1.materialid = t2.id
+				WHERE t1.storeid = '".$_SESSION['storeid']."'
+				AND t1.expiry_date <= date(CURRENT_DATE())
+				AND t2.name LIKE '%".$_POST['txt']."%'
+			";
+
+			$_SESSION['lastQuery'] = $sql;
+
+			$data = $this->db->query($sql)->fetchAll();
+
+			die(json_encode($data));
+		}
+	}
+
 	public function searchMaterialListener(){
 		if(isset($_POST['searchMaterial'])) {
+			$and = "";
+
+			if(isset($_POST['status'])){
+				if($_POST['status'] == "expired"){
+					$and = "AND expiry_date <= date(CURRENT_DATE())";
+				} elseif($_POST['status'] == "lowstock"){
+					$limit = $this->getStoreStockLimit();
+					$materialLow = $limit['material_low'];
+
+					$and = " AND qty <= $materialLow";
+				}
+			}
+
 			$sql = "
 				SELECT *
 				FROM material_inventory
 				WHERE name LIKE '%".$_POST['txt']."%'
 				AND storeid = '".$_SESSION['storeid']."'
+				$and
 				LIMIT 20
 			";
 
@@ -1419,9 +1513,12 @@ class Model {
 
 	public function updateUserInfoListener(){
 		if(isset($_POST['updateUserInfo'])){
+			$id = $_SESSION['id'];
+
 			$sql = "
 				UPDATE userinfo
 				SET fullname = ?, address = ?, contact = ?, email = ?, bday = ?
+				where userid = $id
 			";
 
 			$this->db->prepare($sql)->execute(array($_POST['fullname'], $_POST['address'], $_POST['contact'], $_POST['email'], $_POST['birthday']));
@@ -1651,6 +1748,41 @@ class Model {
 		}
 	}
 
+	public function searchExpiredProductsListener(){
+		if(isset($_POST['searchProductExpired'])) {
+			$sql = "
+				SELECT t1.*,t2.name
+				FROM production t1
+				left join product t2
+				on t1.productid = t2.id
+				WHERE t1.storeid = '".$_SESSION['storeid']."'
+				AND t1.date_expired <= date(CURRENT_DATE())
+				AND t2.name LIKE '%".$_POST['txt']."%'
+			";
+
+			$_SESSION['lastQuery'] = $sql;
+
+			$data = $this->db->query($sql)->fetchAll();
+
+			die(json_encode($data));
+		}
+	}
+
+	public function getExpiredProducts(){
+		$sql = "
+			SELECT t1.*,t2.name
+			FROM production t1
+			left join product t2
+			on t1.productid = t2.id
+			WHERE t1.storeid = '".$_SESSION['storeid']."'
+			AND t1.date_expired <= date(CURRENT_DATE())
+		";
+
+		$_SESSION['lastQuery'] = $sql;
+
+		return $this->db->query($sql)->fetchAll();
+	}
+
 	public function getAllProducts($lowStock = false){
 		$sql = "
 			SELECT *
@@ -1669,6 +1801,21 @@ class Model {
 				AND qty <= $productLow
 			";
 		}
+
+		$_SESSION['lastQuery'] = $sql;
+
+		return $this->db->query($sql)->fetchAll();
+	}
+
+	public function getExpiredMaterials(){
+		$sql = "
+			SELECT t1.*, t2.name
+			FROM purchase t1 
+			left join material_inventory t2
+			on t1.materialid = t2.id
+			WHERE t1.storeid = '".$_SESSION['storeid']."'
+			AND t1.expiry_date <= date(CURRENT_DATE())
+		";
 
 		$_SESSION['lastQuery'] = $sql;
 
@@ -1969,12 +2116,14 @@ class Model {
 	public function loginListener(){
 		if(isset($_POST['login'])){
 			$sql = "
-				SELECT t1.*, t2.id as 'storeId', t3.is_trial, t3.duration
+				SELECT t1.*, t4.fullname, t2.id as 'storeId', t3.is_trial, t3.duration
 				FROM user t1
 				LEFT JOIN store t2
 				ON t1.id = t2.userid
 				left join subscription t3
 				on t2.subscriptionid = t3.id
+				left join userinfo t4 
+				on t4.userid = t1.id
 				WHERE username = '".$_POST['username']."'
 				AND password = '".md5($_POST['password'])."'
 
@@ -1989,6 +2138,7 @@ class Model {
 				//redirect to dashboard
 				$_SESSION['id'] = $exists['id'];
 				$_SESSION['username'] = $exists['username'];
+				$_SESSION['name'] = $exists['fullname'];
 				$_SESSION['storeid'] = $exists['storeId'];
 				$_SESSION['usertype'] = $exists['usertype'];
 
@@ -2019,6 +2169,19 @@ class Model {
 		}
 	}
 
+	public function addPersonalListener(){
+		if(isset($_POST['addPersonal'])){
+			$_SESSION['setup']['p_fullname'] = $_POST['fullname'];
+			$_SESSION['setup']['p_address'] = $_POST['address'];
+			$_SESSION['setup']['p_contact'] = $_POST['contact'];
+			$_SESSION['setup']['p_email'] = $_POST['email'];
+			
+			$data = array("added" => true);
+
+			die(json_encode($data));
+		}
+	}
+
 	public function signUpListener(){
 		if(isset($_POST['signup'])){
 			//authentication
@@ -2044,11 +2207,11 @@ class Model {
 
 	public function addUserInfoById($id){
 		$sql = "
-			INSERT INTO userinfo(userid)
-			VALUES(?)
+			INSERT INTO userinfo(userid, fullname, address, contact, email)
+			VALUES(?,?,?,?,?)
 		";
 
-		$this->db->prepare($sql)->execute(array($id));
+		$this->db->prepare($sql)->execute(array($id , $_SESSION['setup']['p_fullname'], $_SESSION['setup']['p_address'], $_SESSION['setup']['p_contact'], $_SESSION['setup']['p_email']));
 
 		return $this;
 	}

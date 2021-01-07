@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Jan 06, 2021 at 03:56 AM
+-- Generation Time: Jan 07, 2021 at 08:19 PM
 -- Server version: 10.4.13-MariaDB
 -- PHP Version: 7.4.8
 
@@ -67,7 +67,8 @@ INSERT INTO `material` (`id`, `materialid`, `qty`, `productid`, `date_created`) 
 (67, 11, 1, 11, '2021-01-03 02:28:38'),
 (68, 12, 20, 11, '2021-01-03 02:28:44'),
 (69, 13, 1, 11, '2021-01-03 02:28:49'),
-(70, 12, 1, 13, '2021-01-03 04:03:31');
+(70, 12, 1, 13, '2021-01-03 04:03:31'),
+(71, 11, 1, 15, '2021-01-07 00:34:23');
 
 -- --------------------------------------------------------
 
@@ -79,22 +80,24 @@ CREATE TABLE `material_inventory` (
   `id` int(11) NOT NULL,
   `storeid` int(11) NOT NULL,
   `name` varchar(255) NOT NULL,
-  `qty` int(11) NOT NULL,
+  `qty` int(11) NOT NULL DEFAULT 0,
   `price` double NOT NULL,
   `expiry_date` date NOT NULL,
-  `date_created` timestamp NOT NULL DEFAULT current_timestamp()
+  `date_created` timestamp NOT NULL DEFAULT current_timestamp(),
+  `unit` varchar(255) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 --
 -- Dumping data for table `material_inventory`
 --
 
-INSERT INTO `material_inventory` (`id`, `storeid`, `name`, `qty`, `price`, `expiry_date`, `date_created`) VALUES
-(11, 21, 'Flour', 95, 50, '1111-11-11', '2021-01-03 01:17:38'),
-(12, 21, 'Egg', 0, 8, '0111-11-11', '2021-01-03 02:27:33'),
-(13, 21, 'Sugar', 95, 40, '0000-00-00', '2021-01-03 02:27:43'),
-(14, 21, 'asdas', 0, 234, '2021-01-05', '2021-01-04 19:43:20'),
-(15, 25, 'testMaterial', 102, 34, '2021-01-05', '2021-01-04 21:34:47');
+INSERT INTO `material_inventory` (`id`, `storeid`, `name`, `qty`, `price`, `expiry_date`, `date_created`, `unit`) VALUES
+(11, 21, 'Flour', 2330, 50, '1111-11-11', '2021-01-03 01:17:38', NULL),
+(12, 21, 'Egg', 0, 8, '0111-11-11', '2021-01-03 02:27:33', NULL),
+(13, 21, 'Sugar', 95, 40, '0000-00-00', '2021-01-03 02:27:43', NULL),
+(14, 21, 'asdas', 0, 234, '2021-01-05', '2021-01-04 19:43:20', 'test'),
+(15, 25, 'testMaterial', 102, 34, '2021-01-06', '2021-01-04 21:34:47', NULL),
+(16, 21, 'test', 0, 0, '0000-00-00', '2021-01-07 17:29:49', '345');
 
 -- --------------------------------------------------------
 
@@ -143,10 +146,7 @@ CREATE TABLE `product` (
 --
 
 INSERT INTO `product` (`id`, `name`, `srp`, `qty`, `expiry_date`, `storeid`, `date_created`, `status`) VALUES
-(11, 'Cheese Cake', 2, 1857, '1991-02-21', 21, 2147483647, 1),
-(12, 'Fudgee Bar', 3, 133, '1991-02-22', 21, 2147483647, 1),
-(13, 'TestMNaterial', 1, 101, '0000-00-00', 21, 2147483647, 1),
-(14, '345', 345, 0, '2021-01-05', 21, 2147483647, 1);
+(16, 'Cheese Cake', 20, 354, '2021-01-07', 21, 2147483647, 1);
 
 -- --------------------------------------------------------
 
@@ -163,26 +163,18 @@ CREATE TABLE `production` (
   `storeid` int(11) NOT NULL,
   `date_created` timestamp NOT NULL DEFAULT current_timestamp(),
   `unit` varchar(255) DEFAULT NULL,
-  `date_expired` date DEFAULT NULL
+  `date_expired` date DEFAULT NULL,
+  `price` float DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 --
 -- Dumping data for table `production`
 --
 
-INSERT INTO `production` (`id`, `productid`, `batchnumber`, `quantity`, `date_produced`, `storeid`, `date_created`, `unit`, `date_expired`) VALUES
-(32, 11, '32', 32, '2021-01-05', 21, '2021-01-05 14:18:16', NULL, NULL),
-(33, 11, 'Batch #33', 345, '2021-01-05', 21, '2021-01-05 14:34:11', NULL, NULL),
-(34, 11, 'Batch #34', 534, '2021-01-05', 21, '2021-01-05 14:34:43', NULL, NULL),
-(35, 11, 'Batch #35', 324, '2021-01-05', 21, '2021-01-05 14:35:42', NULL, NULL),
-(36, 11, 'Batch #36', 345, '2021-01-05', 21, '2021-01-05 14:36:09', NULL, NULL),
-(37, 11, 'Batch #37', 1, '2021-01-06', 21, '2021-01-05 15:54:45', '34', NULL),
-(38, 11, 'Batch #38', 32, '2021-01-06', 21, '2021-01-05 16:02:51', 'kg', '0000-00-00'),
-(39, 11, 'Batch #39', 1, '2021-01-06', 21, '2021-01-05 16:05:00', 'kg', '2021-01-07'),
-(40, 11, 'Batch #40', 2, '2021-01-06', 21, '2021-01-06 00:08:16', 'kg', '2021-01-06'),
-(41, 11, 'Batch #41', 99, '2021-01-06', 21, '2021-01-06 00:10:04', 'kg', '2021-01-06'),
-(42, 11, 'Batch #41', 1, '2021-01-06', 21, '2021-01-06 00:10:05', 'kg', '2021-01-06'),
-(43, 11, 'Batch #43', 5, '2021-01-06', 21, '2021-01-06 00:21:42', 'kg', '2021-01-06');
+INSERT INTO `production` (`id`, `productid`, `batchnumber`, `quantity`, `date_produced`, `storeid`, `date_created`, `unit`, `date_expired`, `price`) VALUES
+(48, 16, 'Batch #48', 100, '2021-01-07', 21, '2021-01-07 14:18:13', 'kg', '2021-01-07', 99),
+(49, 16, 'Batch #49', 100, '2021-01-07', 21, '2021-01-07 14:19:21', 'kg', '2021-01-07', 100),
+(50, 16, 'Batch #50', 34, '2021-01-08', 21, '2021-01-07 18:41:51', 'pcs', '2021-01-08', 2);
 
 -- --------------------------------------------------------
 
@@ -201,26 +193,20 @@ CREATE TABLE `purchase` (
   `storeid` int(11) NOT NULL,
   `credit_date` date DEFAULT NULL,
   `expiry_date` date DEFAULT NULL,
-  `unit` varchar(255) DEFAULT NULL
+  `unit` varchar(255) DEFAULT NULL,
+  `price` float DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 --
 -- Dumping data for table `purchase`
 --
 
-INSERT INTO `purchase` (`id`, `vendorid`, `materialid`, `date_purchased`, `type`, `qty`, `date_created`, `storeid`, `credit_date`, `expiry_date`, `unit`) VALUES
-(19, 1, 0, '0111-11-11', 'cash', 12, '2020-12-07 09:35:24', 21, NULL, NULL, NULL),
-(20, 1, 0, '0111-11-11', 'cash', 12, '2020-12-07 09:35:25', 21, NULL, NULL, NULL),
-(21, 1, 10, '0111-11-11', 'cash', 1, '2020-12-07 09:53:21', 21, NULL, NULL, NULL),
-(22, 1, 10, '0111-11-11', 'cash', 1, '2020-12-07 09:53:21', 21, NULL, NULL, NULL),
-(23, 1, 12, '0000-00-00', 'cash', 2, '2021-01-03 03:50:06', 21, NULL, NULL, NULL),
-(24, 1, 12, '0000-00-00', 'cash', 3, '2021-01-03 03:50:06', 21, NULL, NULL, NULL),
-(25, 1, 11, '2021-01-05', 'credit', 32432, '2021-01-04 19:00:16', 21, '2021-01-06', NULL, NULL),
-(26, 1, 11, '2021-01-05', 'credit', 32432, '2021-01-04 19:00:21', 21, '2021-01-06', NULL, NULL),
-(27, 4, 15, '2021-01-05', 'cash', 34, '2021-01-04 21:38:28', 25, '2021-01-05', '2021-01-05', NULL),
-(28, 4, 15, '2021-01-05', 'cash', 34, '2021-01-04 21:38:28', 25, '2021-01-05', '2021-01-05', NULL),
-(29, 1, 11, '2021-01-06', 'cash', 1, '2021-01-05 15:49:22', 21, '2021-01-06', '2021-01-06', '[UNIT]'),
-(30, 1, 11, '2021-01-06', 'cash', 34, '2021-01-05 15:50:31', 21, '2021-01-06', '2021-01-06', 'kg');
+INSERT INTO `purchase` (`id`, `vendorid`, `materialid`, `date_purchased`, `type`, `qty`, `date_created`, `storeid`, `credit_date`, `expiry_date`, `unit`, `price`) VALUES
+(53, 1, 11, '2021-01-08', 'cash', 324, '2021-01-07 15:11:02', 21, '2021-01-08', '2021-01-08', '45', 345),
+(54, 1, 11, '2021-01-08', 'cash', 324, '2021-01-07 15:11:15', 21, '2021-01-08', '2021-01-08', '45', 345),
+(55, 1, 11, '2021-01-08', 'cash', 34, '2021-01-07 16:11:50', 21, '2021-01-08', '2021-01-08', 'unit', 345),
+(56, 1, 11, '2021-01-08', 'cash', 34, '2021-01-07 16:11:52', 21, '2021-01-08', '2021-01-08', 'unit', 345),
+(57, 1, 11, '2021-01-08', 'credit', 23, '2021-01-07 18:03:02', 21, '2021-01-09', '2021-01-08', 'test', 33);
 
 -- --------------------------------------------------------
 
@@ -324,12 +310,15 @@ CREATE TABLE `store` (
 
 INSERT INTO `store` (`id`, `name`, `description`, `logo`, `date_creaed`, `userid`, `subscriptionid`, `last_payment_id`, `material_low`, `product_low`, `b_address`, `dti`, `b_email`, `b_contact`) VALUES
 (20, 'jorjor', NULL, NULL, '2020-10-12 15:57:01', 36, 30, NULL, 20, 20, NULL, NULL, NULL, NULL),
-(21, 'cyborg999', NULL, NULL, '2020-10-17 04:48:07', 37, 32, 'ch_1HuBTwJmfnsrzK573SpNZBoV', 985, 105, NULL, NULL, NULL, NULL),
+(21, 'cyborg999', NULL, NULL, '2020-10-17 04:48:07', 37, 32, 'ch_1HuBTwJmfnsrzK573SpNZBoV', 985, 350, NULL, NULL, NULL, NULL),
 (22, 'User2 Store', NULL, NULL, '2020-11-29 14:50:17', 38, 32, NULL, 20, 20, NULL, NULL, NULL, NULL),
 (23, 'merchanrt5', NULL, NULL, '2021-01-03 12:49:16', 39, 31, NULL, 20, 20, NULL, NULL, NULL, NULL),
 (24, 'test store', NULL, NULL, '2021-01-04 20:28:33', 40, 31, NULL, 20, 20, '234 asdsad', '34435', '3445@mail.com', '34534534'),
 (25, 'Trial Store', NULL, NULL, '2021-01-04 20:46:44', 41, 42, NULL, 20, 20, '234 asdas', '345435', 'sad@nauk.com', '3454353'),
-(26, 'Jordan Sadiwa', NULL, NULL, '2021-01-06 02:42:36', 42, 42, NULL, 20, 20, '1852 Sandejas Pasay City', '234', 'JORDAN-E14NWI096B87359TFWN@TEST.INFO', '234');
+(26, 'Jordan Sadiwa', NULL, NULL, '2021-01-06 02:42:36', 42, 42, NULL, 20, 20, '1852 Sandejas Pasay City', '234', 'JORDAN-E14NWI096B87359TFWN@TEST.INFO', '234'),
+(27, 'Jordan Sadiwa345', NULL, NULL, '2021-01-06 14:32:00', 45, 42, NULL, 20, 20, '1852 Sandejas Pasay City', '234', 'sad@mail.com', '234'),
+(28, 'Jordan Sadiwa345', NULL, NULL, '2021-01-06 14:32:14', 46, 42, NULL, 20, 20, '1852 Sandejas Pasay City', '234', 'sad@mail.com', '234'),
+(29, 'Jordan Sadiwa345', NULL, NULL, '2021-01-06 14:32:34', 47, 42, NULL, 20, 20, '1852 Sandejas Pasay City', '234', 'sad@mail.com', '234');
 
 -- --------------------------------------------------------
 
@@ -399,7 +388,8 @@ INSERT INTO `user` (`id`, `username`, `password`, `usertype`, `verified`, `date_
 (39, 'merchant5', '5c07f19fdd6ce3b1a588f71d11ee2b23', 'basic', 0, '2021-01-03 12:49:16'),
 (40, 'test', '5c07f19fdd6ce3b1a588f71d11ee2b23', 'basic', 0, '2021-01-04 20:28:33'),
 (41, 'trialUser', '5c07f19fdd6ce3b1a588f71d11ee2b23', 'basic', 0, '2021-01-04 20:46:44'),
-(42, 'test9', '5c07f19fdd6ce3b1a588f71d11ee2b23', 'basic', 0, '2021-01-06 02:42:35');
+(42, 'test9', '5c07f19fdd6ce3b1a588f71d11ee2b23', 'basic', 0, '2021-01-06 02:42:35'),
+(47, 'cyborg999asd', '5c07f19fdd6ce3b1a588f71d11ee2b23', 'basic', 0, '2021-01-06 14:32:33');
 
 -- --------------------------------------------------------
 
@@ -428,8 +418,7 @@ INSERT INTO `userinfo` (`id`, `fullname`, `address`, `contact`, `email`, `bday`,
 (15, 'Jordan Sadiwa', '1852 Sandejas Pasay City', '09287655606', 'JORDAN-E14NWI096B87359TFWN@TEST.INFO', '2021-01-05', '2020-11-29 14:50:17', 38),
 (16, 'Jordan Sadiwa', '1852 Sandejas Pasay City', '09287655606', 'JORDAN-E14NWI096B87359TFWN@TEST.INFO', '2021-01-05', '2021-01-03 12:49:16', 39),
 (17, NULL, NULL, NULL, NULL, NULL, '2021-01-04 20:28:33', 40),
-(18, NULL, NULL, NULL, NULL, NULL, '2021-01-04 20:46:44', 41),
-(19, NULL, NULL, NULL, NULL, NULL, '2021-01-06 02:42:35', 42);
+(20, 'Jordan Sadiwa', '1852 Sandejas Pasay City', '234', 'sad@mail.com', NULL, '2021-01-06 14:32:34', 47);
 
 -- --------------------------------------------------------
 
@@ -563,13 +552,13 @@ ALTER TABLE `expenses`
 -- AUTO_INCREMENT for table `material`
 --
 ALTER TABLE `material`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=71;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=72;
 
 --
 -- AUTO_INCREMENT for table `material_inventory`
 --
 ALTER TABLE `material_inventory`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=16;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=17;
 
 --
 -- AUTO_INCREMENT for table `payments`
@@ -581,19 +570,19 @@ ALTER TABLE `payments`
 -- AUTO_INCREMENT for table `product`
 --
 ALTER TABLE `product`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=15;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=17;
 
 --
 -- AUTO_INCREMENT for table `production`
 --
 ALTER TABLE `production`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=44;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=51;
 
 --
 -- AUTO_INCREMENT for table `purchase`
 --
 ALTER TABLE `purchase`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=31;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=58;
 
 --
 -- AUTO_INCREMENT for table `sales`
@@ -617,7 +606,7 @@ ALTER TABLE `slides`
 -- AUTO_INCREMENT for table `store`
 --
 ALTER TABLE `store`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=27;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=30;
 
 --
 -- AUTO_INCREMENT for table `subscription`
@@ -629,13 +618,13 @@ ALTER TABLE `subscription`
 -- AUTO_INCREMENT for table `user`
 --
 ALTER TABLE `user`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=43;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=48;
 
 --
 -- AUTO_INCREMENT for table `userinfo`
 --
 ALTER TABLE `userinfo`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=20;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=21;
 
 --
 -- AUTO_INCREMENT for table `vendor`

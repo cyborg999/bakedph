@@ -2,22 +2,22 @@
 <?php $model->checkAccess(); ?>
 <body>
 	<?php include_once "./spinner.php"; ?>
-	<div class="container-sm">
-		<?php include_once "./dashboardnav.php"; ?>
+	<div class="container-fluid">
 		<div class="row">
 			<br>
-			<div class="col-sm-3">
+			<div class="col-sm-2 sidenav">
 				<?php $active = "sales"; include "./sidenav.php"; ?>
 			</div>
-			<div class="col-sm-9">
+			<div class="col-sm-10">
+				<?php include_once "./dashboardnav.php"; ?>
 				<?php include_once "./error.php"; ?>
 				<br>
 				<div class="col-sm">
 				  	<?php
-			          $materials = $model->getAllMaterialInventory();
-
-			          $vendors = $model->getAllVendors();
-			          $purchasedOrders = $model->getPurchaseOrders();
+						$materials = $model->getAllMaterialInventory();
+						$units = $model->getStoreUnitsOfMeasurement();
+						$vendors = $model->getAllVendors();
+						$purchasedOrders = $model->getPurchaseOrders();
 			        ?>
 			        <div class="row">
 			        	<div class="col-sm message">
@@ -64,7 +64,15 @@
 								</div>
 								<div class="form-group">
 									<label>Unit:</label>
-									<input type="text" class="form-control" value="" required  id="unit" name="qty" placeholder="Unit..."/>
+									<select id="unit"  class="form-control" name="unit">
+		            					<?php foreach($units as $idx => $v): ?>
+										<option value="<?= $v['unit'];?>"><?= $v['unit'];?></option>
+		            					<?php endforeach ?>
+									</select>
+								</div>
+								<div class="form-group">
+									<label>Price:</label>
+									<input type="text" class="form-control" value="" required  id="price" name="price" placeholder="Price..."/>
 								</div>
 								<div class="form-group">
 									<label>Date of purchase:</label>
@@ -86,11 +94,13 @@
 										<th>Material</th>
 										<th>Type</th>
 										<th>Quantity</th>
+										<th>Unit</th>
+										<th>Price</th>
 										<th>Date Purchased</th>
 										<th>Action</th>
 									</tr>
 								</thead>
-								<tbody>
+								<tbody id="tbody">
 									
 								</tbody>
 								<tfoot>
@@ -129,6 +139,8 @@
 			<td class="materialname" data-id="[MATERIALID]">[MATERIALNAME]</td>
 			<td class="type" data-credit=[CREDIT_DATE] data-id="[TYPEID]">[TYPE]</td>
 			<td  data-unit="[UNIT]" class="quantity">[QUANTITY]</td>
+			<td  class="unit">[UNIT]</td>
+			<td  class="price">[PRICE]</td>
 			<td data-expiry_date=[EXPIRY_DATE] class="date_purchased">[DATE_PURCHASED]</td>
 			<td>
 				<a href="" class="delete btn btn-danger" ><svg class="bi" width="18" height="18" fill="currentColor"><use xlink:href="./node_modules/bootstrap-icons/bootstrap-icons.svg#trash"/></svg></a>
@@ -164,6 +176,9 @@
     			$("#slctMaterial").chosen();
     			$("#type").chosen();
 
+    			$("#unit").chosen();
+    			
+
     			$("#type").on("change", function(){
     				var val = $(this).val();
 
@@ -191,27 +206,34 @@
     				e.preventDefault();
 
     				var data = Array();
-    				var tr = $("tbody tr");
+    				var tr = $("#tbody tr");
 
     				tr.each(function(x, y){
     					var tr = $(y);
 
-    					var vendorName = tr.find(".vendorname").data("id");
-    					var materialName = tr.find(".materialname").data("id");
-    					var type = tr.find(".type").data("id");
-    					var quantity = tr.find(".quantity").html();
-    					var expiryDate = tr.find(".date_purchased").data("expiry_date");
-    					var unit = tr.find(".quantity").data("unit");
-    					var dateProduced = tr.find(".date_purchased").html();
-    					var creditDate = tr.find(".type").data("credit");
-    					var production = Array(vendorName,materialName,type,quantity,dateProduced, creditDate, expiryDate, unit);
+    					if(tr.find(".vendorname").length >0){
+    						var vendorName = tr.find(".vendorname").data("id");
+	    					var materialName = tr.find(".materialname").data("id");
+	    					var type = tr.find(".type").data("id");
+	    					var quantity = tr.find(".quantity").html();
+	    					var expiryDate = tr.find(".date_purchased").data("expiry_date");
+	    					var unit = tr.find(".quantity").data("unit");
+	    					var price = parseFloat(tr.find(".price").html());
+	    					var dateProduced = tr.find(".date_purchased").html();
+	    					var creditDate = tr.find(".type").data("credit");
+	    					var production = Array(vendorName,materialName,type,quantity,dateProduced, creditDate, expiryDate, unit, price);
 
-    					data.push(production);
+	    					data.push(production);
+    					}
+    					
 
     				});
 
+    				if(data.length == 0){
+    					return;
+    				} 
+
     				$(".message").html("");
-    				console.log(data);
     				if(tr.length){
     					$.ajax({
 							url : "ajax.php"
@@ -219,7 +241,7 @@
 							, type : 'post'
 							, dataType : 'json'
 							, success : function(response){
-								tr.html("");
+								$("#tbody").html("");
 
 								$(".message").append($("#success").html());
 							}
@@ -242,6 +264,7 @@
     				var dateProduced = $("#date_purchased").val();
     				var expiryDate = $("#expiry_date").val();
     				var unit = $("#unit").val();
+    				var price = $("#price").val();
 
     				var errCount = 0;
 
@@ -283,6 +306,8 @@
 							replace("[TYPE]", typeName).
 							replace("[QUANTITY]", quantity).
 							replace("[UNIT]", unit).
+							replace("[UNIT]", unit).
+							replace("[PRICE]", price).
 							replace("[EXPIRY_DATE]", expiryDate).
 							replace("[DATE_PURCHASED]", dateProduced);
 

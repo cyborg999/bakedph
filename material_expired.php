@@ -8,21 +8,25 @@
         <?php  $active = "material";  include_once "./sidenav.php"; ?>
       </div>
       <div class="col-sm-10">
-      <?php include_once "./dashboardnav.php"; ?>
         <?php
-          $products = $model->getAllMaterialInventory();
+          $products = $model->getExpiredMaterials();
           $store = $model->getStoreStockLimit();
         ?>
-        <h5>Materials</h5>
-        <table class="table">
+        <div class="row">
+          <div class="col-sm">
+            <?php include "./dashboardnav.php"; ?>
+          </div>
+        </div>
+        <h5>Expired Materials</h5>
+        <table class="table table-sm">
           <thead>
             <tr>
               <th scope="col">Name</th>
               <th scope="col">Price</th>
               <th scope="col">Quantity</th>
               <th scope="col">Unit</th>
-              <th scope="col">Expiry</th>
-              <th scope="col">Action</th>
+              <th scope="col">Date Purchased</th>
+              <th scope="col">Expiry Date</th>
             </tr>
           </thead>
           <tbody>
@@ -30,34 +34,22 @@
               .advance {
                 display: block;
               }
-              tr.lowstock {
+             /* tr.lowstock {
                 background: #e6e6e6;
               }
               .lowstock .editqty {
                 color: red;
                 font-weight: 700;
-              }
-              .export {
-                display: block;
-                margin-top: 10px;
-              }
+              }*/
             </style>
 
             <tr>
-              <td colspan="2">
+              <td colspan="5">
                 <input type="text" class="form-control" id="searchName" placeholder="Name search..."/>
-                <a href="" class="advance">
-                  <small>advance</small>
-                </a>
               </td>
-              <td colspan="2">
-                <input type="number" class="form-control" id="searchQuantity" placeholder="Quantity"/>
-              </td>
-
-              <td>
-                <button id="filter" class="btn btn-sm btn-primary"> <= Filter</button>
-                <a href="ajax.php?&export=true&materials=true" class="export">export csv</a>
-              </td>
+             <td>
+               <a href="ajax.php?&export=true&materialExpired=true">export csv</a>
+             </td>
             </tr>
             <tr  id="search" class="advance_tr hidden">
               <td colspan="2">
@@ -72,16 +64,13 @@
              
             </tr>
             <?php foreach($products as $idx => $product): ?>
-
             <tr class="result <?=($product['qty'] <= $store['material_low']) ? 'lowstock' : ''; ?>" id="edit<?= $product['id']; ?>">
               <td class="editname"><?= $product['name']; ?></td>
               <td class="editprice"><?= $product['price']; ?></td>
               <td class="editqty"><?= $product['qty']; ?></td>
+              <td class="editqty"><?= $product['unit']; ?></td>
+              <td class="editexpiry"><?= $product['date_purchased']; ?></td>
               <td class="editexpiry"><?= $product['expiry_date']; ?></td>
-              <td>
-                <a href="" data-qty="<?= $product['qty']; ?>" data-expiry="<?= $product['expiry_date']; ?>" data-price="<?= $product['price']; ?>" data-id="<?= $product['id']; ?>" data-name="<?= $product['name']; ?>"class="btn btn-sm btn-warning edit"  data-toggle="modal" data-target="#editProductModal" alt="Edit product"><svg class="bi" width="18" height="18" fill="currentColor"><use xlink:href="./node_modules/bootstrap-icons/bootstrap-icons.svg#pencil"/></svg> </a>
-                <a href="" data-id="<?= $product['id']; ?>" class="btn btn-sm btn-danger delete" alt="Delete Product"><svg class="bi" width="18" height="18" fill="currentColor"><use xlink:href="./node_modules/bootstrap-icons/bootstrap-icons.svg#trash"/></svg></a>
-              </td>
             </tr>
             <?php endforeach ?>
            
@@ -157,11 +146,9 @@
           <td class="editname">[NAME]</td>
           <td class="editsrp">[SRP]</td>
           <td class="editqty">[QTY]</td>
+          <td>[UNIT]</td>
+          <td>[DATE_PURCHASE]</td>
           <td class="editexpiry">[EXPIRY]</td>
-          <td>
-            <a href="" data-qty="[QTY]" data-expiry="[EXPIRY]" data-price="[SRP]" data-id="[ID]" data-name="[NAME]" class="btn btn-sm btn-warning edit"  data-toggle="modal" data-target="#editProductModal" alt="Edit product"><svg class="bi" width="18" height="18" fill="currentColor"><use xlink:href="./node_modules/bootstrap-icons/bootstrap-icons.svg#pencil"/></svg> </a>
-            <a href="" data-id="[ID]" class="btn btn-sm btn-danger delete" alt="Delete Product"><svg class="bi" width="18" height="18" fill="currentColor"><use xlink:href="./node_modules/bootstrap-icons/bootstrap-icons.svg#trash"/></svg></a>
-          </td>
         </tr>
 </script>
 <script type="text/html" id="mats">
@@ -282,7 +269,7 @@
 
            $.ajax({
               url : "ajax.php"
-              , data : { searchMaterial : true, txt : txt }
+              , data : { searchExpiredMaterial : true, txt : txt }
               , type : "post"
               , dataType : "json"
               , success : function(response){
@@ -294,6 +281,9 @@
 
                   tpl = tpl.replace("[ID]", response[i].id).replace("[ID]", response[i].id).replace("[ID]", response[i].id).replace("[NAME]", response[i].name).replace("[NAME]", response[i].name)
                   .replace("[SRP]", response[i].price).
+                  replace("[UNIT]", response[i].unit).
+                  replace("[DATE_PURCHASE]", response[i].date_purchased).
+                  replace("[EXPIRY_DATE]", response[i].expiry_date).
                      replace("[LOWSTOCK]", (response[i].qty <= $("#stock").val()) ? 'lowstock' : '').
                   replace("[SRP]", response[i].price).replace("[QTY]", response[i].qty).replace("[QTY]", response[i].qty).replace("[EXPIRY]", response[i].expiry_date).replace("[EXPIRY]", response[i].expiry_date);
 

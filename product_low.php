@@ -1,19 +1,20 @@
-<?php include_once "./headchosen.php"; ?>
+<?php include_once "./head.php"; ?>
 <body>
   <?php include_once "./spinner.php"; ?>
-  <div class="container-sm">
-    <?php include_once "./dashboardnav.php"; ?>
+  <div class="container-fluid">
     <div class="row">
       <br>
-      <div class="col-sm-3">
+      <div class="col-sm-2 sidenav">
         <?php  $active = "product";  include_once "./sidenav.php"; ?>
       </div>
-      <div class="col-sm-9">
+      <div class="col-sm-10">
+        <?php include_once "./dashboardnav.php"; ?>
         <?php
           $products = $model->getAllProducts(true);
           $materials = $model->getAllMaterialInventory();
           $store = $model->getStoreStockLimit();
         ?>
+        <h5>Low In Stock Products</h5>
         <table class="table">
           <thead>
             <tr>
@@ -37,7 +38,7 @@
               }*/
             </style>
             <tr>
-              <td colspan="4">
+              <td colspan="3">
                 <input type="text" class="form-control" id="searchName" placeholder="Name search..."/>
               </td>
               <td>

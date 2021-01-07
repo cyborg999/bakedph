@@ -1,15 +1,15 @@
-<?php include_once "./headchosen.php"; ?>
+<?php include_once "./head.php"; ?>
 <?php $model->checkAccess(); ?>
 <body>
-	<div class="container-sm">
-		<?php include_once "./dashboardnav.php"; ?>
+	<div class="container-fluid">
 		<div class="row">
 			<br>
-			<div class="col-sm-3">
+			<div class="col-sm-2 sidenav">
 				<?php $active = "sales"; include "./sidenav.php"; ?>
 			</div>
-			<div class="col-sm-9">
-				<?php include_once "./error.php"; ?>
+			<div class="col-sm-10">
+					<?php include_once "./dashboardnav.php"; ?>
+					<?php include_once "./error.php"; ?>
 				<br>
 				<div class="col-sm">
 				  	<?php
@@ -50,12 +50,16 @@
 									<input type="text" class="form-control" readonly id="batchnumber" value="<?= $nextBatch;?>" required name="batchnumber" placeholder="Batch #..."/>
 								</div>
 								<div class="form-group">
+									<label>Price :</label>
+									<input type="text" class="form-control"  id="price" value="<?= isset($_POST['price']) ? $_POST['price'] : '';?>" required name="price" placeholder="Price..."/>
+								</div>
+								<div class="form-group">
 									<label>Quantity:</label>
 									<input type="number" class="form-control" id="quantity" value="<?= isset($_POST['qty']) ? $_POST['qty'] : '';?>" required name="qty" placeholder="Quantity..."/>
 								</div>
 								<div class="form-group">
 									<label>Unit:</label>
-									<input type="text" class="form-control" id="unit" value="<?= isset($_POST['unit']) ? $_POST['unit'] : '';?>" required name="unit" placeholder="Unit..."/>
+									<input type="text" readonly="" class="form-control" id="unit" value="pcs" required name="unit" placeholder="Unit..."/>
 								</div>
 								<div class="form-group">
 									<label>Date Produced:</label>
@@ -75,33 +79,22 @@
 										<th>Product Name</th>
 										<th>Batch #</th>
 										<th>Quantity</th>
+										<th>Unit</th>
+										<th>Price</th>
 										<th>Date Produced</th>
 										<th>Action</th>
 									</tr>
 								</thead>
-								<tbody>
+								<tbody id="tbody">
 									
 								</tbody>
 								<tfoot>
 									<tr>
-										<td colspan="4">
+										<td colspan="6">
 											<a href="" class="btn btn-success submit">Submit</a>
 										</td>
 									</tr>
 								</tfoot>
-            					<!-- <?php foreach($production as $idx => $p): ?>
-            						<tr>
-										<td><?= $p['name']; ?></td>
-										<td><?= $p['batchnumber']; ?></td>
-										<td><?= $p['quantity']; ?></td>
-										<td><?= $p['date_produced']; ?></td>
-										<td>
-											<a href="" class="delete btn btn-danger" data-id="<?= $p['id']; ?>"><svg class="bi" width="18" height="18" fill="currentColor"><use xlink:href="./node_modules/bootstrap-icons/bootstrap-icons.svg#trash"/></svg></a>
-										</td>
-									</tr>
-            					<?php endforeach ?> -->
-
-								
 							</table>
 						</div>
 					</div>
@@ -116,6 +109,8 @@
 			<td class="name" data-id="[ID]">[NAME]</td>
 			<td class="batchnumber">[BATCHNUMBER]</td>
 			<td data-unit="[UNIT]" class="quantity">[QUANTITY]</td>
+			<td class="unit">[UNIT]</td>
+			<td class="price">[PRICE]</td>
 			<td data-expiry="[EXPIRY]" class="date_produced">[DATE_PRODUCED]</td>
 			<td>
 				<a href="" class="delete btn btn-danger" ><svg class="bi" width="18" height="18" fill="currentColor"><use xlink:href="./node_modules/bootstrap-icons/bootstrap-icons.svg#trash"/></svg></a>
@@ -173,8 +168,9 @@
     					var batchNumber = tr.find(".batchnumber").html();
     					var dateProduced = tr.find(".date_produced").html();
     					var dateExpiry = tr.find(".date_produced").data("expiry");
+    					var price = tr.find(".price").html();
 
-    					var production = Array(name,quantity,batchNumber,dateProduced,unit,dateExpiry, tr.find(".name").html());
+    					var production = Array(name,quantity,batchNumber,dateProduced,unit,dateExpiry, tr.find(".name").html(), price);
 
     					data.push(production);
 
@@ -190,7 +186,7 @@
 							, dataType : 'json'
 							, success : function(response){
 								if(response.added){
-									tr.html("");
+									$("#tbody").html("");
 
 									$(".message").append($("#success").html());
 									window.location.href = "production.php";
@@ -219,12 +215,15 @@
     				var dateProduced = $("#date_produced").val();
     				var expiryDate = $("#expiry_date").val();
     				var productName = $("#slcProduct :selected").html();
+    				var price = $("#price").val();
 
     				tpl = tpl.replace("[NAME]", productName).
     					replace("[ID]", productId).
     					replace("[BATCHNUMBER]", batchNumber).
     					replace("[QUANTITY]", quantity).
     					replace("[UNIT]", unit).
+    					replace("[UNIT]", unit).
+    					replace("[PRICE]", price).
     					replace("[EXPIRY]", expiryDate).
     					replace("[DATE_PRODUCED]", dateProduced);
 

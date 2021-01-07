@@ -1,14 +1,15 @@
 <?php include_once "./head.php"; ?>
 <body>
-	<div class="container-sm">
-		<?php include_once "./dashboardnav.php"; ?>
+	<div class="container-fluid">
 		<div class="row">
 			<br>
-			<div class="col-sm-3">
+			<div class="col-sm-2 sidenav">
 				<?php $active = "material"; include "./sidenav.php"; ?>
 			</div>
-			<div class="col-sm-9">
+			<div class="col-sm-10">
+				<?php include_once "./dashboardnav.php"; ?>
 				<?php include_once "./error.php"; ?>
+				
 				<br>
 				<h5>Material Information</h5>
 				<div class="row">
@@ -20,21 +21,12 @@
 									<input type="text" class="form-control"  value="<?= isset($_POST['name']) ? $_POST['name'] : '';?>" name="name" placeholder="Name..." required />
 								</label>
 							</div>
-							<div class="form-group hidden">
-								<label>Quantity:
-									<input type="number" class="form-control" value="<?= isset($_POST['qty']) ? $_POST['qty'] : 0;?>" required name="qty" placeholder="Quantity..."/>
-								</label>
-							</div>
 							<div class="form-group">
-								<label>Price<small>/qty</small>:
-									<input type="text" class="form-control" value="<?= isset($_POST['price']) ? $_POST['price'] : '';?>" required name="price" placeholder="Price..."/>
+								<label>Unit:
+									<input type="text" class="form-control"  value="<?= isset($_POST['unit']) ? $_POST['unit'] : '';?>" name="unit" placeholder="Unit..." required />
 								</label>
 							</div>
-							<div class="form-group hidden">
-								<label>Expiry Date:
-									<input type="date" required class="form-control" value="<?= isset($_POST['expiry_date']) ? $_POST['expiry_date'] : '';?>" name="expiry_date" placeholder="Expiry Date..."/>
-								</label>
-							</div>
+							
 							<input type="submit" value="Submit" class="btn btn-lg btn-primary">
 						</form>
 					</div>

@@ -1,18 +1,23 @@
-<?php include_once "./headchosen.php"; ?>
+<?php include_once "./head.php"; ?>
 <body>
   <?php include_once "./spinner.php"; ?>
   <div class="container-fluid">
-    <?php include_once "./dashboardnav.php"; ?>
     <div class="row">
       <br>
-      <div class="col-sm-3">
+      <div class="col-sm-2 sidenav">
         <?php  $active = "material";  include_once "./sidenav.php"; ?>
       </div>
-      <div class="col-sm-9">
+      <div class="col-sm-10">
         <?php
           $products = $model->getAllMaterialInventory(true);
           $store = $model->getStoreStockLimit();
         ?>
+        <div class="row">
+          <div class="col-sm">
+            <?php include "./dashboardnav.php"; ?>
+          </div>
+        </div>
+        <h5>Low In Stock Materials</h5>
         <table class="table">
           <thead>
             <tr>
@@ -20,7 +25,6 @@
               <th scope="col">Price</th>
               <th scope="col">Quantity</th>
               <th scope="col">Expiry</th>
-              <th scope="col">Action</th>
             </tr>
           </thead>
           <tbody>
@@ -38,7 +42,7 @@
             </style>
 
             <tr>
-              <td colspan="4">
+              <td colspan="3">
                 <input type="text" class="form-control" id="searchName" placeholder="Name search..."/>
               </td>
              <td>
@@ -64,10 +68,6 @@
               <td class="editprice"><?= $product['price']; ?></td>
               <td class="editqty"><?= $product['qty']; ?></td>
               <td class="editexpiry"><?= $product['expiry_date']; ?></td>
-              <td>
-                <a href="" data-qty="<?= $product['qty']; ?>" data-expiry="<?= $product['expiry_date']; ?>" data-price="<?= $product['price']; ?>" data-id="<?= $product['id']; ?>" data-name="<?= $product['name']; ?>"class="btn btn-sm btn-warning edit"  data-toggle="modal" data-target="#editProductModal" alt="Edit product"><svg class="bi" width="18" height="18" fill="currentColor"><use xlink:href="./node_modules/bootstrap-icons/bootstrap-icons.svg#pencil"/></svg> </a>
-                <a href="" data-id="<?= $product['id']; ?>" class="btn btn-sm btn-danger delete" alt="Delete Product"><svg class="bi" width="18" height="18" fill="currentColor"><use xlink:href="./node_modules/bootstrap-icons/bootstrap-icons.svg#trash"/></svg></a>
-              </td>
             </tr>
             <?php endforeach ?>
            
@@ -144,10 +144,6 @@
           <td class="editsrp">[SRP]</td>
           <td class="editqty">[QTY]</td>
           <td class="editexpiry">[EXPIRY]</td>
-          <td>
-            <a href="" data-qty="[QTY]" data-expiry="[EXPIRY]" data-price="[SRP]" data-id="[ID]" data-name="[NAME]" class="btn btn-sm btn-warning edit"  data-toggle="modal" data-target="#editProductModal" alt="Edit product"><svg class="bi" width="18" height="18" fill="currentColor"><use xlink:href="./node_modules/bootstrap-icons/bootstrap-icons.svg#pencil"/></svg> </a>
-            <a href="" data-id="[ID]" class="btn btn-sm btn-danger delete" alt="Delete Product"><svg class="bi" width="18" height="18" fill="currentColor"><use xlink:href="./node_modules/bootstrap-icons/bootstrap-icons.svg#trash"/></svg></a>
-          </td>
         </tr>
 </script>
 <script type="text/html" id="mats">
@@ -268,7 +264,7 @@
 
            $.ajax({
               url : "ajax.php"
-              , data : { searchMaterial : true, txt : txt }
+              , data : { searchMaterial : true, txt : txt, status : "lowstock" }
               , type : "post"
               , dataType : "json"
               , success : function(response){

@@ -1,14 +1,18 @@
 <?php include_once "./head.php"; ?>
 <body>
 	<div class="container-fluid">
-		<?php include "./dashboardnav.php"; ?>
 		<div class="row">
-			<br>
-			<div class="col-sm-3">
+			<div class="col-sm-3 sidenav">
 				<?php $active = "user";   include_once "./sidenav.php"; ?>
 			</div>
 			<div class="col-sm-9">
+				<div class="row">
+					<div class="col-sm">
+						<?php include "./dashboardnav.php"; ?>
+					</div>
+				</div>
 				<div class="jumbotron">
+					
 					<div class="row">
 						
 						<div class="col-sm">

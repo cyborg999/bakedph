@@ -1,13 +1,17 @@
 <?php include_once "./head.php"; ?>
 <body>
-	<div class="container-sm">
-		<?php include_once "./dashboardnav.php"; ?>
+	<div class="container-fluid">
 		<div class="row">
 			<br>
-			<div class="col-sm-3">
+			<div class="col-sm-2 sidenav">
 				<?php $profile = $model->getUserProfile(); $active = "user"; include "./sidenav.php"; ?>
 			</div>
-			<div class="col-sm-9">
+			<div class="col-sm-10">
+				<div class="row">
+					<div class="col-sm">
+						<?php include_once "./dashboardnav.php"; ?>
+					</div>
+				</div>
 				<?php  include_once "./error.php"; ?>
 				<br>
 

@@ -1,15 +1,15 @@
 <?php include_once "./headchosen.php"; ?>
 <?php $model->checkAccess(); ?>
 <body>
-	<div class="container-sm">
+	<div class="container-fluid">
 		<?php include_once "./spinner.php"; ?>
-		<?php include_once "./dashboardnav.php"; ?>
 		<div class="row">
 			<br>
-			<div class="col-sm-3">
+			<div class="col-sm-2 sidenav">
 				<?php $active = "reports"; include "./sidenav.php"; ?>
 			</div>
-			<div class="col-sm-9">
+			<div class="col-sm-10">
+				<?php include_once "./dashboardnav.php"; ?>
 				<br>
 				<?php include_once "./error.php"; ?>
 				<div class="row">

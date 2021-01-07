@@ -3,14 +3,17 @@
 				    <div class="card-header" id="headingOne">
 				      <h2 class="mb-0">
 				        <button class="btn btn-link btn-block text-left" type="button" data-toggle="collapse" data-target="#collapseProfile" aria-expanded="true" aria-controls="collapseProfile">
-				          <svg class="bi" width="18" height="18" fill="currentColor"><use xlink:href="./node_modules/bootstrap-icons/bootstrap-icons.svg#file-person"/></svg> Profile
+				          <svg class="bi" width="18" height="18" fill="currentColor"><use xlink:href="./node_modules/bootstrap-icons/bootstrap-icons.svg#file-person-fill"/></svg> Profile
 				        </button>
 				      </h2>
 				    </div>
 
 				    <div id="collapseProfile" class="<?= ($active == "user") ? "show" : ""; ?> collapse" aria-labelledby="headingOne" data-parent="#accordionExample">
 				      <div class="card-body">
-				      	<div class="col-sm"><svg class="bi" width="50" height="50" fill="currentColor"><use xlink:href="./node_modules/bootstrap-icons/bootstrap-icons.svg#file-person-fill"/></svg></div>
+				      	<ul class="list-group list-group-flush">
+			      		 <li class="list-group-item">
+			      		 	
+			      		 	<div class="col-ssm"><svg class="bi" width="50" height="50" fill="currentColor"><use xlink:href="./node_modules/bootstrap-icons/bootstrap-icons.svg#file-person-fill"/></svg></div>
 				        <?= $_SESSION['username'] ?>
 				        <br>
 				        <small>
@@ -32,14 +35,19 @@
 					        <?php endif ?>
 				        <?php endif ?>
 				        </small>
+
+			      		 </li>
+					    
+						</ul>
+				      	
 				      </div>
 				    </div>
 				  </div>
-				    <div class="card hidden">
+				    <div class="card ">
 				    <div class="card-header" id="headingOne">
 				      <h2 class="mb-0">
 				        <button class="btn btn-link btn-block text-left" type="button" data-toggle="collapse" data-target="#collapseZero" aria-expanded="true" aria-controls="collapseZero">
-				           <svg class="bi" width="18" height="18" fill="currentColor"><use xlink:href="./node_modules/bootstrap-icons/bootstrap-icons.svg#bell"/></svg> Notifications
+				           <svg class="bi" width="18" height="18" fill="currentColor"><use xlink:href="./node_modules/bootstrap-icons/bootstrap-icons.svg#bell-fill"/></svg> Notifications
 				        </button>
 				      </h2>
 				    </div>
@@ -95,8 +103,15 @@
 						   <li class="list-group-item">
 						  	<?php
           						$materialLow = $model->getAllMaterialInventory(true);
+          						$expiredCount = $model->getExpiredMaterials();
 						  	?>
 						  	<a href="material_low.php" class="black">Low In Stock <span class="badge badge-primary badge-pill"><?= count($materialLow) ?></span></a>
+						  </li>
+						  <li class="list-group-item">
+						  	<?php
+          						$materialLow = $model->getAllMaterialInventory(true);
+						  	?>
+						  	<a href="material_expired.php" class="black">Expired Materials <span class="badge badge-primary badge-pill"><?= count($expiredCount) ?></span></a>
 						  </li>
 						  <li class="list-group-item">
 						  	<a href="addmaterial.php" class="black">Add Material</a>
@@ -128,6 +143,9 @@
           						$productLow = $model->getAllProducts(true);
 						  	?>
 						  	<a href="product_low.php" class="black">Low In Stock <span class="badge badge-primary badge-pill"><?= count($productLow) ?></span></a>
+						  </li>
+						  <li class="list-group-item">
+						  	<a href="product_expired.php" class="black">Expired Products <span class="badge badge-primary badge-pill"><?= count($model->getExpiredProducts()) ?></span></a>
 						  </li>
 						  <li class="list-group-item">
 						  	<a href="addproduct.php" class="black">Add New</a>
@@ -204,4 +222,53 @@
 
 				</div>
 
-			
+			<style type="text/css">
+			.sidenav {
+				min-height: 100vh;
+				background: #1243d2;
+			}
+			.sidenav svg {
+				color: #ececec;
+			}
+				.card .btn-block {
+					color: black;
+					color: white;
+				}
+				.accordion>.card>.card-header {
+					background: #1243d2;
+					border: none;
+				}
+				.accordion>.card {
+					border: none;
+				}
+				.card-body {
+					background: #1243d2;
+				}
+				.list-group-flush>.list-group-item {
+					background: transparent;
+				}
+				.list-group-flush {
+					background: white;
+					border-radius: 10px;
+				}
+				.list-group-flush>.list-group-item {
+					border: none;
+					padding: 0 20px;
+					font-size: 14px;
+				}
+				.list-group-flush {
+					padding: 20px 0;
+				}
+				body {
+					padding: 0;
+				}
+				.container,
+				.container-fluid {
+					padding: 0;
+					position: relative;
+					overflow: hidden;
+					width: 100%;
+					margin: 0;
+					box-sizing: border-box;
+				}
+			</style>

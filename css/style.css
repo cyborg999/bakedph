@@ -25,3 +25,7 @@
 	cursor: not-allowed;
 	text-decoration: none;
 }
+.topbar .nav-item .nav-link .badge-counter {
+	right: 0px!important;
+    margin-top: -7px!important;
+}

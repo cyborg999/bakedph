@@ -1,14 +1,14 @@
 <?php include_once "./head.php"; ?>
 <body>
   <?php include_once "./spinner.php"; ?>
-  <div class="container-sm">
-    <?php include_once "./dashboardnav.php"; ?>
+  <div class="container-fluid">
     <div class="row">
       <br>
-      <div class="col-sm-3">
+      <div class="col-sm-2 sidenav">
         <?php  $active = "vendor";  include_once "./sidenav.php"; ?>
       </div>
       <div class="col-sm-9">
+      <?php include_once "./dashboardnav.php"; ?>
         <?php
           $vendors = $model->getAllVendors();
         ?>
