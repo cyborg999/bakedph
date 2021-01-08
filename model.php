@@ -71,6 +71,61 @@ class Model {
 		$this->addPersonalListener();
 		$this->searchExpiredProductsListener();
 		$this->searchExpiredMaterialsListener();
+		$this->addStoreExpensesListener();
+		$this->addSalesReturnListener();
+		$this->addPurchaseReturnListener();
+
+          // $this->getStoreNotifications();
+	}
+
+	public function getStoreNotifications(){
+		//sa login, sa procure or sell
+		$notifications = array();
+		$lowStockProducts = array();
+
+      	$products = $this->getAllProducts(true);
+
+      	foreach($products as $idx => $p){
+      		$lowStockProducts[]
+      	}
+      	// opd($products);
+		//low stock ng product
+		//low stock ng material
+		//expired product
+		//expired material
+		//if malapit na credit date
+		//if malapit na end of subscription
+
+	}
+
+	public function addPurchaseReturnListener(){
+		if(isset($_POST['addPurchaseReturn'])){
+			foreach($_POST['data'] as $idx => $r){
+				$sql = "
+					insert into purchase_return(materialid,amount,date_purchased,qty,unit)
+					values(?,?,?,?,?)
+				";
+
+				$this->db->prepare($sql)->execute(array($r[0],$r[2], $r[5],$r[3],$r[4]));
+			}
+
+			die(json_encode(array("added")));
+		}
+	}
+
+	public function addSalesReturnListener(){
+		if(isset($_POST['addSalesReturn'])){
+			foreach($_POST['data'] as $idx => $r){
+				$sql = "
+					insert into sales_return(productid,amount,date_purchased,qty,unit)
+					values(?,?,?,?,?)
+				";
+
+				$this->db->prepare($sql)->execute(array($r[0],$r[2], $r[5],$r[3],$r[4]));
+			}
+
+			die(json_encode(array("added")));
+		}
 	}
 
 	public function updateTermsListener(){
@@ -133,6 +188,7 @@ class Model {
 			}
 
 			if(isset($_GET['sales'])){
+				opd($_SESSION['lastQuery']);
 				header('Content-Type: text/csv; charset=utf-8');
 				header('Content-Disposition: attachment; filename=Sales.csv');
 
@@ -345,7 +401,7 @@ class Model {
 		}
 	}
 
-	public function getAllExpenses(){
+	public function getAllExpenses($recordQuery = false){
 		$sql = "
 			SELECT t1.*
 			FROM expenses t1
@@ -354,6 +410,9 @@ class Model {
 			WHERE t2.storeid = ".$_SESSION['storeid']."
 		";
 		
+		if($recordQuery){
+
+		}
 		$_SESSION['lastQuery'] = $sql;
 
 		return $this->db->query($sql)->fetchAll();
@@ -385,6 +444,47 @@ class Model {
 			$this->db->prepare($sql)->execute(array($_POST['id']));
 
 			die(json_encode(array("deleted")));
+		}
+	}
+
+	public function getStoreSalesReturn(){
+		$sql = "
+			select t1.*,t2.name
+			from sales t1
+			left join product t2
+			on t1.productid = t2.id
+			where t1.storeid = ".$_SESSION['storeid']."
+			group by t1.productid
+		";
+
+		return $this->db->query($sql)->fetchAll();
+	}
+
+	public function getStorePurchaseReturn(){
+		$sql = "
+			select t1.*,t2.name
+			from purchase t1
+			left join material_inventory t2
+			on t1.materialid = t2.id
+			where t1.storeid = ".$_SESSION['storeid']."
+			group by t1.materialid
+		";
+
+		return $this->db->query($sql)->fetchAll();
+	}
+
+	public function addStoreExpensesListener(){
+		if(isset($_POST['addStoreExpenses'])){
+			foreach($_POST['data'] as $idx => $d){
+				$sql = "
+					insert into expenses(name,cost,storeid,date_produced)
+					values(?,?,?,?)
+				";
+
+				$this->db->prepare($sql)->execute(array($d[0], $d[1], $_SESSION['storeid'], $d[2]));
+			}
+
+			die(json_encode(array("added")));
 		}
 	}
 
@@ -1779,6 +1879,17 @@ class Model {
 		";
 
 		$_SESSION['lastQuery'] = $sql;
+
+		return $this->db->query($sql)->fetchAll();
+	}
+
+	public function getInstockProducts(){
+		$sql = "
+			SELECT *
+			FROM product
+			WHERE storeid = '".$_SESSION['storeid']."'
+			AND qty > 0
+		";
 
 		return $this->db->query($sql)->fetchAll();
 	}

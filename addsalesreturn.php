@@ -13,9 +13,7 @@
 				<br>
 				<div class="col-sm">
 				  	<?php
-			          $products = $model->getInstockProducts();
-			          $sales = $model->getAllSales();
-
+			          $sales = $model->getStoreSalesReturn();
 			        ?>
 			        <div class="row">
 			        	<div class="col-sm message">
@@ -24,43 +22,49 @@
 			        </div>
 					<div class="row">
 						<div class="col-sm-4">
-							<h5>Sales Information</h5>
+							<h5>Sale Return Information</h5>
 							<form method="post" class="form">
-								<input type="hidden" name="addSale" value="true">
+								<input type="hidden" name="addSalesReturn" value="true">
 								<div class="form-group">
-									<label>Product Name:</label>
-									<select id="slcProduct"  name="productid" class="form-control">
-		            					<?php foreach($products as $idx => $product): ?>
-
-										<option data-max="<?= $product['qty'];?>" value="<?= $product['id']; ?>"><?= $product['name']; ?></option>
-		            					<?php endforeach ?>
+									<label>Product</label>
+									<select id="product" class="form-control">
+										<?php foreach($sales as $idx => $s): ?>
+											<option value="<?= $s['productid'];?>"><?= $s['name'];?></option>
+										<?php endforeach ?>
 									</select>
 								</div>
 								<div class="form-group">
-									<label>Quantity:</label>
-									<input type="number" class="form-control" value="<?= isset($_POST['qty']) ? $_POST['qty'] : '';?>" required name="qty" id="quantity" placeholder="Quantity..."/>
+									<label>Quantity</label>
+									<input type="number" required class="form-control" id="qty" placeholder="Qty...">
+									</select>
 								</div>
 								<div class="form-group">
-									<label>Unit:</label>
-									<input type="text" class="form-control" readonly="" value="pcs." required name="unit" id="unit" placeholder="Unit..."/>
+									<label>Unit</label>
+									<input type="text" readonly value="pcs" class="form-control" id="unit" placeholder="Unit...">
 								</div>
 								<div class="form-group">
-									<label>Date of purchase:</label>
-									<input type="date" required class="form-control" value="<?= isset($_POST['date_purchased']) ? $_POST['date_purchased'] : '';?>"" name="date_purchased" id="date_purchased" placeholder="Date..."/>
+									<label>Amount</label>
+									<input type="number" required class="form-control" id="amount" placeholder="Amount...">
+									</select>
+								</div>
+								<div class="form-group">
+									<label>Date Purchased</label>
+									<input type="date" required class="form-control" id="date_purchased" placeholder="Date Purchased...">
+									</select>
 								</div>
 								<input type="submit" value="Add" class="btn btn-lg btn-primary">
 							</form>
 						</div>
 						<div class="col-sm-8">
-							<h5>Sales List</h5>
+							<h5>Sales Return List</h5>
 							<table class="table">
 								<thead>
 									<tr>
-										<th>Product Name</th>
+										<th>Product</th>
 										<th>Quantity</th>
 										<th>Unit</th>
+										<th>Price</th>
 										<th>Date Purchased</th>
-										<th>Quantity</th>
 									</tr>
 								</thead>
 								<tbody id="tbody">
@@ -68,24 +72,11 @@
 								</tbody>
 								<tfoot>
 									<tr>
-										<td colspan="4">
+										<td colspan="5">
 											<a href="" class="btn btn-success submit">Submit</a>
 										</td>
 									</tr>
 								</tfoot>
-<!-- 
-            					<?php foreach($sales as $idx => $p): ?>
-            						<tr>
-										<td><?= $p['name']; ?></td>
-										<td><?= $p['qty']; ?></td>
-										<td><?= $p['date_purchased']; ?></td>
-										<td>
-											<a href="" class="delete btn btn-danger" data-id="<?= $p['id']; ?>"><svg class="bi" width="18" height="18" fill="currentColor"><use xlink:href="./node_modules/bootstrap-icons/bootstrap-icons.svg#trash"/></svg></a>
-										</td>
-									</tr>
-            					<?php endforeach ?> -->
-
-								
 							</table>
 						</div>
 					</div>
@@ -96,9 +87,10 @@
 <!-- tpl script -->
 	<script type="text/html" id="tpl">
 		<tr>
-			<td class="name" data-id="[ID]">[NAME]</td>
-			<td  class="quantity">[QUANTITY]</td>
-			<td  class="unit">[UNIT]</td>
+			<td  class="product" data-productid="[PRODUCTID]">[PRODUCT]</td>
+			<td class="qty">[QUANTITY]</td>
+			<td class="unit">[UNIT]</td>
+			<td class="amount">[AMOUNT]</td>
 			<td class="date_purchased">[DATE_PURCHASED]</td>
 			<td>
 				<a href="" class="delete btn btn-danger" ><svg class="bi" width="18" height="18" fill="currentColor"><use xlink:href="./node_modules/bootstrap-icons/bootstrap-icons.svg#trash"/></svg></a>
@@ -141,14 +133,18 @@
 
     				tr.each(function(x, y){
     					var tr = $(y);
-    					var name = tr.find(".name").data("id");
-    					var quantity = tr.find(".quantity").html();
-    					var dateProduced = tr.find(".date_purchased").html();
 
-    					var production = Array(name,quantity,dateProduced);
+
+    					var product = tr.find(".product").html();
+    					var amount = tr.find(".amount").html();
+    					var qty = tr.find(".qty").html();
+    					var unit = tr.find(".unit").html();
+    					var productId = tr.find(".product").data("productid");
+    					var datePurchased = tr.find(".date_purchased").html();
+
+    					var production = Array(productId,product,amount,qty,unit,datePurchased);
 
     					data.push(production);
-
     				});
 
     				$(".message").html("");
@@ -156,7 +152,7 @@
     				if(tr.length){
     					$.ajax({
 							url : "ajax.php"
-							, data : { addSale : true , data : data}
+							, data : { addSalesReturn : true , data : data}
 							, type : 'post'
 							, dataType : 'json'
 							, success : function(response){
@@ -171,26 +167,21 @@
     			$("#slcProduct").chosen();
     			$(".form").on("submit", function(e){
     				e.preventDefault();
-    				var max = $("#slcProduct :selected").data("max");
-    				var quantity = $("#quantity").val();
-
-    				quantity = parseInt(quantity);
-
-    				if(quantity>max){
-    					alert("Maximum stock for this item is: " + max);
-    					return;
-    				}
 
     				var tpl = $("#tpl").html();
-    				var productId = $("#slcProduct").val();
-    				var productName = $("#slcProduct :selected").html();
+    				var product = $("#product :selected").html();
+    				var qty = $("#qty").val();
+    				qty = parseInt(qty);
+
     				var unit = $("#unit").val();
+    				var amount = $("#amount").val();
     				var datePurchased = $("#date_purchased").val();
 
-    				tpl = tpl.replace("[NAME]", productName).
-    					replace("[ID]", productId).
+    				tpl = tpl.replace("[PRODUCT]", product).
+    					replace("[AMOUNT]", amount).
+    					replace("[PRODUCTID]", $("#product :selected").val()).
+    					replace("[QUANTITY]", qty).
     					replace("[UNIT]", unit).
-    					replace("[QUANTITY]", quantity).
     					replace("[DATE_PURCHASED]", datePurchased);
 
     				$("tbody").append(tpl);

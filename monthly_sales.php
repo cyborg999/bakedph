@@ -51,7 +51,7 @@
 									</div>
 							  	</div>
 							  	<div class="row">
-									<?php $monthlyData = $model->getMonthlyProductionReport(); ?>
+									<?php $monthlyData = $model->getMonthlyProductionReport(false,true); ?>
 									<div class="col-sm">
 										<figure class="highcharts-figure">
 										    <div id="container"></div>
@@ -126,7 +126,8 @@
 										<tr>
 											<th>Product Name</th>
 											<th>Quantity</th>
-											<th>SRP</th>
+											<th>Price</th>
+											<th>Unit</th>
 											<th>Amount</th>
 											<th>Date Purchased</th>
 										</tr>
@@ -138,6 +139,7 @@
 												<td><?= $p['name']; ?></td>
 												<td><?= $p['qty']; ?></td>
 												<td><?= $p['srp']; ?></td>
+												<td><?= $p['unit']; ?></td>
 												<td><?= $p['revenue']; ?></td>
 												<td><?= $p['date_purchased']; ?></td>
 											</tr>
@@ -208,8 +210,9 @@
 										<a href="" class="btn btn-info clear">Clear</a>
 									</div>
 								</div>
-								<?php $expenses = $model->getAllExpenses(); 
-								$total = 0;
+								<?php 
+									$expenses = $model->getAllExpenses(); 
+									$total = 0;
 								?>
 								<table class="table table-hover">
 									<thead>

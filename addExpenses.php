@@ -24,43 +24,34 @@
 			        </div>
 					<div class="row">
 						<div class="col-sm-4">
-							<h5>Sales Information</h5>
+							<h5>Expenses Information</h5>
 							<form method="post" class="form">
 								<input type="hidden" name="addSale" value="true">
+								
 								<div class="form-group">
-									<label>Product Name:</label>
-									<select id="slcProduct"  name="productid" class="form-control">
-		            					<?php foreach($products as $idx => $product): ?>
+									<label>Description:</label>
+									<textarea class="form-control" name="description" id="description" placeholder="Description..."></textarea>
+								</div>
+								<div class="form-group">
+									<label>Amount:</label>
+									<input type="number" class="form-control" value="<?= isset($_POST['amount']) ? $_POST['amount'] : '';?>" required name="amount" id="amount" placeholder="Amount..."/>
+								</div>
 
-										<option data-max="<?= $product['qty'];?>" value="<?= $product['id']; ?>"><?= $product['name']; ?></option>
-		            					<?php endforeach ?>
-									</select>
-								</div>
 								<div class="form-group">
-									<label>Quantity:</label>
-									<input type="number" class="form-control" value="<?= isset($_POST['qty']) ? $_POST['qty'] : '';?>" required name="qty" id="quantity" placeholder="Quantity..."/>
-								</div>
-								<div class="form-group">
-									<label>Unit:</label>
-									<input type="text" class="form-control" readonly="" value="pcs." required name="unit" id="unit" placeholder="Unit..."/>
-								</div>
-								<div class="form-group">
-									<label>Date of purchase:</label>
+									<label>Date of Purchase:</label>
 									<input type="date" required class="form-control" value="<?= isset($_POST['date_purchased']) ? $_POST['date_purchased'] : '';?>"" name="date_purchased" id="date_purchased" placeholder="Date..."/>
 								</div>
 								<input type="submit" value="Add" class="btn btn-lg btn-primary">
 							</form>
 						</div>
 						<div class="col-sm-8">
-							<h5>Sales List</h5>
+							<h5>Expenses List</h5>
 							<table class="table">
 								<thead>
 									<tr>
-										<th>Product Name</th>
-										<th>Quantity</th>
-										<th>Unit</th>
+										<th>Description</th>
+										<th>Amount</th>
 										<th>Date Purchased</th>
-										<th>Quantity</th>
 									</tr>
 								</thead>
 								<tbody id="tbody">
@@ -68,24 +59,11 @@
 								</tbody>
 								<tfoot>
 									<tr>
-										<td colspan="4">
+										<td colspan="3">
 											<a href="" class="btn btn-success submit">Submit</a>
 										</td>
 									</tr>
 								</tfoot>
-<!-- 
-            					<?php foreach($sales as $idx => $p): ?>
-            						<tr>
-										<td><?= $p['name']; ?></td>
-										<td><?= $p['qty']; ?></td>
-										<td><?= $p['date_purchased']; ?></td>
-										<td>
-											<a href="" class="delete btn btn-danger" data-id="<?= $p['id']; ?>"><svg class="bi" width="18" height="18" fill="currentColor"><use xlink:href="./node_modules/bootstrap-icons/bootstrap-icons.svg#trash"/></svg></a>
-										</td>
-									</tr>
-            					<?php endforeach ?> -->
-
-								
 							</table>
 						</div>
 					</div>
@@ -96,9 +74,8 @@
 <!-- tpl script -->
 	<script type="text/html" id="tpl">
 		<tr>
-			<td class="name" data-id="[ID]">[NAME]</td>
-			<td  class="quantity">[QUANTITY]</td>
-			<td  class="unit">[UNIT]</td>
+			<td  class="description">[DESCRIPTION]</td>
+			<td class="amount">[AMOUNT]</td>
 			<td class="date_purchased">[DATE_PURCHASED]</td>
 			<td>
 				<a href="" class="delete btn btn-danger" ><svg class="bi" width="18" height="18" fill="currentColor"><use xlink:href="./node_modules/bootstrap-icons/bootstrap-icons.svg#trash"/></svg></a>
@@ -141,14 +118,13 @@
 
     				tr.each(function(x, y){
     					var tr = $(y);
-    					var name = tr.find(".name").data("id");
-    					var quantity = tr.find(".quantity").html();
+    					var description = tr.find(".description").html();
+    					var amount = tr.find(".amount").html();
     					var dateProduced = tr.find(".date_purchased").html();
 
-    					var production = Array(name,quantity,dateProduced);
+    					var production = Array(description,amount,dateProduced);
 
     					data.push(production);
-
     				});
 
     				$(".message").html("");
@@ -156,7 +132,7 @@
     				if(tr.length){
     					$.ajax({
 							url : "ajax.php"
-							, data : { addSale : true , data : data}
+							, data : { addStoreExpenses : true , data : data}
 							, type : 'post'
 							, dataType : 'json'
 							, success : function(response){
@@ -182,15 +158,12 @@
     				}
 
     				var tpl = $("#tpl").html();
-    				var productId = $("#slcProduct").val();
-    				var productName = $("#slcProduct :selected").html();
-    				var unit = $("#unit").val();
+    				var description = $("#description").val();
+    				var amount = $("#amount").val();
     				var datePurchased = $("#date_purchased").val();
 
-    				tpl = tpl.replace("[NAME]", productName).
-    					replace("[ID]", productId).
-    					replace("[UNIT]", unit).
-    					replace("[QUANTITY]", quantity).
+    				tpl = tpl.replace("[DESCRIPTION]", description).
+    					replace("[AMOUNT]", amount).
     					replace("[DATE_PURCHASED]", datePurchased);
 
     				$("tbody").append(tpl);

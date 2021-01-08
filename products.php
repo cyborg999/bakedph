@@ -134,9 +134,9 @@
               <li class="nav-item">
                 <a class="nav-link active" id="home-tab" data-toggle="tab" href="#raw" role="tab" aria-controls="home" aria-selected="true">Raw Materials Used</a>
               </li>
-              <li class="nav-item">
+              <!-- <li class="nav-item">
                 <a class="nav-link" id="profile-tab" data-toggle="tab" href="#expenses" role="tab" aria-controls="profile" aria-selected="false">Expenses</a>
-              </li>
+              </li> -->
             </ul>
             <div class="tab-content" id="myTabContent">
               <div class="tab-pane fade show active" id="raw" role="raw" aria-labelledby="home-tab">
@@ -185,7 +185,7 @@
                 </table>
                 <h4 >Total Material Cost/<small>product quantity</small> : P<span id="total">0.00</span></h4>
               </div>
-              <div class="tab-pane fade " id="expenses" role="tabpanel" aria-labelledby="home-tab">
+             <!--  <div class="tab-pane fade " id="expenses" role="tabpanel" aria-labelledby="home-tab">
                   <table class="table table-hover table-sm" id="expensesTbl">
                     <thead>
                       <tr>
@@ -216,7 +216,7 @@
                       </tr>
                     </tfoot> 
                   </table>
-              </div>
+              </div> -->
             </div>
           </div>
         </div>

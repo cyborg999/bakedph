@@ -2,10 +2,10 @@
 <body>
 	<div class="container-fluid">
 		<div class="row">
-			<div class="col-sm-3 sidenav">
+			<div class="col-sm-2 sidenav">
 				<?php $active = "user";   include_once "./sidenav.php"; ?>
 			</div>
-			<div class="col-sm-9">
+			<div class="col-sm-10">
 				<div class="row">
 					<div class="col-sm">
 						<?php include "./dashboardnav.php"; ?>

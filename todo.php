@@ -47,47 +47,12 @@ https://stripe.com/docs/testing
 
 
 
-
-report purchase order
-sales return/purchase return
-notify expired product/material
 admin backupdata
 
 
 
-todo
-add edit business profile
 
 
-sales purchase order, price vary
-sale reserve/priority
-redesign
-date purchase default current date lahat
-clearfilter amount datepurchase
-* purchase return if damage
-* notify if subscription is almost over
-* list all expired items, deduct din
-sales
-	* add export file sa sales record
-	* add din sa expenses
-production/product/material inventory
-	* add export file
-reports
-	* add column amount sa tbl
-
-
-
-
-notification list]
-add fb notif
-* addpurchase, credit date notify pag malapit na credit date
-* end of subscription
-
-
-
-new todo
-remove edit qty sa product edit
-incorrect filter sa expired  side nav, dapat sa production and check instead of product
 
 
 suggest edit/logic error
@@ -107,20 +72,10 @@ Cyborg99912@
 
 
 
-
-DONE]
-* default all date field value to current date
-* added credit date sa sales>purchase order
-* changed 'vendor' to 'supplier'
-* removed qty and expiry date on addproduct/addmaterial page (editable padin yung sa edit page)
-* added business profile on step 2 signup
-* removed birthday
-* added trial subscription, update signup,sidenav,adminpage
-* sales > purchase , added expiry date
-//round 2
-* auto generate batch #
-* added unit sa sales>production and sales>purchase order
-* added expiry date on sales>production
-* sales > productiom, prevent production if material is insufficient
-* admin > settings > added terms and conditions,privacy policy
-* added checkbox on signup page (accept terms&conditions)
+todo
+export ng sales
+add expenses sa report
+mababawas ba yung purchase return at sales return if binalik?
+all products/all materials
+add edit business profile
+incorrect filter sa expired  side nav, dapat sa production and check instead of product

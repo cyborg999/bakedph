@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Jan 07, 2021 at 08:19 PM
+-- Generation Time: Jan 08, 2021 at 02:07 PM
 -- Server version: 10.4.13-MariaDB
 -- PHP Version: 7.4.8
 
@@ -31,7 +31,7 @@ CREATE TABLE `expenses` (
   `id` int(11) NOT NULL,
   `name` varchar(255) NOT NULL,
   `cost` varchar(255) NOT NULL,
-  `productid` int(11) NOT NULL,
+  `productid` int(11) DEFAULT NULL,
   `date_added` timestamp NOT NULL DEFAULT current_timestamp(),
   `storeid` int(11) NOT NULL,
   `date_produced` date DEFAULT NULL
@@ -43,7 +43,10 @@ CREATE TABLE `expenses` (
 
 INSERT INTO `expenses` (`id`, `name`, `cost`, `productid`, `date_added`, `storeid`, `date_produced`) VALUES
 (9, 'ASD', '1', 11, '2020-12-08 06:49:42', 21, '0111-11-11'),
-(10, 'ASD2', '1', 11, '2020-12-08 06:49:47', 21, '0234-11-11');
+(10, 'ASD2', '1', 11, '2020-12-08 06:49:47', 21, '0234-11-11'),
+(11, 'labor', '120', 16, '2021-01-08 07:18:57', 21, '2021-01-08'),
+(12, 'transporation', '120', 16, '2021-01-08 07:19:05', 21, '2021-01-08'),
+(13, 'desc', '345', 0, '2021-01-08 09:03:55', 21, '2021-01-08');
 
 -- --------------------------------------------------------
 
@@ -66,9 +69,10 @@ CREATE TABLE `material` (
 INSERT INTO `material` (`id`, `materialid`, `qty`, `productid`, `date_created`) VALUES
 (67, 11, 1, 11, '2021-01-03 02:28:38'),
 (68, 12, 20, 11, '2021-01-03 02:28:44'),
-(69, 13, 1, 11, '2021-01-03 02:28:49'),
 (70, 12, 1, 13, '2021-01-03 04:03:31'),
-(71, 11, 1, 15, '2021-01-07 00:34:23');
+(71, 11, 1, 15, '2021-01-07 00:34:23'),
+(72, 11, 12, 16, '2021-01-08 07:19:14'),
+(74, 13, 1, 16, '2021-01-08 09:12:20');
 
 -- --------------------------------------------------------
 
@@ -92,9 +96,9 @@ CREATE TABLE `material_inventory` (
 --
 
 INSERT INTO `material_inventory` (`id`, `storeid`, `name`, `qty`, `price`, `expiry_date`, `date_created`, `unit`) VALUES
-(11, 21, 'Flour', 2330, 50, '1111-11-11', '2021-01-03 01:17:38', NULL),
+(11, 21, 'Flour', 2318, 50, '1111-11-11', '2021-01-03 01:17:38', NULL),
 (12, 21, 'Egg', 0, 8, '0111-11-11', '2021-01-03 02:27:33', NULL),
-(13, 21, 'Sugar', 95, 40, '0000-00-00', '2021-01-03 02:27:43', NULL),
+(13, 21, 'Sugar', 94, 40, '0000-00-00', '2021-01-03 02:27:43', NULL),
 (14, 21, 'asdas', 0, 234, '2021-01-05', '2021-01-04 19:43:20', 'test'),
 (15, 25, 'testMaterial', 102, 34, '2021-01-06', '2021-01-04 21:34:47', NULL),
 (16, 21, 'test', 0, 0, '0000-00-00', '2021-01-07 17:29:49', '345');
@@ -146,7 +150,7 @@ CREATE TABLE `product` (
 --
 
 INSERT INTO `product` (`id`, `name`, `srp`, `qty`, `expiry_date`, `storeid`, `date_created`, `status`) VALUES
-(16, 'Cheese Cake', 20, 354, '2021-01-07', 21, 2147483647, 1);
+(16, 'Cheese Cake', 20, 99, '2021-01-07', 21, 2147483647, 1);
 
 -- --------------------------------------------------------
 
@@ -174,7 +178,9 @@ CREATE TABLE `production` (
 INSERT INTO `production` (`id`, `productid`, `batchnumber`, `quantity`, `date_produced`, `storeid`, `date_created`, `unit`, `date_expired`, `price`) VALUES
 (48, 16, 'Batch #48', 100, '2021-01-07', 21, '2021-01-07 14:18:13', 'kg', '2021-01-07', 99),
 (49, 16, 'Batch #49', 100, '2021-01-07', 21, '2021-01-07 14:19:21', 'kg', '2021-01-07', 100),
-(50, 16, 'Batch #50', 34, '2021-01-08', 21, '2021-01-07 18:41:51', 'pcs', '2021-01-08', 2);
+(50, 16, 'Batch #50', 34, '2021-01-08', 21, '2021-01-07 18:41:51', 'pcs', '2021-01-08', 2),
+(51, 16, 'Batch #51', 319, '2021-01-08', 21, '2021-01-08 07:07:05', 'pcs', '2021-01-08', 100),
+(52, 16, 'Batch #52', 100, '2021-01-08', 21, '2021-01-08 07:13:47', 'pcs', '2021-01-08', 22);
 
 -- --------------------------------------------------------
 
@@ -211,6 +217,29 @@ INSERT INTO `purchase` (`id`, `vendorid`, `materialid`, `date_purchased`, `type`
 -- --------------------------------------------------------
 
 --
+-- Table structure for table `purchase_return`
+--
+
+CREATE TABLE `purchase_return` (
+  `id` int(11) NOT NULL,
+  `materialid` int(11) NOT NULL,
+  `amount` float NOT NULL,
+  `qty` int(11) NOT NULL,
+  `unit` varchar(255) NOT NULL,
+  `date_purchased` date NOT NULL,
+  `date_added` timestamp NOT NULL DEFAULT current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+--
+-- Dumping data for table `purchase_return`
+--
+
+INSERT INTO `purchase_return` (`id`, `materialid`, `amount`, `qty`, `unit`, `date_purchased`, `date_added`) VALUES
+(1, 11, 234, 234, 'pcs', '2021-01-08', '2021-01-08 12:06:43');
+
+-- --------------------------------------------------------
+
+--
 -- Table structure for table `sales`
 --
 
@@ -221,21 +250,46 @@ CREATE TABLE `sales` (
   `qty` int(11) NOT NULL,
   `date_purchased` date NOT NULL,
   `other_details` varchar(255) NOT NULL,
-  `date_created` timestamp NOT NULL DEFAULT current_timestamp()
+  `date_created` timestamp NOT NULL DEFAULT current_timestamp(),
+  `unit` varchar(255) DEFAULT 'pcs'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 --
 -- Dumping data for table `sales`
 --
 
-INSERT INTO `sales` (`id`, `storeid`, `productid`, `qty`, `date_purchased`, `other_details`, `date_created`) VALUES
-(10, 21, 11, 1, '1111-11-11', '', '2020-12-06 13:16:46'),
-(11, 21, 11, 2, '1111-10-10', '', '2020-12-06 13:16:46'),
-(12, 21, 12, 2, '1111-11-11', '', '2020-12-06 13:16:46'),
-(13, 21, 11, 1, '0001-11-11', '', '2020-12-06 13:17:24'),
-(14, 21, 11, 1, '0001-11-11', '', '2020-12-06 13:17:24'),
-(15, 21, 11, 33, '1111-11-11', '', '2021-01-03 03:47:29'),
-(16, 21, 11, 100, '1111-11-11', '', '2021-01-04 07:23:22');
+INSERT INTO `sales` (`id`, `storeid`, `productid`, `qty`, `date_purchased`, `other_details`, `date_created`, `unit`) VALUES
+(18, 21, 16, 1, '2021-01-08', '', '2021-01-08 06:25:59', 'pcs'),
+(19, 21, 16, 23, '2021-01-08', '', '2021-01-08 06:33:59', 'pcs'),
+(20, 21, 16, 638, '2021-01-08', '', '2021-01-08 07:07:29', 'pcs');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `sales_return`
+--
+
+CREATE TABLE `sales_return` (
+  `id` int(11) NOT NULL,
+  `productid` int(11) NOT NULL,
+  `amount` float NOT NULL,
+  `date_purchased` date NOT NULL,
+  `qty` int(11) NOT NULL,
+  `unit` varchar(255) NOT NULL DEFAULT 'pcs',
+  `date_added` timestamp NOT NULL DEFAULT current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+--
+-- Dumping data for table `sales_return`
+--
+
+INSERT INTO `sales_return` (`id`, `productid`, `amount`, `date_purchased`, `qty`, `unit`, `date_added`) VALUES
+(1, 16, 2, '2021-01-08', 2, 'pcs', '2021-01-08 10:52:25'),
+(2, 16, 2, '2021-01-08', 2, 'pcs', '2021-01-08 10:54:33'),
+(3, 16, 2, '2021-01-08', 2, 'pcs', '2021-01-08 10:54:34'),
+(4, 11, 234, '2021-01-08', 234, 'pcs', '2021-01-08 12:03:55'),
+(5, 11, 234, '2021-01-08', 234, 'pcs', '2021-01-08 12:03:55'),
+(6, 11, 234, '2021-01-08', 234, 'pcs', '2021-01-08 12:05:44');
 
 -- --------------------------------------------------------
 
@@ -491,9 +545,21 @@ ALTER TABLE `purchase`
   ADD PRIMARY KEY (`id`);
 
 --
+-- Indexes for table `purchase_return`
+--
+ALTER TABLE `purchase_return`
+  ADD PRIMARY KEY (`id`);
+
+--
 -- Indexes for table `sales`
 --
 ALTER TABLE `sales`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Indexes for table `sales_return`
+--
+ALTER TABLE `sales_return`
   ADD PRIMARY KEY (`id`);
 
 --
@@ -546,13 +612,13 @@ ALTER TABLE `vendor`
 -- AUTO_INCREMENT for table `expenses`
 --
 ALTER TABLE `expenses`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=14;
 
 --
 -- AUTO_INCREMENT for table `material`
 --
 ALTER TABLE `material`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=72;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=75;
 
 --
 -- AUTO_INCREMENT for table `material_inventory`
@@ -576,7 +642,7 @@ ALTER TABLE `product`
 -- AUTO_INCREMENT for table `production`
 --
 ALTER TABLE `production`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=51;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=53;
 
 --
 -- AUTO_INCREMENT for table `purchase`
@@ -585,10 +651,22 @@ ALTER TABLE `purchase`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=58;
 
 --
+-- AUTO_INCREMENT for table `purchase_return`
+--
+ALTER TABLE `purchase_return`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+
+--
 -- AUTO_INCREMENT for table `sales`
 --
 ALTER TABLE `sales`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=17;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=21;
+
+--
+-- AUTO_INCREMENT for table `sales_return`
+--
+ALTER TABLE `sales_return`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
 
 --
 -- AUTO_INCREMENT for table `settings`
