@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Jan 08, 2021 at 06:43 PM
+-- Generation Time: Jan 08, 2021 at 09:19 PM
 -- Server version: 10.4.13-MariaDB
 -- PHP Version: 7.4.8
 
@@ -347,7 +347,7 @@ INSERT INTO `settings` (`id`, `logo`, `userid`, `terms`, `privacy`) VALUES
 CREATE TABLE `slides` (
   `id` int(11) NOT NULL,
   `title` varchar(255) NOT NULL,
-  `content` varchar(255) NOT NULL,
+  `content` text NOT NULL,
   `status` int(11) NOT NULL DEFAULT 1,
   `photo` varchar(255) NOT NULL,
   `date_created` timestamp NOT NULL DEFAULT current_timestamp(),
@@ -359,7 +359,12 @@ CREATE TABLE `slides` (
 --
 
 INSERT INTO `slides` (`id`, `title`, `content`, `status`, `photo`, `date_created`, `type`) VALUES
-(15, 'slide1', 'asd', 1, 'uploads/admin/banner3.jpg', '2021-01-02 11:14:45', 'slider');
+(20, 'Sequi ea ut et est quaerat', 'Ut velit est quam dolor ad a aliquid qui aliquid. Sequi ea ut et est quaerat sequi nihil ut aliquam. Occaecati alias dolorem mollitia ut. Similique ea voluptatem. Esse doloremque accusamus repellendus deleniti vel. Minus et tempore modi architecto.', 1, 'uploads/admin/banner1.jpg', '2021-01-08 19:57:49', 'slider'),
+(21, 'Lorem Ipsum Dolor', 'Ut velit est quam dolor ad a aliquid qui aliquid. Sequi ea ut et est quaerat sequi nihil ut aliquam. Occaecati alias dolorem mollitia ut. Similique ea voluptatem. Esse doloremque accusamus repellendus deleniti vel. Minus et tempore modi architecto.', 1, 'uploads/admin/banner4.jpg', '2021-01-08 19:58:13', 'slider'),
+(22, ' Voluptatem dignissimos provident quasi corporis voluptates sit assumenda.', '<p class=\"font-italic\">\n              Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore\n              magna aliqua.\n            </p>\n<ul>\n              <li><i class=\"icofont-check\"></i> Ullamco laboris nisi ut aliquip ex ea commodo consequat.</li>\n              <li><i class=\"icofont-check\"></i> Duis aute irure dolor in reprehenderit in voluptate velit.</li>\n            </ul>', 1, 'uploads/admin/features-1.svg', '2021-01-08 20:07:06', 'news'),
+(23, 'Corporis temporibus maiores provident', '<p class=\"font-italic\">\n              Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore\n              magna aliqua.\n            </p>\n            <p>\n              Ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate\n              velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in\n              culpa qui officia deserunt mollit anim id est laborum\n            </p>', 1, 'uploads/admin/features-2.svg', '2021-01-08 20:07:37', 'news'),
+(24, 'Sunt consequatur ad ut est nulla consectetur reiciendis animi voluptas', ' <p>Cupiditate placeat cupiditate placeat est ipsam culpa. Delectus quia minima quod. Sunt saepe odit aut quia voluptatem hic voluptas dolor doloremque.</p>\n            <ul>\n              <li><i class=\"icofont-check\"></i> Ullamco laboris nisi ut aliquip ex ea commodo consequat.</li>\n              <li><i class=\"icofont-check\"></i> Duis aute irure dolor in reprehenderit in voluptate velit.</li>\n              <li><i class=\"icofont-check\"></i> Facilis ut et voluptatem aperiam. Autem soluta ad fugiat.</li>\n            </ul>', 1, 'uploads/admin/features-3.svg', '2021-01-08 20:08:04', 'news'),
+(25, 'Quas et necessitatibus eaque impedit ipsum animi consequatur incidunt in', ' <p class=\"font-italic\">\n              Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore\n              magna aliqua.\n            </p>\n            <p>\n              Ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate\n              velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in\n              culpa qui officia deserunt mollit anim id est laborum\n            </p>', 1, 'uploads/admin/features-4.svg', '2021-01-08 20:08:36', 'news');
 
 -- --------------------------------------------------------
 
@@ -716,7 +721,7 @@ ALTER TABLE `settings`
 -- AUTO_INCREMENT for table `slides`
 --
 ALTER TABLE `slides`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=16;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=26;
 
 --
 -- AUTO_INCREMENT for table `store`

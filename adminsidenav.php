@@ -98,10 +98,10 @@
 						  	<a href="slideshows.php" class="black">All Slides</a>
 						  </li>
 						   <li class="list-group-item">
-						  	<a href="addnews.php" class="black">Add News</a>
+						  	<a href="addfeature.php" class="black">Add Feature</a>
 						  </li>
 						   <li class="list-group-item">
-						  	<a href="news.php" class="black">All News</a>
+						  	<a href="features.php" class="black">All Features</a>
 						  </li>
 						  <li class="list-group-item">
 						  	<a href="terms.php" class="black">Terms & Conditions</a>

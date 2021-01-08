@@ -19,6 +19,9 @@
 					text-align: center;
 					width: 100%;
 				}
+				.dz-image img {
+					max-width: 100%;
+				}
 			</style>
 			<br>
 			<div class="col-sm-3">
@@ -29,7 +32,7 @@
 			<div class="col-sm-9">
 				
 				<br>
-				<h5>Add News</h5>
+				<h5>Add Feature</h5>
 				<form  id="dropzone" action="ajax.php">
 					<input type="hidden" name="assetupload" value="true">
 					<p class="caption">Drop files here</p>
@@ -90,7 +93,7 @@
 							</div>
 							<div class="form-group">
 								<label>Subtext</label>
-								<input type="text" id="subtext" class="form-control" name="subtext" placeholder="Subtext...">
+								<textarea rows="10" class="form-control" name="subtext" id="subtext"></textarea>
 							</div>
 							<input type="submit" class="btn btn-lg btn-primary" value="Add">
 						</form>

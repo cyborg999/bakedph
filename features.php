@@ -12,7 +12,7 @@
 			<div class="col-sm-9">
 				<?php  include_once "./error.php"; ?>
 				<br>
-				<h5>All News</h5>
+				<h5>All Featuress</h5>
 				<?php
 					$slides = $model->getAllSlides(true);
 				?>
