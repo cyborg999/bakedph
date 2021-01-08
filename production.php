@@ -5,7 +5,7 @@
 		<div class="row">
 			<br>
 			<div class="col-sm-2 sidenav">
-				<?php $active = "sales"; include "./sidenav.php"; ?>
+				<?php $active = "production"; include "./sidenav.php"; ?>
 			</div>
 			<div class="col-sm-10">
 					<?php include_once "./dashboardnav.php"; ?>

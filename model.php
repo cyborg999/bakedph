@@ -4,6 +4,7 @@ session_start();
 class Model {
 	public $db;
 	public $errors = array();
+	public $notifications = array();
 	public $success;
 
 	public function __construct(){
@@ -74,29 +75,269 @@ class Model {
 		$this->addStoreExpensesListener();
 		$this->addSalesReturnListener();
 		$this->addPurchaseReturnListener();
+		$this->updateSeenListener();
 
-          // $this->getStoreNotifications();
+		// $this->getStoreNotifications();
+	}
+
+	public function updateSeenListener(){
+		if(isset($_POST['updateSeen'])){
+			$sql = "
+				update notification
+				set seen = 1
+				where id = ?
+			";
+
+			$this->db->prepare($sql)->execute(array($_POST['id']));
+
+			die(json_encode(array("updated")));
+		}
+	}
+
+	public function getNotifications(){
+		$sql = "
+			select *
+			from notification
+			where storeid = ".$_SESSION['storeid']."
+		";
+
+		return $this->db->query($sql)->fetchAll();
+	}
+
+	public function addNotification($title, $body){
+		$sql = "
+			insert into notification(title,body,storeid)
+			values(?,?,?)
+		";
+
+		$this->db->prepare($sql)->execute(array($title, $body, $_SESSION['storeid']));
+
+
+		return $this;
+	}
+
+	public function getLowStockProductNotification(&$notifications){
+		$lowStockProducts = array();
+		$products = $this->getAllProducts(true);
+		$title = '<div class="mr-3">
+                      <div class="icon-circle bg-warning">
+                          <i class="fas fa-exclamation-triangle text-white"></i>
+                      </div>
+                  </div>
+                  <div>';
+                    
+		if(count($products)){
+			$title .= "Low Stock Alert: <b>".count($products) ." Product(s)</b> are currently low in stock.";
+		}
+
+		$title .=  '<!-- <div class="small text-gray-500">December 2, 2019</div> -->
+              	</div>';
+
+        $body = "<b>The following products are low in stock:</b> <ul>";
+
+        foreach($products as $idx => $p){
+        	$body .= "<li>".$p['name']."(".$p['qty'].")</li>";
+        }
+
+        $body .= "</ul>";
+
+		if(count($products)){
+			$notifications[] = $title;
+
+			$this->addNotification($title, $body);
+        }
+
+		return $this;
+	}
+
+	public function getLowStockMaterialNotification(&$notifications){
+		$lowStockProducts = array();
+      	$products = $this->getAllMaterialInventory(true);
+      	$title = '<div class="mr-3">
+                      <div class="icon-circle bg-warning">
+                          <i class="fas fa-exclamation-triangle text-white"></i>
+                      </div>
+                  </div>
+                  <div>';
+                    
+		if(count($products)){
+			$title .= "Low Stock Alert: <b>".count($products) ." Material(s)</b> are currently low in stock.";
+		}
+
+		$title .=  '<!-- <div class="small text-gray-500">December 2, 2019</div> -->
+              	</div>';
+
+       $body = "<b>The following materials are low in stock:</b> <ul>";
+
+        foreach($products as $idx => $p){
+        	$body .= "<li>".$p['name']."(".$p['qty'].")</li>";
+        }
+
+        $body .= "</ul>";
+
+		if(count($products)){
+			$notifications[] = $title;
+
+			$this->addNotification($title, $body);
+        }
+
+		return $this;
+	}
+
+	public function getExpiredMaterialNotification(&$notifications){
+		$lowStockProducts = array();
+      	$products = $this->getExpiredMaterials();
+      	$title = '<div class="mr-3">
+                      <div class="icon-circle bg-danger">
+                          <i class="fas fa-exclamation-triangle text-white"></i>
+                      </div>
+                  </div>
+                  <div>';
+                    
+		if(count($products)){
+			$title .= "Expired Item Alert: <b>".count($products) ." Material(s)</b> are expired.";
+		}
+
+		$title .=  '<!-- <div class="small text-gray-500">December 2, 2019</div> -->
+              	</div>';
+
+        $body = "<b>The following materials are expired:</b> <ul>";
+
+        foreach($products as $idx => $p){
+        	$body .= "<li>".$p['name']."(".$p['expiry_date'].")</li>";
+        }
+
+        $body .= "</ul>";
+
+		if(count($products)){
+			$notifications[] = $title;
+
+			$this->addNotification($title, $body);
+        }
+
+		return $this;
+	}
+
+	public function getExpiredProductNotification(&$notifications){
+		$lowStockProducts = array();
+      	$products = $this->getExpiredProducts();
+      	$title = '<div class="mr-3">
+                      <div class="icon-circle bg-danger">
+                          <i class="fas fa-exclamation-triangle text-white"></i>
+                      </div>
+                  </div>
+                  <div>';
+                    
+		if(count($products)){
+			$title .= "Expired Item Alert: <b>".count($products) ." Product(s)</b> are expired.";
+		}
+
+		$title .=  '<!-- <div class="small text-gray-500">December 2, 2019</div> -->
+              	</div>';
+
+		$body = "<b>The following products are expired:</b> <ul>";
+
+        foreach($products as $idx => $p){
+        	$body .= "<li>".$p['name']."(".$p['date_expired'].")</li>";
+        }
+
+        $body .= "</ul>";
+
+		if(count($products)){
+			$notifications[] = $title;
+
+			$this->addNotification($title, $body);
+        }
+
+		return $this;
+	}
+
+	public function checkSubscriptionDueDate(&$notifications){
+		$expiration = $this->getSubscriptionExpiration();
+		$date1 = date_create(date("Y-m-d"));
+		$date2 = date_create($expiration);
+		$diff = date_diff($date1,$date2);
+
+		if($diff->days <= 10){
+			$title = '<div class="mr-3">
+                      <div class="icon-circle bg-warning">
+                          <i class="fas fa-exclamation-triangle text-white"></i>
+                      </div>
+                  </div>
+                  <div>';
+
+			$title .= "Subscription Alert: Your subscription will expire in <b>". $diff->days ." day(s)</b>.";
+
+			$title .=  '<!-- <div class="small text-gray-500">December 2, 2019</div> -->
+			  	</div>';
+
+			$body = "<p>Your subscription will expire in".$dif->days." (".$expiration.")</p>";
+			
+			$this->addNotification($title, $body);
+
+		  	$notifications[] = $title;
+		}
+
+		return $this;
+	}
+
+	public function getStoreCreditDeadlineNotifications(&$notifications){
+		$purchaseOrders = $this->getPurchaseOrdersByType("credit");
+		$total = 0;
+		$body = "<b>The following Purchase Order's credit deadline are near:</b> <ul>";
+
+		foreach($purchaseOrders as $idx => $p){
+			$date1 = date_create(date("Y-m-d"));
+			$date2 = date_create("2021-01-09");
+			$date2 = date_create($p['credit_date']);
+			$diff = date_diff($date1,$date2);
+
+			if($diff->days <= 10){
+        		$body .= "<li>".$p['materialname']."(".$p['credit_date'].")</li>";
+				
+				++$total;
+			}
+		}
+        $body .= "</ul>";
+
+
+		if($total){
+			$title = '<div class="mr-3">
+                      <div class="icon-circle bg-warning">
+                          <i class="fas fa-exclamation-triangle text-white"></i>
+                      </div>
+                  </div>
+                  <div>';
+
+			$title .= "Credit Payment Alert: <b>$total</b> Credit Payment(s) are near.";
+
+			$title .=  '<!-- <div class="small text-gray-500">December 2, 2019</div> -->
+			  	</div>';
+
+			$this->addNotification($title, $body);
+
+		  	$notifications[] = $title;
+		}
+
+		return $this;
 	}
 
 	public function getStoreNotifications(){
 		//sa login, sa procure or sell
 		$notifications = array();
-		$lowStockProducts = array();
 
-      	$products = $this->getAllProducts(true);
+		$this->getStoreCreditDeadlineNotifications($notifications);
+		$this->checkSubscriptionDueDate($notifications);
+		$this->getLowStockProductNotification($notifications);
+		$this->getLowStockMaterialNotification($notifications);
+		$this->getExpiredMaterialNotification($notifications);
+		$this->getExpiredProductNotification($notifications);
+      	
+		$this->notifications = $notifications;
 
-      	foreach($products as $idx => $p){
-      		$lowStockProducts[]
-      	}
-      	// opd($products);
-		//low stock ng product
-		//low stock ng material
-		//expired product
-		//expired material
+		return $this;
 		//if malapit na credit date
-		//if malapit na end of subscription
-
-	}
+		}
 
 	public function addPurchaseReturnListener(){
 		if(isset($_POST['addPurchaseReturn'])){
@@ -2271,6 +2512,8 @@ class Model {
 				if($exists['usertype'] == "admin"){
 					header("Location:admindashboard.php");
 				} else {
+      				$this->getStoreNotifications();
+
 					header("Location:dashboard.php");
 				}
 			}

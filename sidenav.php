@@ -52,9 +52,13 @@
 				      </h2>
 				    </div>
 
-				    <div id="collapseZero" class="collapse" aria-labelledby="headingOne" data-parent="#accordionExample">
+				    <div id="collapseZero" class="collapse <?= ($active == "notification") ? "show" : ""; ?>" aria-labelledby="headingOne" data-parent="#accordionExample">
 				      <div class="card-body">
-				        TODO 
+				        <ul class="list-group list-group-flush">
+						  <li class="list-group-item">
+						  	<a href="notifications.php" class="black">View</a>
+						  </li>
+						</ul> 
 				      </div>
 				    </div>
 				  </div>
@@ -175,6 +179,48 @@
 				    </div>
 				  </div>
 				 <?php else: ?>
+
+					 <div class="card">
+					    <div class="card-header" id="headingProduction">
+					      <h2 class="mb-0">
+					        <button class="btn btn-link btn-block text-left collapsed " type="button" data-toggle="collapse" data-target="#collapseProduction" aria-expanded="false" aria-controls="collapseProduction">
+					          <svg class="bi" width="18" height="18" fill="currentColor"><use xlink:href="./node_modules/bootstrap-icons/bootstrap-icons.svg#receipt"/></svg> Production
+					        </button>
+					      </h2>
+					    </div>
+					    <div id="collapseProduction" class="<?= ($active == "production") ? "show" : ""; ?> collapse" aria-labelledby="headingProduction" data-parent="#accordionExample">
+					      <div class="card-body">
+					      	<ul class="list-group list-group-flush">
+					         <li class="list-group-item">
+							  	<a href="production.php" class="black">Production</a>
+							  </li>
+							</ul>
+					      </div>
+					    </div>
+					  </div>
+					
+					<div class="card">
+					    <div class="card-header" id="headingPurchaseOrder">
+					      <h2 class="mb-0">
+					        <button class="btn btn-link btn-block text-left collapsed " type="button" data-toggle="collapse" data-target="#collapsePurchaseOrder" aria-expanded="false" aria-controls="collapsePurchaseOrder">
+					          <svg class="bi" width="18" height="18" fill="currentColor"><use xlink:href="./node_modules/bootstrap-icons/bootstrap-icons.svg#receipt"/></svg> Purchase Order
+					        </button>
+					      </h2>
+					    </div>
+					    <div id="collapsePurchaseOrder" class="<?= ($active == "purchaseOrder") ? "show" : ""; ?> collapse" aria-labelledby="headingPurchaseOrder" data-parent="#accordionExample">
+					      <div class="card-body">
+					      	<ul class="list-group list-group-flush">
+					      		<li class="list-group-item">
+								  	<a href="addpurchase.php" class="black">Purchase Order</a>
+							  	</li>
+							  	<li class="list-group-item">
+								  	<a href="addpurchasereturn.php" class="black">Purchase Return</a>
+							  	</li>
+							</ul>
+					      </div>
+					    </div>
+					  </div>
+
 				  <div class="card">
 				    <div class="card-header" id="headingTwo">
 				      <h2 class="mb-0">
@@ -186,28 +232,20 @@
 				    <div id="collapseTwo" class="<?= ($active == "sales") ? "show" : ""; ?> collapse" aria-labelledby="headingTwo" data-parent="#accordionExample">
 				      <div class="card-body">
 				      	<ul class="list-group list-group-flush">
-				         <li class="list-group-item">
-						  	<a href="production.php" class="black">Production</a>
-						  </li>
 						   <li class="list-group-item">
 						  	<a href="addsale.php" class="black">Sales</a>
 						  </li>
 					     	<li class="list-group-item">
-						  	<a href="addpurchase.php" class="black">Purchase Order</a>
+						  	<a href="addexpenses.php" class="black">Expenses</a>
 						  </li>
 						  <li class="list-group-item">
 						  	<a href="addsalesreturn.php" class="black">Sales Return</a>
-						  </li>
-						  <li class="list-group-item">
-						  	<a href="addpurchasereturn.php" class="black">Purchase Return</a>
-						  </li>
-						  <li class="list-group-item">
-						  	<a href="addexpenses.php" class="black">Expenses</a>
 						  </li>
 						</ul>
 				      </div>
 				    </div>
 				  </div>
+
 				  <div class="card">
 				    <div class="card-header" id="headingThree">
 				      <h2 class="mb-0">

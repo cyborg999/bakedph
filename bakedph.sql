@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Jan 08, 2021 at 02:07 PM
+-- Generation Time: Jan 08, 2021 at 06:43 PM
 -- Server version: 10.4.13-MariaDB
 -- PHP Version: 7.4.8
 
@@ -102,6 +102,32 @@ INSERT INTO `material_inventory` (`id`, `storeid`, `name`, `qty`, `price`, `expi
 (14, 21, 'asdas', 0, 234, '2021-01-05', '2021-01-04 19:43:20', 'test'),
 (15, 25, 'testMaterial', 102, 34, '2021-01-06', '2021-01-04 21:34:47', NULL),
 (16, 21, 'test', 0, 0, '0000-00-00', '2021-01-07 17:29:49', '345');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `notification`
+--
+
+CREATE TABLE `notification` (
+  `id` int(11) NOT NULL,
+  `title` text NOT NULL,
+  `body` text NOT NULL,
+  `seen` int(11) NOT NULL DEFAULT 0,
+  `date_added` timestamp NOT NULL DEFAULT current_timestamp(),
+  `storeid` int(11) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+--
+-- Dumping data for table `notification`
+--
+
+INSERT INTO `notification` (`id`, `title`, `body`, `seen`, `date_added`, `storeid`) VALUES
+(52, '<div class=\"mr-3\">\r\n                      <div class=\"icon-circle bg-warning\">\r\n                          <i class=\"fas fa-exclamation-triangle text-white\"></i>\r\n                      </div>\r\n                  </div>\r\n                  <div>Credit Payment Alert: <b>2</b> Credit Payment(s) are near.<!-- <div class=\"small text-gray-500\">December 2, 2019</div> -->\r\n			  	</div>', '<b>The following Purchase Order\'s credit deadline are near:</b> <ul><li>Flour(2021-01-08)</li><li>Flour(2021-01-09)</li></ul>', 1, '2021-01-08 17:19:12', 21),
+(53, '<div class=\"mr-3\">\r\n                      <div class=\"icon-circle bg-warning\">\r\n                          <i class=\"fas fa-exclamation-triangle text-white\"></i>\r\n                      </div>\r\n                  </div>\r\n                  <div>Low Stock Alert: <b>1 Product(s)</b> are currently low in stock.<!-- <div class=\"small text-gray-500\">December 2, 2019</div> -->\r\n              	</div>', '<b>The following products are low in stock:</b> <ul><li>Cheese Cake(99)</li></ul>', 1, '2021-01-08 17:19:12', 21),
+(54, '<div class=\"mr-3\">\r\n                      <div class=\"icon-circle bg-warning\">\r\n                          <i class=\"fas fa-exclamation-triangle text-white\"></i>\r\n                      </div>\r\n                  </div>\r\n                  <div>Low Stock Alert: <b>4 Material(s)</b> are currently low in stock.<!-- <div class=\"small text-gray-500\">December 2, 2019</div> -->\r\n              	</div>', '<b>The following materials are low in stock:</b> <ul><li>Egg(0)</li><li>Sugar(94)</li><li>asdas(0)</li><li>test(0)</li></ul>', 1, '2021-01-08 17:19:12', 21),
+(55, '<div class=\"mr-3\">\r\n                      <div class=\"icon-circle bg-danger\">\r\n                          <i class=\"fas fa-exclamation-triangle text-white\"></i>\r\n                      </div>\r\n                  </div>\r\n                  <div>Expired Item Alert: <b>5 Material(s)</b> are expired.<!-- <div class=\"small text-gray-500\">December 2, 2019</div> -->\r\n              	</div>', '<b>The following materials are expired:</b> <ul><li>Flour(2021-01-08)</li><li>Flour(2021-01-08)</li><li>Flour(2021-01-08)</li><li>Flour(2021-01-08)</li><li>Flour(2021-01-08)</li></ul>', 1, '2021-01-08 17:19:12', 21),
+(56, '<div class=\"mr-3\">\r\n                      <div class=\"icon-circle bg-danger\">\r\n                          <i class=\"fas fa-exclamation-triangle text-white\"></i>\r\n                      </div>\r\n                  </div>\r\n                  <div>Expired Item Alert: <b>5 Product(s)</b> are expired.<!-- <div class=\"small text-gray-500\">December 2, 2019</div> -->\r\n              	</div>', '<b>The following products are expired:</b> <ul><li>Cheese Cake(2021-01-07)</li><li>Cheese Cake(2021-01-07)</li><li>Cheese Cake(2021-01-08)</li><li>Cheese Cake(2021-01-08)</li><li>Cheese Cake(2021-01-08)</li></ul>', 0, '2021-01-08 17:19:12', 21);
 
 -- --------------------------------------------------------
 
@@ -209,7 +235,7 @@ CREATE TABLE `purchase` (
 
 INSERT INTO `purchase` (`id`, `vendorid`, `materialid`, `date_purchased`, `type`, `qty`, `date_created`, `storeid`, `credit_date`, `expiry_date`, `unit`, `price`) VALUES
 (53, 1, 11, '2021-01-08', 'cash', 324, '2021-01-07 15:11:02', 21, '2021-01-08', '2021-01-08', '45', 345),
-(54, 1, 11, '2021-01-08', 'cash', 324, '2021-01-07 15:11:15', 21, '2021-01-08', '2021-01-08', '45', 345),
+(54, 1, 11, '2021-01-08', 'credit', 324, '2021-01-07 15:11:15', 21, '2021-01-08', '2021-01-08', '45', 345),
 (55, 1, 11, '2021-01-08', 'cash', 34, '2021-01-07 16:11:50', 21, '2021-01-08', '2021-01-08', 'unit', 345),
 (56, 1, 11, '2021-01-08', 'cash', 34, '2021-01-07 16:11:52', 21, '2021-01-08', '2021-01-08', 'unit', 345),
 (57, 1, 11, '2021-01-08', 'credit', 23, '2021-01-07 18:03:02', 21, '2021-01-09', '2021-01-08', 'test', 33);
@@ -521,6 +547,12 @@ ALTER TABLE `material_inventory`
   ADD PRIMARY KEY (`id`);
 
 --
+-- Indexes for table `notification`
+--
+ALTER TABLE `notification`
+  ADD PRIMARY KEY (`id`);
+
+--
 -- Indexes for table `payments`
 --
 ALTER TABLE `payments`
@@ -625,6 +657,12 @@ ALTER TABLE `material`
 --
 ALTER TABLE `material_inventory`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=17;
+
+--
+-- AUTO_INCREMENT for table `notification`
+--
+ALTER TABLE `notification`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=57;
 
 --
 -- AUTO_INCREMENT for table `payments`

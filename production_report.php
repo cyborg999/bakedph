@@ -70,7 +70,7 @@
 			        		<?php foreach($purchasedOrders as $idx => $p): ?>
 							<tr>
 			        			<td>
-									<span data-id="<?= $p['id'];?>" class="badge <?=($p['type'] == 'cash') ? 'badge-success' : 'badge-danger'?>"><?= $p['type'];?></span>
+									<span data-id="<?= $p['id'];?>" class="badge bd <?=($p['type'] == 'cash') ? 'badge-success' : 'badge-danger'?>"><?= $p['type'];?></span>
 			        			</td>
 			        			<td><?= $p['materialname'];?></td>
 			        			<td><?= $p['vendorname'];?></td>
@@ -91,7 +91,7 @@
 	<script type="text/html" id="purchase">
 		<tr>
 			<td>
-				<span data-id="[ID]?>" class="badge [BADGE]">[TYPE]</span>
+				<span data-id="[ID]?>" class="badge bd [BADGE]">[TYPE]</span>
 			</td>
 			<td>[MATERIALNAME]</td>
 			<td>[VENDORNAME]</td>
@@ -105,7 +105,7 @@
     	(function($){
     		$(document).ready(function(){
     			function __listen(){
-    				$(".badge").off().on("click", function(){
+    				$(".bd").off().on("click", function(){
 	    				var me = $(this);
 	    				var type = "";
 
