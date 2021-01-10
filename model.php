@@ -429,19 +429,18 @@ class Model {
 			}
 
 			if(isset($_GET['sales'])){
-				opd($_SESSION['lastQuery']);
 				header('Content-Type: text/csv; charset=utf-8');
 				header('Content-Disposition: attachment; filename=Sales.csv');
 
 				$output = fopen('php://output', 'w');
 
 
-				fputcsv($output, array('Name', 'Batch #', 'SRP', "Quantity", "Amount"));
+				fputcsv($output, array("Name", "Quantity", 'Price', "Unit", "Amount", "Date Purchased"));
 
-				$records = $this->db->query($_SESSION['lastQuery'])->fetchAll();
+				$records = $this->db->query($_SESSION['monthlySalesQuery'])->fetchAll();
 
 				foreach($records as $idx => $r){
-					$data = array($r['name'],$r['batchnumber'],$r['srp'],$r['quantity'], $r['quantity'] * $r['srp']);
+					$data = array($r['name'],$r['qty'],$r['srp'],$r['unit'], $r['revenue'], $r['date_purchased']);
 					fputcsv($output, $data);
 				}
 			}
@@ -504,12 +503,12 @@ class Model {
 				$output = fopen('php://output', 'w');
 
 
-				fputcsv($output, array('Name', 'Price', 'Quantity', "Expiry Date"));
+				fputcsv($output, array('Name', 'Quantity', "Unit"));
 
 				$records = $this->db->query($_SESSION['lastQuery'])->fetchAll();
 
 				foreach($records as $idx => $r){
-					$data = array($r['name'],$r['price'],$r['qty'],$r['expiry_date']);
+					$data = array($r['name'],$r['qty'],$r['unit']);
 					fputcsv($output, $data);
 				}
 			}
@@ -1469,7 +1468,7 @@ class Model {
 		";	
 
 
-		$_SESSION['lastQuery'] = $sql;
+		$_SESSION['monthlySalesQuery'] = $sql;
 
 		return $this->db->query($sql)->fetchAll();
 	}
@@ -2012,13 +2011,14 @@ class Model {
 
 	public function editMaterialListener(){
 		if(isset($_POST['editmaterial'])){
+			oppd();
 			$sql = "
 				UPDATE material_inventory
-				SET name = ?, price = ?, qty = ?, expiry_date = ?
+				SET name = ?, unit = ?
 				WHERE id = ?
 			";
 
-			$this->db->prepare($sql)->execute(array($_POST['name'], $_POST['price'], $_POST['qty'], $_POST['expiry'], $_POST['editmaterial']));
+			$this->db->prepare($sql)->execute(array($_POST['name'], $_POST['unit'], $_POST['editmaterial']));
 
 			die(json_encode($_POST));
 		}
@@ -2198,6 +2198,21 @@ class Model {
 		return $this->db->query($sql)->fetchAll();
 	}
 
+	public function getAllPurchase(){
+		$sql = "
+			select t1.*,t2.name, t3.name as 'vendorname', t3.id as 'vendorid'
+			from purchase t1
+			left join material_inventory t2
+			on t1.materialid = t2.id
+			left join vendor t3
+			on t1.vendorid = t3.id
+			WHERE t1.storeid = '".$_SESSION['storeid']."'
+		";
+
+		return $this->db->query($sql)->fetchAll();
+
+	}
+
 	public function getAllMaterials($productId = false){
 		$and = ($productId) ? " AND t2.id = $productId" : "";
 
@@ -2274,11 +2289,15 @@ class Model {
 	//for easy deletion of records
 	public function reset(){
 		$sql = array();
-		$sql[] = "delete from store";
-		$sql[] = "delete from user";
+		// $sql[] = "delete from store";
+		// $sql[] = "delete from user";
 		$sql[] = "delete from product";
 		$sql[] = "delete from material";
-		$sql[] = "delete from userinfo";
+		$sql[] = "delete from purchase";
+		$sql[] = "delete from production";
+		$sql[] = "delete from sales";
+		$sql[] = "delete from material_inventory";
+		// $sql[] = "delete from userinfo";
 
 		foreach ($sql as $key => $s) {
 			$this->db->query($s);
@@ -2512,7 +2531,6 @@ class Model {
 				if($exists['usertype'] == "admin"){
 					header("Location:admindashboard.php");
 				} else {
-      				$this->getStoreNotifications();
 
 					header("Location:dashboard.php");
 				}

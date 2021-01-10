@@ -104,6 +104,12 @@
 						  <li class="list-group-item">
 						  	<a href="materials.php" class="black">Material Inventory <span class="badge badge-primary badge-pill"><?= $model->getMaterialCount(); ?></span></a>
 						  </li>
+						  <li class="list-group-item">
+						  	<?php
+          						$materialLow = $model->getAllMaterialInventory(true);
+						  	?>
+						  	<a href="all_materials.php" class="black">All Materials <span class="badge badge-primary badge-pill"><?= count($materialLow) ?></span></a>
+						  </li>
 						   <li class="list-group-item">
 						  	<?php
           						$materialLow = $model->getAllMaterialInventory(true);

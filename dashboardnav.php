@@ -23,6 +23,13 @@
     if($_SESSION['usertype'] != "basic"){
     header("Location:logout.php");
   }
+
+  // if(isset($_SESSION['firstlogin'])){
+  //   $model->getStoreNotifications();
+
+  //   unset()
+  // }
+
 ?>
 
  <nav class="navbar navbar-expand navbar-light bg-white topbar mb-4 static-top shadow">

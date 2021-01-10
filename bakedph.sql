@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Jan 08, 2021 at 09:19 PM
+-- Generation Time: Jan 10, 2021 at 09:28 AM
 -- Server version: 10.4.13-MariaDB
 -- PHP Version: 7.4.8
 
@@ -67,12 +67,7 @@ CREATE TABLE `material` (
 --
 
 INSERT INTO `material` (`id`, `materialid`, `qty`, `productid`, `date_created`) VALUES
-(67, 11, 1, 11, '2021-01-03 02:28:38'),
-(68, 12, 20, 11, '2021-01-03 02:28:44'),
-(70, 12, 1, 13, '2021-01-03 04:03:31'),
-(71, 11, 1, 15, '2021-01-07 00:34:23'),
-(72, 11, 12, 16, '2021-01-08 07:19:14'),
-(74, 13, 1, 16, '2021-01-08 09:12:20');
+(75, 17, 1, 17, '2021-01-10 06:24:31');
 
 -- --------------------------------------------------------
 
@@ -96,12 +91,7 @@ CREATE TABLE `material_inventory` (
 --
 
 INSERT INTO `material_inventory` (`id`, `storeid`, `name`, `qty`, `price`, `expiry_date`, `date_created`, `unit`) VALUES
-(11, 21, 'Flour', 2318, 50, '1111-11-11', '2021-01-03 01:17:38', NULL),
-(12, 21, 'Egg', 0, 8, '0111-11-11', '2021-01-03 02:27:33', NULL),
-(13, 21, 'Sugar', 94, 40, '0000-00-00', '2021-01-03 02:27:43', NULL),
-(14, 21, 'asdas', 0, 234, '2021-01-05', '2021-01-04 19:43:20', 'test'),
-(15, 25, 'testMaterial', 102, 34, '2021-01-06', '2021-01-04 21:34:47', NULL),
-(16, 21, 'test', 0, 0, '0000-00-00', '2021-01-07 17:29:49', '345');
+(17, 30, 'Flour', 98, 0, '0000-00-00', '2021-01-10 06:19:57', 'kg');
 
 -- --------------------------------------------------------
 
@@ -127,7 +117,17 @@ INSERT INTO `notification` (`id`, `title`, `body`, `seen`, `date_added`, `storei
 (53, '<div class=\"mr-3\">\r\n                      <div class=\"icon-circle bg-warning\">\r\n                          <i class=\"fas fa-exclamation-triangle text-white\"></i>\r\n                      </div>\r\n                  </div>\r\n                  <div>Low Stock Alert: <b>1 Product(s)</b> are currently low in stock.<!-- <div class=\"small text-gray-500\">December 2, 2019</div> -->\r\n              	</div>', '<b>The following products are low in stock:</b> <ul><li>Cheese Cake(99)</li></ul>', 1, '2021-01-08 17:19:12', 21),
 (54, '<div class=\"mr-3\">\r\n                      <div class=\"icon-circle bg-warning\">\r\n                          <i class=\"fas fa-exclamation-triangle text-white\"></i>\r\n                      </div>\r\n                  </div>\r\n                  <div>Low Stock Alert: <b>4 Material(s)</b> are currently low in stock.<!-- <div class=\"small text-gray-500\">December 2, 2019</div> -->\r\n              	</div>', '<b>The following materials are low in stock:</b> <ul><li>Egg(0)</li><li>Sugar(94)</li><li>asdas(0)</li><li>test(0)</li></ul>', 1, '2021-01-08 17:19:12', 21),
 (55, '<div class=\"mr-3\">\r\n                      <div class=\"icon-circle bg-danger\">\r\n                          <i class=\"fas fa-exclamation-triangle text-white\"></i>\r\n                      </div>\r\n                  </div>\r\n                  <div>Expired Item Alert: <b>5 Material(s)</b> are expired.<!-- <div class=\"small text-gray-500\">December 2, 2019</div> -->\r\n              	</div>', '<b>The following materials are expired:</b> <ul><li>Flour(2021-01-08)</li><li>Flour(2021-01-08)</li><li>Flour(2021-01-08)</li><li>Flour(2021-01-08)</li><li>Flour(2021-01-08)</li></ul>', 1, '2021-01-08 17:19:12', 21),
-(56, '<div class=\"mr-3\">\r\n                      <div class=\"icon-circle bg-danger\">\r\n                          <i class=\"fas fa-exclamation-triangle text-white\"></i>\r\n                      </div>\r\n                  </div>\r\n                  <div>Expired Item Alert: <b>5 Product(s)</b> are expired.<!-- <div class=\"small text-gray-500\">December 2, 2019</div> -->\r\n              	</div>', '<b>The following products are expired:</b> <ul><li>Cheese Cake(2021-01-07)</li><li>Cheese Cake(2021-01-07)</li><li>Cheese Cake(2021-01-08)</li><li>Cheese Cake(2021-01-08)</li><li>Cheese Cake(2021-01-08)</li></ul>', 0, '2021-01-08 17:19:12', 21);
+(56, '<div class=\"mr-3\">\r\n                      <div class=\"icon-circle bg-danger\">\r\n                          <i class=\"fas fa-exclamation-triangle text-white\"></i>\r\n                      </div>\r\n                  </div>\r\n                  <div>Expired Item Alert: <b>5 Product(s)</b> are expired.<!-- <div class=\"small text-gray-500\">December 2, 2019</div> -->\r\n              	</div>', '<b>The following products are expired:</b> <ul><li>Cheese Cake(2021-01-07)</li><li>Cheese Cake(2021-01-07)</li><li>Cheese Cake(2021-01-08)</li><li>Cheese Cake(2021-01-08)</li><li>Cheese Cake(2021-01-08)</li></ul>', 0, '2021-01-08 17:19:12', 21),
+(57, '<div class=\"mr-3\">\r\n                      <div class=\"icon-circle bg-warning\">\r\n                          <i class=\"fas fa-exclamation-triangle text-white\"></i>\r\n                      </div>\r\n                  </div>\r\n                  <div>Credit Payment Alert: <b>2</b> Credit Payment(s) are near.<!-- <div class=\"small text-gray-500\">December 2, 2019</div> -->\r\n			  	</div>', '<b>The following Purchase Order\'s credit deadline are near:</b> <ul><li>Flour(2021-01-08)</li><li>Flour(2021-01-09)</li></ul>', 0, '2021-01-09 09:22:11', 21),
+(58, '<div class=\"mr-3\">\r\n                      <div class=\"icon-circle bg-warning\">\r\n                          <i class=\"fas fa-exclamation-triangle text-white\"></i>\r\n                      </div>\r\n                  </div>\r\n                  <div>Low Stock Alert: <b>1 Product(s)</b> are currently low in stock.<!-- <div class=\"small text-gray-500\">December 2, 2019</div> -->\r\n              	</div>', '<b>The following products are low in stock:</b> <ul><li>Cheese Cake(99)</li></ul>', 0, '2021-01-09 09:22:12', 21),
+(59, '<div class=\"mr-3\">\r\n                      <div class=\"icon-circle bg-warning\">\r\n                          <i class=\"fas fa-exclamation-triangle text-white\"></i>\r\n                      </div>\r\n                  </div>\r\n                  <div>Low Stock Alert: <b>4 Material(s)</b> are currently low in stock.<!-- <div class=\"small text-gray-500\">December 2, 2019</div> -->\r\n              	</div>', '<b>The following materials are low in stock:</b> <ul><li>Egg(0)</li><li>Sugar(94)</li><li>asdas(0)</li><li>test(0)</li></ul>', 0, '2021-01-09 09:22:12', 21),
+(60, '<div class=\"mr-3\">\r\n                      <div class=\"icon-circle bg-danger\">\r\n                          <i class=\"fas fa-exclamation-triangle text-white\"></i>\r\n                      </div>\r\n                  </div>\r\n                  <div>Expired Item Alert: <b>5 Material(s)</b> are expired.<!-- <div class=\"small text-gray-500\">December 2, 2019</div> -->\r\n              	</div>', '<b>The following materials are expired:</b> <ul><li>Flour(2021-01-08)</li><li>Flour(2021-01-08)</li><li>Flour(2021-01-08)</li><li>Flour(2021-01-08)</li><li>Flour(2021-01-08)</li></ul>', 0, '2021-01-09 09:22:12', 21),
+(61, '<div class=\"mr-3\">\r\n                      <div class=\"icon-circle bg-danger\">\r\n                          <i class=\"fas fa-exclamation-triangle text-white\"></i>\r\n                      </div>\r\n                  </div>\r\n                  <div>Expired Item Alert: <b>5 Product(s)</b> are expired.<!-- <div class=\"small text-gray-500\">December 2, 2019</div> -->\r\n              	</div>', '<b>The following products are expired:</b> <ul><li>Cheese Cake(2021-01-07)</li><li>Cheese Cake(2021-01-07)</li><li>Cheese Cake(2021-01-08)</li><li>Cheese Cake(2021-01-08)</li><li>Cheese Cake(2021-01-08)</li></ul>', 0, '2021-01-09 09:22:12', 21),
+(62, '<div class=\"mr-3\">\r\n                      <div class=\"icon-circle bg-warning\">\r\n                          <i class=\"fas fa-exclamation-triangle text-white\"></i>\r\n                      </div>\r\n                  </div>\r\n                  <div>Credit Payment Alert: <b>2</b> Credit Payment(s) are near.<!-- <div class=\"small text-gray-500\">December 2, 2019</div> -->\r\n			  	</div>', '<b>The following Purchase Order\'s credit deadline are near:</b> <ul><li>Flour(2021-01-08)</li><li>Flour(2021-01-09)</li></ul>', 0, '2021-01-09 09:22:54', 21),
+(63, '<div class=\"mr-3\">\r\n                      <div class=\"icon-circle bg-warning\">\r\n                          <i class=\"fas fa-exclamation-triangle text-white\"></i>\r\n                      </div>\r\n                  </div>\r\n                  <div>Low Stock Alert: <b>1 Product(s)</b> are currently low in stock.<!-- <div class=\"small text-gray-500\">December 2, 2019</div> -->\r\n              	</div>', '<b>The following products are low in stock:</b> <ul><li>Cheese Cake(99)</li></ul>', 0, '2021-01-09 09:22:54', 21),
+(64, '<div class=\"mr-3\">\r\n                      <div class=\"icon-circle bg-warning\">\r\n                          <i class=\"fas fa-exclamation-triangle text-white\"></i>\r\n                      </div>\r\n                  </div>\r\n                  <div>Low Stock Alert: <b>4 Material(s)</b> are currently low in stock.<!-- <div class=\"small text-gray-500\">December 2, 2019</div> -->\r\n              	</div>', '<b>The following materials are low in stock:</b> <ul><li>Egg(0)</li><li>Sugar(94)</li><li>asdas(0)</li><li>test(0)</li></ul>', 0, '2021-01-09 09:22:54', 21),
+(65, '<div class=\"mr-3\">\r\n                      <div class=\"icon-circle bg-danger\">\r\n                          <i class=\"fas fa-exclamation-triangle text-white\"></i>\r\n                      </div>\r\n                  </div>\r\n                  <div>Expired Item Alert: <b>5 Material(s)</b> are expired.<!-- <div class=\"small text-gray-500\">December 2, 2019</div> -->\r\n              	</div>', '<b>The following materials are expired:</b> <ul><li>Flour(2021-01-08)</li><li>Flour(2021-01-08)</li><li>Flour(2021-01-08)</li><li>Flour(2021-01-08)</li><li>Flour(2021-01-08)</li></ul>', 0, '2021-01-09 09:22:54', 21),
+(66, '<div class=\"mr-3\">\r\n                      <div class=\"icon-circle bg-danger\">\r\n                          <i class=\"fas fa-exclamation-triangle text-white\"></i>\r\n                      </div>\r\n                  </div>\r\n                  <div>Expired Item Alert: <b>5 Product(s)</b> are expired.<!-- <div class=\"small text-gray-500\">December 2, 2019</div> -->\r\n              	</div>', '<b>The following products are expired:</b> <ul><li>Cheese Cake(2021-01-07)</li><li>Cheese Cake(2021-01-07)</li><li>Cheese Cake(2021-01-08)</li><li>Cheese Cake(2021-01-08)</li><li>Cheese Cake(2021-01-08)</li></ul>', 0, '2021-01-09 09:22:54', 21);
 
 -- --------------------------------------------------------
 
@@ -176,7 +176,7 @@ CREATE TABLE `product` (
 --
 
 INSERT INTO `product` (`id`, `name`, `srp`, `qty`, `expiry_date`, `storeid`, `date_created`, `status`) VALUES
-(16, 'Cheese Cake', 20, 99, '2021-01-07', 21, 2147483647, 1);
+(17, 'Cheese Cake', 99, 4, '2021-01-10', 30, 2147483647, 1);
 
 -- --------------------------------------------------------
 
@@ -202,11 +202,10 @@ CREATE TABLE `production` (
 --
 
 INSERT INTO `production` (`id`, `productid`, `batchnumber`, `quantity`, `date_produced`, `storeid`, `date_created`, `unit`, `date_expired`, `price`) VALUES
-(48, 16, 'Batch #48', 100, '2021-01-07', 21, '2021-01-07 14:18:13', 'kg', '2021-01-07', 99),
-(49, 16, 'Batch #49', 100, '2021-01-07', 21, '2021-01-07 14:19:21', 'kg', '2021-01-07', 100),
-(50, 16, 'Batch #50', 34, '2021-01-08', 21, '2021-01-07 18:41:51', 'pcs', '2021-01-08', 2),
-(51, 16, 'Batch #51', 319, '2021-01-08', 21, '2021-01-08 07:07:05', 'pcs', '2021-01-08', 100),
-(52, 16, 'Batch #52', 100, '2021-01-08', 21, '2021-01-08 07:13:47', 'pcs', '2021-01-08', 22);
+(53, 17, 'Batch #1', 2, '2021-01-10', 30, '2021-01-10 06:25:35', 'pcs', '2021-01-10', 120),
+(54, 17, 'Batch #54', 1, '2021-01-10', 30, '2021-01-10 06:41:33', 'pcs', '2021-01-10', 1),
+(55, 17, 'Batch #55', 1, '2021-01-10', 30, '2021-01-10 06:41:49', 'pcs', '2021-01-10', 1),
+(56, 17, 'Batch #55', 1, '2021-01-10', 30, '2021-01-10 06:41:49', 'pcs', '2021-01-10', 1);
 
 -- --------------------------------------------------------
 
@@ -234,11 +233,11 @@ CREATE TABLE `purchase` (
 --
 
 INSERT INTO `purchase` (`id`, `vendorid`, `materialid`, `date_purchased`, `type`, `qty`, `date_created`, `storeid`, `credit_date`, `expiry_date`, `unit`, `price`) VALUES
-(53, 1, 11, '2021-01-08', 'cash', 324, '2021-01-07 15:11:02', 21, '2021-01-08', '2021-01-08', '45', 345),
-(54, 1, 11, '2021-01-08', 'credit', 324, '2021-01-07 15:11:15', 21, '2021-01-08', '2021-01-08', '45', 345),
-(55, 1, 11, '2021-01-08', 'cash', 34, '2021-01-07 16:11:50', 21, '2021-01-08', '2021-01-08', 'unit', 345),
-(56, 1, 11, '2021-01-08', 'cash', 34, '2021-01-07 16:11:52', 21, '2021-01-08', '2021-01-08', 'unit', 345),
-(57, 1, 11, '2021-01-08', 'credit', 23, '2021-01-07 18:03:02', 21, '2021-01-09', '2021-01-08', 'test', 33);
+(58, 5, 17, '2021-01-10', 'cash', 100, '2021-01-10 06:23:44', 30, '2021-01-10', '2021-01-10', 'kg', 40),
+(59, 5, 17, '2021-01-10', 'cash', 1, '2021-01-10 07:22:51', 30, '2021-01-10', '2021-01-10', 'kg', 1),
+(60, 5, 17, '2021-01-10', 'cash', 1, '2021-01-10 07:22:51', 30, '2021-01-10', '2021-01-10', 'kg', 1),
+(61, 5, 17, '2021-01-10', 'cash', 1, '2021-01-10 07:23:15', 30, '2021-01-10', '2021-01-10', 'kg', 22),
+(62, 5, 17, '2021-01-10', 'cash', 1, '2021-01-10 07:23:40', 30, '2021-01-10', '2021-01-10', 'kg', 1);
 
 -- --------------------------------------------------------
 
@@ -285,9 +284,7 @@ CREATE TABLE `sales` (
 --
 
 INSERT INTO `sales` (`id`, `storeid`, `productid`, `qty`, `date_purchased`, `other_details`, `date_created`, `unit`) VALUES
-(18, 21, 16, 1, '2021-01-08', '', '2021-01-08 06:25:59', 'pcs'),
-(19, 21, 16, 23, '2021-01-08', '', '2021-01-08 06:33:59', 'pcs'),
-(20, 21, 16, 638, '2021-01-08', '', '2021-01-08 07:07:29', 'pcs');
+(21, 30, 17, 1, '2021-01-10', '', '2021-01-10 06:42:22', 'pcs');
 
 -- --------------------------------------------------------
 
@@ -403,7 +400,8 @@ INSERT INTO `store` (`id`, `name`, `description`, `logo`, `date_creaed`, `userid
 (26, 'Jordan Sadiwa', NULL, NULL, '2021-01-06 02:42:36', 42, 42, NULL, 20, 20, '1852 Sandejas Pasay City', '234', 'JORDAN-E14NWI096B87359TFWN@TEST.INFO', '234'),
 (27, 'Jordan Sadiwa345', NULL, NULL, '2021-01-06 14:32:00', 45, 42, NULL, 20, 20, '1852 Sandejas Pasay City', '234', 'sad@mail.com', '234'),
 (28, 'Jordan Sadiwa345', NULL, NULL, '2021-01-06 14:32:14', 46, 42, NULL, 20, 20, '1852 Sandejas Pasay City', '234', 'sad@mail.com', '234'),
-(29, 'Jordan Sadiwa345', NULL, NULL, '2021-01-06 14:32:34', 47, 42, NULL, 20, 20, '1852 Sandejas Pasay City', '234', 'sad@mail.com', '234');
+(29, 'Jordan Sadiwa345', NULL, NULL, '2021-01-06 14:32:34', 47, 42, NULL, 20, 20, '1852 Sandejas Pasay City', '234', 'sad@mail.com', '234'),
+(30, 'Jordan Sadiwa45345', NULL, NULL, '2021-01-10 06:07:38', 48, 42, NULL, 20, 20, '1852 Sandejas Pasay City', '324324', 'sad@mail.com', '23423');
 
 -- --------------------------------------------------------
 
@@ -474,7 +472,8 @@ INSERT INTO `user` (`id`, `username`, `password`, `usertype`, `verified`, `date_
 (40, 'test', '5c07f19fdd6ce3b1a588f71d11ee2b23', 'basic', 0, '2021-01-04 20:28:33'),
 (41, 'trialUser', '5c07f19fdd6ce3b1a588f71d11ee2b23', 'basic', 0, '2021-01-04 20:46:44'),
 (42, 'test9', '5c07f19fdd6ce3b1a588f71d11ee2b23', 'basic', 0, '2021-01-06 02:42:35'),
-(47, 'cyborg999asd', '5c07f19fdd6ce3b1a588f71d11ee2b23', 'basic', 0, '2021-01-06 14:32:33');
+(47, 'cyborg999asd', '5c07f19fdd6ce3b1a588f71d11ee2b23', 'basic', 0, '2021-01-06 14:32:33'),
+(48, 'store5', '5c07f19fdd6ce3b1a588f71d11ee2b23', 'basic', 0, '2021-01-10 06:07:34');
 
 -- --------------------------------------------------------
 
@@ -503,7 +502,8 @@ INSERT INTO `userinfo` (`id`, `fullname`, `address`, `contact`, `email`, `bday`,
 (15, 'Jordan Sadiwa', '1852 Sandejas Pasay City', '09287655606', 'JORDAN-E14NWI096B87359TFWN@TEST.INFO', '2021-01-05', '2020-11-29 14:50:17', 38),
 (16, 'Jordan Sadiwa', '1852 Sandejas Pasay City', '09287655606', 'JORDAN-E14NWI096B87359TFWN@TEST.INFO', '2021-01-05', '2021-01-03 12:49:16', 39),
 (17, NULL, NULL, NULL, NULL, NULL, '2021-01-04 20:28:33', 40),
-(20, 'Jordan Sadiwa', '1852 Sandejas Pasay City', '234', 'sad@mail.com', NULL, '2021-01-06 14:32:34', 47);
+(20, 'Jordan Sadiwa', '1852 Sandejas Pasay City', '234', 'sad@mail.com', NULL, '2021-01-06 14:32:34', 47),
+(21, 'Jordan Sadiwa', '1852 Sandejas Pasay City', '324', 'sad@mail.com', NULL, '2021-01-10 06:07:36', 48);
 
 -- --------------------------------------------------------
 
@@ -527,7 +527,8 @@ CREATE TABLE `vendor` (
 INSERT INTO `vendor` (`id`, `name`, `address`, `contact`, `date_created`, `storeid`) VALUES
 (1, 'Jordan Sadiwa', '1852 Sandejas Pasay City', 2342342, '2020-10-17 11:17:37', 21),
 (3, 'test345', '345', 234, '2020-10-17 11:20:20', 21),
-(4, 'testSupplier', '344353', 23432, '2021-01-04 21:34:58', 25);
+(4, 'testSupplier', '344353', 23432, '2021-01-04 21:34:58', 25),
+(5, 'Supplier #1', '534 asd fgfdg', 234324, '2021-01-10 06:21:54', 30);
 
 --
 -- Indexes for dumped tables
@@ -655,19 +656,19 @@ ALTER TABLE `expenses`
 -- AUTO_INCREMENT for table `material`
 --
 ALTER TABLE `material`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=75;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=76;
 
 --
 -- AUTO_INCREMENT for table `material_inventory`
 --
 ALTER TABLE `material_inventory`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=17;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=18;
 
 --
 -- AUTO_INCREMENT for table `notification`
 --
 ALTER TABLE `notification`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=57;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=67;
 
 --
 -- AUTO_INCREMENT for table `payments`
@@ -679,19 +680,19 @@ ALTER TABLE `payments`
 -- AUTO_INCREMENT for table `product`
 --
 ALTER TABLE `product`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=17;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=18;
 
 --
 -- AUTO_INCREMENT for table `production`
 --
 ALTER TABLE `production`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=53;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=57;
 
 --
 -- AUTO_INCREMENT for table `purchase`
 --
 ALTER TABLE `purchase`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=58;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=63;
 
 --
 -- AUTO_INCREMENT for table `purchase_return`
@@ -703,7 +704,7 @@ ALTER TABLE `purchase_return`
 -- AUTO_INCREMENT for table `sales`
 --
 ALTER TABLE `sales`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=21;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=22;
 
 --
 -- AUTO_INCREMENT for table `sales_return`
@@ -727,7 +728,7 @@ ALTER TABLE `slides`
 -- AUTO_INCREMENT for table `store`
 --
 ALTER TABLE `store`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=30;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=31;
 
 --
 -- AUTO_INCREMENT for table `subscription`
@@ -739,19 +740,19 @@ ALTER TABLE `subscription`
 -- AUTO_INCREMENT for table `user`
 --
 ALTER TABLE `user`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=48;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=49;
 
 --
 -- AUTO_INCREMENT for table `userinfo`
 --
 ALTER TABLE `userinfo`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=21;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=22;
 
 --
 -- AUTO_INCREMENT for table `vendor`
 --
 ALTER TABLE `vendor`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;

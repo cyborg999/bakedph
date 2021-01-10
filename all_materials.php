@@ -10,18 +10,19 @@
       <div class="col-sm-10">
       <?php include_once "./dashboardnav.php"; ?>
         <?php
-          $products = $model->getAllMaterialInventory();
-          $store = $model->getStoreStockLimit();
+          $products = $model->getAllPurchase();
         ?>
         <h5>Materials</h5>
         <table class="table">
           <thead>
             <tr>
               <th scope="col">Name</th>
-              <!-- <th scope="col">Price</th> -->
+              <th scope="col">Supplier</th>
+              <th scope="col">Price</th>
               <th scope="col">Quantity</th>
               <th scope="col">Unit</th>
-              <!-- <th scope="col">Expiry</th> -->
+              <th scope="col">Date_Purchased</th>
+              <th scope="col">Expiry Date</th>
               <th scope="col">Action</th>
             </tr>
           </thead>
@@ -44,43 +45,26 @@
             </style>
 
             <tr>
-              <td colspan="2">
+              <td colspan="7">
                 <input type="text" class="form-control" id="searchName" placeholder="Name search..."/>
-                <a href="" class="advance">
-                  <small>advance</small>
-                </a>
               </td>
-              <td >
-                <input type="number" class="form-control" id="searchQuantity" placeholder="Quantity"/>
-              </td>
+            
 
               <td>
-                <button id="filter" class="btn btn-sm btn-primary"> <= Filter</button>
                 <a href="ajax.php?&export=true&materials=true" class="export">export csv</a>
               </td>
             </tr>
-            <tr  id="search" class="advance_tr hidden">
-              <td colspan="2">
-                <small style="max-width: 100%;"><i>Set alert when the remaining stock is less than or equal to</i></small>
-              </td>
-              <td >
-                <input type="number" class="form-control" id="stock" value="<?= ($store) ? $store['material_low'] : 20;?>">
-              </td>
-              <td colspan="2">
-                <a href="" class="updateAlert btn btn-sm btn-primary">update</a>
-              </td>
-             
-            </tr>
             <?php foreach($products as $idx => $product): ?>
-
-            <tr class="result <?=($product['qty'] <= $store['material_low']) ? 'lowstock' : ''; ?>" id="edit<?= $product['id']; ?>">
+            <tr class="result" id="edit<?= $product['id']; ?>">
               <td class="editname"><?= $product['name']; ?></td>
-              <!-- <td class="editprice"><?= $product['price']; ?></td> -->
+              <td class="editname"><?= $product['vendorname']; ?></td>
+              <td class="editprice"><?= $product['price']; ?></td>
               <td class="editqty"><?= $product['qty']; ?></td>
               <td class="editunit"><?= $product['unit']; ?></td>
-              <!-- <td class="editexpiry"><?= $product['expiry_date']; ?></td> -->
+              <td class="editexpiry"><?= $product['date_purchased']; ?></td>
+              <td class="editexpiry"><?= $product['expiry_date']; ?></td>
               <td>
-                <a href="" data-unit="<?= $product['unit']; ?>" data-qty="<?= $product['qty']; ?>" data-expiry="<?= $product['expiry_date']; ?>" data-price="<?= $product['price']; ?>" data-id="<?= $product['id']; ?>" data-name="<?= $product['name']; ?>"class="btn btn-sm btn-warning edit"  data-toggle="modal" data-target="#editProductModal" alt="Edit product"><svg class="bi" width="18" height="18" fill="currentColor"><use xlink:href="./node_modules/bootstrap-icons/bootstrap-icons.svg#pencil"/></svg> </a>
+                <a href="" data-unit="<?= $product['unit']; ?>" data-vendorid="<?= $product['vendorid']; ?>" data-qty="<?= $product['qty']; ?>" data-expiry="<?= $product['expiry_date']; ?>"  data-purchased="<?= $product['date_purchased']; ?>" data-price="<?= $product['price']; ?>" data-id="<?= $product['id']; ?>" data-name="<?= $product['name']; ?>"class="btn btn-sm btn-warning edit"  data-toggle="modal" data-target="#editProductModal" alt="Edit product"><svg class="bi" width="18" height="18" fill="currentColor"><use xlink:href="./node_modules/bootstrap-icons/bootstrap-icons.svg#pencil"/></svg> </a>
                 <a href="" data-id="<?= $product['id']; ?>" class="btn btn-sm btn-danger delete" alt="Delete Product"><svg class="bi" width="18" height="18" fill="currentColor"><use xlink:href="./node_modules/bootstrap-icons/bootstrap-icons.svg#trash"/></svg></a>
               </td>
             </tr>
@@ -122,7 +106,12 @@
                       <input type="text" id="editname" required class="form-control" name="name" value="" placeholder="Material Name..."/>
                     </label>
                   </div>
-                  <div class="form-group hidden">
+                  <div class="form-group ">
+                    <label>Supplier:
+                      <input type="text" id="editvendorid"  class="form-control" name="vendorid" placeholder="Price..."/>
+                    </label>
+                  </div>
+                  <div class="form-group ">
                     <label>Price:
                       <input type="text" id="editprice" required class="form-control" name="price" placeholder="Price..."/>
                     </label>
@@ -139,9 +128,14 @@
                     <input type="number" readonly id="editqty"  class="form-control" name="qty" placeholder="Quantity..."/>
                   </label>
                 </div>
-                <div class="form-group hidden">
+                <div class="form-group">
                   <label>Expiry Date:
                     <input type="date" id="editexpiry" required class="form-control" name="expiry" placeholder="Expiry Date..."/>
+                  </label>
+                </div>
+                 <div class="form-group">
+                  <label>Date Purchase:
+                    <input type="date" id="editpuchased" required class="form-control" name="expiry" placeholder="Expiry Date..."/>
                   </label>
                 </div>
                 <input type="submit" class="btn btn-lg btn-success" value="Update">
@@ -161,12 +155,14 @@
 <script type="text/html" id="productTPL">
       <tr class="result [LOWSTOCK]" id="edit[ID]">
           <td class="editname">[NAME]</td>
-          <!-- <td class="editsrp">[SRP]</td> -->
+          <td class="editsupplier">[SUPPLIER]</td>
+          <td class="editprice">[PRICE]</td>
           <td class="editqty">[QTY]</td>
           <td class="editunit">[UNIT]</td>
-          <!-- <td class="editexpiry">[EXPIRY]</td> -->
+          <td class="editpuchased">[PURCHASED]</td>
+          <td class="editexpiry">[EXPIRY]</td>
           <td>
-            <a href="" data-unit="[UNIT]" data-qty="[QTY]" data-expiry="[EXPIRY]" data-price="[SRP]" data-id="[ID]" data-name="[NAME]" class="btn btn-sm btn-warning edit"  data-toggle="modal" data-target="#editProductModal" alt="Edit product"><svg class="bi" width="18" height="18" fill="currentColor"><use xlink:href="./node_modules/bootstrap-icons/bootstrap-icons.svg#pencil"/></svg> </a>
+            <a href="" data-unit="[UNIT]" data-purchased="[PURCHASED]" data-vendorid="[VENDORID]" data-qty="[QTY]" data-expiry="[EXPIRY]" data-price="[SRP]" data-id="[ID]" data-name="[NAME]" class="btn btn-sm btn-warning edit"  data-toggle="modal" data-target="#editProductModal" alt="Edit product"><svg class="bi" width="18" height="18" fill="currentColor"><use xlink:href="./node_modules/bootstrap-icons/bootstrap-icons.svg#pencil"/></svg> </a>
             <a href="" data-id="[ID]" class="btn btn-sm btn-danger delete" alt="Delete Product"><svg class="bi" width="18" height="18" fill="currentColor"><use xlink:href="./node_modules/bootstrap-icons/bootstrap-icons.svg#trash"/></svg></a>
           </td>
         </tr>
@@ -210,9 +206,12 @@
                 var tr = $("#edit"+response.editmaterial);
 
                 tr.find(".editname").html(response.name);
-                // tr.find(".editexpiry").html(response.expiry);
-                // tr.find(".editprice").html(response.price);
+                tr.find(".editsupplier").html(response.vendorname);
+                tr.find(".editexpiry").html(response.expiry);
+                tr.find(".editprice").html(response.price);
                 tr.find(".editunit").html(response.unit);
+                tr.find(".editexpiry").html(response.expiry_date);
+                tr.find(".editpurchased").html(response.date_purchased);
 
                 $(".msg").append($("#success").html());
                 $(".msg").removeClass("hidden");
@@ -229,12 +228,15 @@
             var data = me.data();
 
             $("#editname").attr("value", data.name);
-            $("#editprice").attr("value", data.price);
+            $("#editprice").val(data.price);
             $("#editqty").attr("value", data.qty);
             $("#editid").attr("value", data.id);
             $("#editvendor").data("id", data.vendorname);
-            $("#editexpiry").attr("value", data.expiry);
+            $("#editexpiry").val(data.expiry);
+            $("#editpuchased").val(data.expiry);
+
             $("#editunit").attr("value", data.unit);
+            $("#editvendorid").val(data.vendorid);
             $(".msg").addClass("hidden");
           });
 
@@ -303,6 +305,10 @@
                   tpl = tpl.replace("[ID]", response[i].id).replace("[ID]", response[i].id).replace("[ID]", response[i].id).replace("[NAME]", response[i].name).replace("[NAME]", response[i].name)
                   .replace("[SRP]", response[i].price).
                   replace("[UNIT]", response[i].unit).
+                  replace("[PURCHASED]", response[i].date_purchased).
+                  replace("[VENDORID]", response[i].vendorid).
+                  replace("[PURCHASED]", response[i].date_purchased).
+                  replace("[EXPIRY]", response[i].expiry_date).
                   replace("[UNIT]", response[i].unit).
                      replace("[LOWSTOCK]", (response[i].qty <= $("#stock").val()) ? 'lowstock' : '').
                   replace("[SRP]", response[i].price).replace("[QTY]", response[i].qty).replace("[QTY]", response[i].qty).replace("[EXPIRY]", response[i].expiry_date).replace("[EXPIRY]", response[i].expiry_date);
