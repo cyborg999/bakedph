@@ -80,7 +80,7 @@
           </div>
       </li>
       <?php
-        $notif = $model->notifications;
+        $notif = $model->getUnreadNotifications();
       ?>
       <!-- Nav Item - Alerts -->
       <li class="nav-item dropdown no-arrow mx-1">
@@ -118,11 +118,12 @@
                       $290.29 has been deposited into your account!
                   </div>
               </a> -->
-              
               <?php foreach($notif as $idx => $n): ?>
-              <a class="dropdown-item d-flex align-items-center" href="notifications.php">
-                      <?= $n;?>
-              </a>
+                <?php if($idx < 8): ?>
+                  <a class="dropdown-item d-flex align-items-center" href="notifications.php">
+                          <?= $n['title'];?>
+                  </a>
+                <?php endif ?>
             <?php endforeach ?>
               <a class="dropdown-item text-center small text-gray-500" href="notifications.php">Show All Notifications</a>
           </div>

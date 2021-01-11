@@ -17,7 +17,7 @@
           <thead>
             <tr>
               <th scope="col">Name</th>
-              <th scope="col">Supplier</th>
+              <!-- <th scope="col">Supplier</th> -->
               <th scope="col">Price</th>
               <th scope="col">Quantity</th>
               <th scope="col">Unit</th>
@@ -44,29 +44,29 @@
               }
             </style>
 
-            <tr>
-              <td colspan="7">
+            <tr id="search">
+              <td colspan="6">
                 <input type="text" class="form-control" id="searchName" placeholder="Name search..."/>
               </td>
             
 
               <td>
-                <a href="ajax.php?&export=true&materials=true" class="export">export csv</a>
+                <a href="ajax.php?&export=true&allmaterials=true" class="export">export csv</a>
               </td>
             </tr>
             <?php foreach($products as $idx => $product): ?>
             <tr class="result" id="edit<?= $product['id']; ?>">
               <td class="editname"><?= $product['name']; ?></td>
-              <td class="editname"><?= $product['vendorname']; ?></td>
+              <!-- <td class="editname"><?= $product['vendorname']; ?></td> -->
               <td class="editprice"><?= $product['price']; ?></td>
               <td class="editqty"><?= $product['qty']; ?></td>
               <td class="editunit"><?= $product['unit']; ?></td>
               <td class="editexpiry"><?= $product['date_purchased']; ?></td>
               <td class="editexpiry"><?= $product['expiry_date']; ?></td>
-              <td>
+         <!--      <td>
                 <a href="" data-unit="<?= $product['unit']; ?>" data-vendorid="<?= $product['vendorid']; ?>" data-qty="<?= $product['qty']; ?>" data-expiry="<?= $product['expiry_date']; ?>"  data-purchased="<?= $product['date_purchased']; ?>" data-price="<?= $product['price']; ?>" data-id="<?= $product['id']; ?>" data-name="<?= $product['name']; ?>"class="btn btn-sm btn-warning edit"  data-toggle="modal" data-target="#editProductModal" alt="Edit product"><svg class="bi" width="18" height="18" fill="currentColor"><use xlink:href="./node_modules/bootstrap-icons/bootstrap-icons.svg#pencil"/></svg> </a>
                 <a href="" data-id="<?= $product['id']; ?>" class="btn btn-sm btn-danger delete" alt="Delete Product"><svg class="bi" width="18" height="18" fill="currentColor"><use xlink:href="./node_modules/bootstrap-icons/bootstrap-icons.svg#trash"/></svg></a>
-              </td>
+              </td> -->
             </tr>
             <?php endforeach ?>
            
@@ -100,13 +100,13 @@
             <form method="post" id="editform">
             <div class="row">
               <div class="col-sm-6">
-                <input type="hidden" name="editmaterial" id="editid" value="">
+                <input type="hidden" name="editallmaterial" id="editid" value="">
                   <div class="form-group">
                     <label>Name :
-                      <input type="text" id="editname" required class="form-control" name="name" value="" placeholder="Material Name..."/>
+                      <input type="text" readonly id="editname" required class="form-control" name="name" value="" placeholder="Material Name..."/>
                     </label>
                   </div>
-                  <div class="form-group ">
+                  <div class="form-group hidden">
                     <label>Supplier:
                       <input type="text" id="editvendorid"  class="form-control" name="vendorid" placeholder="Price..."/>
                     </label>
@@ -130,12 +130,12 @@
                 </div>
                 <div class="form-group">
                   <label>Expiry Date:
-                    <input type="date" id="editexpiry" required class="form-control" name="expiry" placeholder="Expiry Date..."/>
+                    <input type="date" id="editexpiry" required class="form-control" name="expiry_date" placeholder="Expiry Date..."/>
                   </label>
                 </div>
                  <div class="form-group">
                   <label>Date Purchase:
-                    <input type="date" id="editpuchased" required class="form-control" name="expiry" placeholder="Expiry Date..."/>
+                    <input type="date" id="editpuchased" required class="form-control" name="date_purchased" placeholder="Date Purchased..."/>
                   </label>
                 </div>
                 <input type="submit" class="btn btn-lg btn-success" value="Update">
@@ -155,16 +155,16 @@
 <script type="text/html" id="productTPL">
       <tr class="result [LOWSTOCK]" id="edit[ID]">
           <td class="editname">[NAME]</td>
-          <td class="editsupplier">[SUPPLIER]</td>
+          <!-- <td class="editsupplier">[SUPPLIER]</td> -->
           <td class="editprice">[PRICE]</td>
           <td class="editqty">[QTY]</td>
           <td class="editunit">[UNIT]</td>
           <td class="editpuchased">[PURCHASED]</td>
           <td class="editexpiry">[EXPIRY]</td>
-          <td>
+      <!--     <td>
             <a href="" data-unit="[UNIT]" data-purchased="[PURCHASED]" data-vendorid="[VENDORID]" data-qty="[QTY]" data-expiry="[EXPIRY]" data-price="[SRP]" data-id="[ID]" data-name="[NAME]" class="btn btn-sm btn-warning edit"  data-toggle="modal" data-target="#editProductModal" alt="Edit product"><svg class="bi" width="18" height="18" fill="currentColor"><use xlink:href="./node_modules/bootstrap-icons/bootstrap-icons.svg#pencil"/></svg> </a>
             <a href="" data-id="[ID]" class="btn btn-sm btn-danger delete" alt="Delete Product"><svg class="bi" width="18" height="18" fill="currentColor"><use xlink:href="./node_modules/bootstrap-icons/bootstrap-icons.svg#trash"/></svg></a>
-          </td>
+          </td> -->
         </tr>
 </script>
 <script type="text/html" id="mats">
@@ -292,7 +292,7 @@
 
            $.ajax({
               url : "ajax.php"
-              , data : { searchMaterial : true, txt : txt }
+              , data : { searchAllMaterial : true, txt : txt }
               , type : "post"
               , dataType : "json"
               , success : function(response){
@@ -303,7 +303,7 @@
                   var tpl = $("#productTPL").html();
 
                   tpl = tpl.replace("[ID]", response[i].id).replace("[ID]", response[i].id).replace("[ID]", response[i].id).replace("[NAME]", response[i].name).replace("[NAME]", response[i].name)
-                  .replace("[SRP]", response[i].price).
+                  .replace("[PRICE]", response[i].price).
                   replace("[UNIT]", response[i].unit).
                   replace("[PURCHASED]", response[i].date_purchased).
                   replace("[VENDORID]", response[i].vendorid).

@@ -4,7 +4,6 @@ session_start();
 class Model {
 	public $db;
 	public $errors = array();
-	public $notifications = array();
 	public $success;
 
 	public function __construct(){
@@ -76,8 +75,8 @@ class Model {
 		$this->addSalesReturnListener();
 		$this->addPurchaseReturnListener();
 		$this->updateSeenListener();
-
-		// $this->getStoreNotifications();
+		$this->editAllmaterialsListener();
+		$this->searchAllMaterialsListener();
 	}
 
 	public function updateSeenListener(){
@@ -92,6 +91,17 @@ class Model {
 
 			die(json_encode(array("updated")));
 		}
+	}
+
+	public function getUnreadNotifications(){
+		$sql = "
+			select *
+			from notification
+			where storeid = ".$_SESSION['storeid']."
+			and seen = 0
+		";
+
+		return $this->db->query($sql)->fetchAll();
 	}
 
 	public function getNotifications(){
@@ -332,12 +342,10 @@ class Model {
 		$this->getLowStockMaterialNotification($notifications);
 		$this->getExpiredMaterialNotification($notifications);
 		$this->getExpiredProductNotification($notifications);
-      	
-		$this->notifications = $notifications;
 
 		return $this;
 		//if malapit na credit date
-		}
+	}
 
 	public function addPurchaseReturnListener(){
 		if(isset($_POST['addPurchaseReturn'])){
@@ -410,6 +418,23 @@ class Model {
 	
 	public function exportListener(){
 		if(isset($_GET['export'])){
+			if(isset($_GET['allmaterials'])){
+				header('Content-Type: text/csv; charset=utf-8');
+				header('Content-Disposition: attachment; filename=AllMaterials.csv');
+
+				$output = fopen('php://output', 'w');
+
+
+				fputcsv($output, array("Name", "Price", "Quantity", "Unit", "Date Purchased", "Expiry Date"));
+
+				$records = $this->db->query($_SESSION['lastQuery'])->fetchAll();
+
+				foreach($records as $idx => $r){
+					$data = array($r['name'],$r['price'],$r['qty'],$r['unit'], $r['date_purchased'],$r['expiry_date']);
+
+					fputcsv($output, $data);
+				}
+			}
 			if(isset($_GET['productexpired'])){
 				header('Content-Type: text/csv; charset=utf-8');
 				header('Content-Disposition: attachment; filename=ExpiredProducts.csv');
@@ -568,6 +593,29 @@ class Model {
 			$this->db->prepare($sql)->execute(array($_POST['val'], $_SESSION['id']));
 
 			die(json_encode(array("added")));
+		}
+	}
+
+	public function searchAllMaterialsListener(){
+		if(isset($_POST['searchAllMaterial'])) {
+			$sql = "
+				select t1.*,t2.name, t3.name as 'vendorname', t3.id as 'vendorid'
+				from purchase t1
+				left join material_inventory t2
+				on t1.materialid = t2.id
+				left join vendor t3
+				on t1.vendorid = t3.id
+				WHERE t1.storeid = ".$_SESSION['storeid']."
+				AND  t2.name LIKE '%".$_POST['txt']."%'
+				AND t1.storeid = '".$_SESSION['storeid']."'
+				LIMIT 20
+			";
+
+			$_SESSION['lastQuery'] = $sql;
+
+			$data = $this->db->query($sql)->fetchAll();
+
+			die(json_encode($data));
 		}
 	}
 
@@ -2009,9 +2057,23 @@ class Model {
 		}
 	}
 
+	public function editAllmaterialsListener(){
+		if(isset($_POST['editallmaterial'])){
+			$sql = "
+				UPDATE purchase
+				SET name = ?, unit = ? , price = ?, qty = ?,expiry_date = ?, date_purchased = ?
+				WHERE id = ?
+			";
+			oppd();
+
+			$this->db->prepare($sql)->execute(array($_POST['name'], $_POST['unit'], $_POST['price'], $_POST['qty'], $_POST['expiry_date'], $_POST['date_purchased'], $_POST['editallmaterial']));
+
+			die(json_encode($_POST));
+		}
+	}
+
 	public function editMaterialListener(){
 		if(isset($_POST['editmaterial'])){
-			oppd();
 			$sql = "
 				UPDATE material_inventory
 				SET name = ?, unit = ?
@@ -2208,6 +2270,8 @@ class Model {
 			on t1.vendorid = t3.id
 			WHERE t1.storeid = '".$_SESSION['storeid']."'
 		";
+
+		$_SESSION['lastQuery'] = $sql;
 
 		return $this->db->query($sql)->fetchAll();
 
@@ -2531,6 +2595,7 @@ class Model {
 				if($exists['usertype'] == "admin"){
 					header("Location:admindashboard.php");
 				} else {
+					$this->getStoreNotifications();
 
 					header("Location:dashboard.php");
 				}
