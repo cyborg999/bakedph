@@ -85,38 +85,11 @@
     <!-- ======= Features Section ======= -->
     <section  id="features" class="features">
       <div class="container">
-
-        <div class="section-title">
-          <h2>Sign In</h2>
-        </div>
-        <div class="row features" data-aos="fade-up">
-          <div class="col-sm">
-          	<div class="form-group">
-				<form method="post">
-					<input type="hidden" name="login" value="true">
-					  <div class="form-group">
-					    <label for="exampleInputEmail1">Username</label>
-							<input type="text" value="<?= isset($_POST['username']) ? $_POST['username'] : '';?>" required class="form-control" name="username" placeholder="Username..."/>
-					  </div>
-					  <div class="form-group">
-					    <label for="exampleInputPassword1">Password</label>
-							<input type="password" value="<?= isset($_POST['password']) ? $_POST['password'] : '';?>" required class="form-control" name="password" placeholder="Password..."/>
-					  </div>
-					  <button type="submit" class="btn btn-primary">Submit </button>
-					  <hr>
-					  <a href="signup.php">No Account Yet? Sign up here</a>
-				</form>
-				<br>
-			<?php include_once "./error.php"; ?>
-				
+      <?php
+        $setting = $model->getAdminSetting(true);
+        echo $setting[$_GET['page']];
+      ?>
 			</div>
-		  	
-
-
-
-          </div>
-        </div>
-      </div>
     </section><!-- End Features Section -->
     <br>
     <br>

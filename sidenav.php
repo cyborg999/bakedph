@@ -152,6 +152,12 @@
 						  	<?php
           						$productLow = $model->getAllProducts(true);
 						  	?>
+						  	<a href="allproducts.php" class="black">All Products <span class="badge badge-primary badge-pill"><?= count($productLow) ?></span></a>
+						  </li>
+						  <li class="list-group-item">
+						  	<?php
+          						$productLow = $model->getAllProducts(true);
+						  	?>
 						  	<a href="product_low.php" class="black">Low In Stock <span class="badge badge-primary badge-pill"><?= count($productLow) ?></span></a>
 						  </li>
 						  <li class="list-group-item">

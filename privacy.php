@@ -5,7 +5,7 @@
 		<div class="row">
 			<br>
 			<div class="col-sm-3">
-				<?php $active = "settings";  include_once "./adminsidenav.php"; ?>
+				<?php $active = "footer";  include_once "./adminsidenav.php"; ?>
 			</div>
 			<div class="col-sm-9">
 				<div class="row">
@@ -18,7 +18,7 @@
 						<h5>Privacy & Policy</h5>
 						<form method="post" action="">
 							<input type="hidden" name="updateTerms" value="privacy">
-							<textarea class="form-control" rows="20" name="privacy" placeholder="Privacy & Policy"><?= ($settings) ? $settings['privacy'] : ''; ?></textarea>
+							<textarea class="form-control" rows="10" name="privacy" placeholder="Privacy & Policy"><?= ($settings) ? $settings['privacy'] : ''; ?></textarea>
 							<br>
 							<input type="submit" class="btn btn-primary" value="Update" name="">
 							<br>

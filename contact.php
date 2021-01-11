@@ -15,10 +15,10 @@
 							$settings = $model->getAdminSetting();
 						?>
 						<br>
-						<h5>Terms & Conditions</h5>
+						<h5>Contact Us</h5>
 						<form method="post" action="">
-							<input type="hidden" name="updateTerms" value="terms">
-							<textarea class="form-control" rows="10" name="terms" placeholder="Terms & Conditions"><?= ($settings) ? $settings['terms'] : ''; ?></textarea>
+							<input type="hidden" name="updateTerms" value="contact">
+							<textarea class="form-control" rows="10" name="contact" placeholder="Contact Us"><?= ($settings) ? $settings['contact'] : ''; ?></textarea>
 							<br>
 							<input type="submit" class="btn btn-primary" value="Update" name="">
 						</form>

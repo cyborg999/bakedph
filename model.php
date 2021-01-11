@@ -77,6 +77,54 @@ class Model {
 		$this->updateSeenListener();
 		$this->editAllmaterialsListener();
 		$this->searchAllMaterialsListener();
+		$this->searchAllProductsListener();
+		$this->addSocialListener();
+		$this->removeSocialListener();
+	}
+
+	public function getAllSocialMedia(){
+		$sql = "
+			select *
+			from social
+		";
+
+		return $this->db->query($sql)->fetchAll();
+	}
+
+	public function getAllSocial(){
+		$sql = "
+			select *
+			from social
+			where userid = ".$_SESSION['id']."
+		";
+
+		return $this->db->query($sql)->fetchAll();
+	}
+
+	public function removeSocialListener(){
+		if(isset($_POST['removeSocial'])){
+    		$sql = "
+    			delete from social
+    			where id = ?
+    		";
+
+    		$this->db->prepare($sql)->execute(array($_POST['id']));
+
+    		die(json_encode("deleted"));
+
+		}
+	}
+
+	public function addSocialListener(){
+		if(isset($_POST['addSocial'])){
+    		$sql = "
+    			insert into social(social,link,userid)
+    			values(?,?,?)
+    		";
+    		$this->db->prepare($sql)->execute(array($_POST['name'], $_POST['link'], $_SESSION['id']));
+
+    		die(json_encode(array("id" => $this->db->lastInsertId())));
+		}
 	}
 
 	public function updateSeenListener(){
@@ -387,6 +435,27 @@ class Model {
 				";
 				
 				$this->db->prepare($sql)->execute(array($_POST['terms'], $_SESSION['id']));
+			} elseif(isset($_POST['about'])) {
+				$sql = "
+					update settings
+					set about = ?
+					where userid = ? 
+				";
+				$this->db->prepare($sql)->execute(array($_POST['about'], $_SESSION['id']));
+			} elseif(isset($_POST['overview'])) {
+				$sql = "
+					update settings
+					set overview = ?
+					where userid = ? 
+				";
+				$this->db->prepare($sql)->execute(array($_POST['overview'], $_SESSION['id']));
+			} elseif(isset($_POST['contact'])) {
+				$sql = "
+					update settings
+					set contact = ?
+					where userid = ? 
+				";
+				$this->db->prepare($sql)->execute(array($_POST['contact'], $_SESSION['id']));
 			} else {
 				$sql = "
 					update settings
@@ -431,6 +500,23 @@ class Model {
 
 				foreach($records as $idx => $r){
 					$data = array($r['name'],$r['price'],$r['qty'],$r['unit'], $r['date_purchased'],$r['expiry_date']);
+
+					fputcsv($output, $data);
+				}
+			}
+			if(isset($_GET['allproducts'])){
+				header('Content-Type: text/csv; charset=utf-8');
+				header('Content-Disposition: attachment; filename=AllProducts.csv');
+
+				$output = fopen('php://output', 'w');
+
+
+				fputcsv($output, array('Batch #', 'Product Name', 'Price', "Quantity", "Date Produced", "Expiry Date"));
+
+				$records = $this->db->query($_SESSION['lastQuery'])->fetchAll();
+
+				foreach($records as $idx => $r){
+					$data = array($r['batchnumber'],$r['name'],$r['price'],$r['quantity'], $r['date_produced'],$r['date_expired']);
 
 					fputcsv($output, $data);
 				}
@@ -1070,7 +1156,7 @@ class Model {
 		return $this->db->query($sql)->fetch();
 	}
 
-	public function getAdminSetting($public){
+	public function getAdminSetting($public=false){
 		$where = ($public) ? "" : "where userid = ".$_SESSION['id'];
 		$sql = "
 			SELECT *
@@ -2148,6 +2234,25 @@ class Model {
 			$this->db->prepare($sql)->execute(array($_POST['id']));
 
 			die(json_encode(array("added")));
+		}
+	}
+
+	public function searchAllProductsListener(){
+		if(isset($_POST['searchAllProducts'])) {
+			$sql = "
+				SELECT t1.*,t2.name
+				FROM production t1
+				left join product t2
+				on t1.productid = t2.id
+				WHERE t1.storeid = '".$_SESSION['storeid']."'
+				AND t2.name LIKE '%".$_POST['txt']."%'
+			";
+
+			$_SESSION['lastQuery'] = $sql;
+
+			$data = $this->db->query($sql)->fetchAll();
+
+			die(json_encode($data));
 		}
 	}
 
