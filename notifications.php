@@ -39,7 +39,7 @@
                 background: #eee;
               }
             </style>
-            <table class="table table-hover" id="notifs">
+            <table class="table" id="notifs">
               <tbody>
                 <?php foreach($products as $idx => $p): ?>
                 <tr data-id="<?= $p['id'];?>" class="title <?= ($p['seen']) ? '' : 'notseen';?>">

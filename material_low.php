@@ -22,9 +22,9 @@
           <thead>
             <tr>
               <th scope="col">Name</th>
-              <th scope="col">Price</th>
+              <th scope="col">Unit</th>
               <th scope="col">Quantity</th>
-              <th scope="col">Expiry</th>
+              <!-- <th scope="col">Expiry</th> -->
             </tr>
           </thead>
           <tbody>
@@ -42,7 +42,7 @@
             </style>
 
             <tr>
-              <td colspan="3">
+              <td colspan="2">
                 <input type="text" class="form-control" id="searchName" placeholder="Name search..."/>
               </td>
              <td>
@@ -65,9 +65,9 @@
 
             <tr class="result <?=($product['qty'] <= $store['material_low']) ? 'lowstock' : ''; ?>" id="edit<?= $product['id']; ?>">
               <td class="editname"><?= $product['name']; ?></td>
-              <td class="editprice"><?= $product['price']; ?></td>
+              <td class="editprice"><?= $product['unit']; ?></td>
               <td class="editqty"><?= $product['qty']; ?></td>
-              <td class="editexpiry"><?= $product['expiry_date']; ?></td>
+              <!-- <td class="editexpiry"><?= $product['expiry_date']; ?></td> -->
             </tr>
             <?php endforeach ?>
            
@@ -141,9 +141,9 @@
 <script type="text/html" id="productTPL">
       <tr class="result [LOWSTOCK]" id="edit[ID]">
           <td class="editname">[NAME]</td>
-          <td class="editsrp">[SRP]</td>
+          <td class="editsrp">[UNIT]</td>
           <td class="editqty">[QTY]</td>
-          <td class="editexpiry">[EXPIRY]</td>
+          <!-- <td class="editexpiry">[EXPIRY]</td> -->
         </tr>
 </script>
 <script type="text/html" id="mats">
@@ -276,6 +276,7 @@
 
                   tpl = tpl.replace("[ID]", response[i].id).replace("[ID]", response[i].id).replace("[ID]", response[i].id).replace("[NAME]", response[i].name).replace("[NAME]", response[i].name)
                   .replace("[SRP]", response[i].price).
+                  replace("[UNIT]", response[i].unit).
                      replace("[LOWSTOCK]", (response[i].qty <= $("#stock").val()) ? 'lowstock' : '').
                   replace("[SRP]", response[i].price).replace("[QTY]", response[i].qty).replace("[QTY]", response[i].qty).replace("[EXPIRY]", response[i].expiry_date).replace("[EXPIRY]", response[i].expiry_date);
 

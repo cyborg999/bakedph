@@ -52,11 +52,12 @@
               </td>
               <td >
                 <input type="number" class="form-control" id="searchQuantity" placeholder="Quantity"/>
+                <a href="" class="btn-sm clearfilter">clear filter</a>
               </td>
 
               <td>
                 <button id="filter" class="btn btn-sm btn-primary"> <= Filter</button>
-                <a href="ajax.php?&export=true&materials=true" class="export">export csv</a>
+                <a href="ajax.php?&export=true&materials=true" class="btn-sm export">export csv</a>
               </td>
             </tr>
             <tr  id="search" class="advance_tr hidden">
@@ -261,6 +262,13 @@
         }
 
         __listen();
+
+        $(".clearfilter").on("click", function(e){
+          e.preventDefault();
+
+          $("#searchName, #searchQuantity").val("");
+          $("#searchName").trigger("keyup");
+        });
 
         function throttle(){
           setTimeout(function(){

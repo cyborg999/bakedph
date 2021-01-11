@@ -23,6 +23,7 @@
               <th scope="col">Product Name</th>
               <th scope="col">Price</th>
               <th scope="col">Quantity</th>
+              <th scope="col">Unit</th>
               <th scope="col">Date Produced</th>
               <th scope="col">Expiry Date</th>
             </tr>
@@ -41,7 +42,7 @@
               }*/
             </style>
             <tr>
-              <td colspan="5">
+              <td colspan="6">
                 <input type="text" class="form-control" id="searchName" placeholder="Name search..."/>
               </td>
               <td>
@@ -66,6 +67,7 @@
               <td class="editname"><?= $product['name']; ?></td>
               <td class="editsrp"><?= $product['price']; ?></td>
               <td class="editqty"><?= $product['quantity']; ?></td>
+              <td class="editqty"><?= $product['unit']; ?></td>
               <td class="editproduced"><?= $product['date_produced']; ?></td>
               <td class="editexpiry"><?= $product['date_expired']; ?></td>
             </tr>
@@ -224,6 +226,7 @@
           <td class="editname">[NAME]</td>
           <td class="editsrp">[PRICE]</td>
           <td class="editqty">[QUANTITY]</td>
+          <td class="editqty">[UNIT]</td>
           <td class="editqty">[DATE_PRODUCED]</td>
           <td class="editqty">[EXPIRY_DATE]</td>
         </tr>
@@ -487,6 +490,7 @@
                   replace("[NAME]", response[i].name).
                    replace("[BATCH]", response[i].batchnumber).
                     replace("[ID]", response[i].id).
+                    replace("[UNIT]", response[i].unit).
                     replace("[QUANTITY]", response[i].quantity).
                     replace("[DATE_PRODUCED]", response[i].date_produced).
                     replace("[EXPIRY_DATE]", response[i].date_expired).

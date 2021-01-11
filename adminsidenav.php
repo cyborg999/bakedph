@@ -145,7 +145,9 @@
 						  <li class="list-group-item">
 						  	<a href="logo.php" class="black">Logo</a>
 						  </li>
-						  
+						  <li class="list-group-item">
+						  	<a href="backup.php" class="black">Backup Data</a>
+						  </li>
 						</ul>
 				      </div>
 				    </div>

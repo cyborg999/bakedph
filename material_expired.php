@@ -22,7 +22,7 @@
           <thead>
             <tr>
               <th scope="col">Name</th>
-              <th scope="col">Price</th>
+              <!-- <th scope="col">Price</th> -->
               <th scope="col">Quantity</th>
               <th scope="col">Unit</th>
               <th scope="col">Date Purchased</th>
@@ -44,7 +44,7 @@
             </style>
 
             <tr>
-              <td colspan="5">
+              <td colspan="4">
                 <input type="text" class="form-control" id="searchName" placeholder="Name search..."/>
               </td>
              <td>
@@ -66,7 +66,7 @@
             <?php foreach($products as $idx => $product): ?>
             <tr class="result <?=($product['qty'] <= $store['material_low']) ? 'lowstock' : ''; ?>" id="edit<?= $product['id']; ?>">
               <td class="editname"><?= $product['name']; ?></td>
-              <td class="editprice"><?= $product['price']; ?></td>
+              <!-- <td class="editprice"><?= $product['price']; ?></td> -->
               <td class="editqty"><?= $product['qty']; ?></td>
               <td class="editqty"><?= $product['unit']; ?></td>
               <td class="editexpiry"><?= $product['date_purchased']; ?></td>
@@ -144,7 +144,7 @@
 <script type="text/html" id="productTPL">
       <tr class="result [LOWSTOCK]" id="edit[ID]">
           <td class="editname">[NAME]</td>
-          <td class="editsrp">[SRP]</td>
+          <!-- <td class="editsrp">[SRP]</td> -->
           <td class="editqty">[QTY]</td>
           <td>[UNIT]</td>
           <td>[DATE_PURCHASE]</td>

@@ -45,7 +45,7 @@
 									<input type="text" class="form-control" readonly="" value="pcs." required name="unit" id="unit" placeholder="Unit..."/>
 								</div>
 								<div class="form-group">
-									<label>Date of purchase:</label>
+									<label>Date:</label>
 									<input type="date" required class="form-control" value="<?= isset($_POST['date_purchased']) ? $_POST['date_purchased'] : '';?>"" name="date_purchased" id="date_purchased" placeholder="Date..."/>
 								</div>
 								<input type="submit" value="Add" class="btn btn-lg btn-primary">
@@ -59,7 +59,7 @@
 										<th>Product Name</th>
 										<th>Quantity</th>
 										<th>Unit</th>
-										<th>Date Purchased</th>
+										<th>Date</th>
 										<th>Quantity</th>
 									</tr>
 								</thead>

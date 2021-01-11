@@ -225,9 +225,9 @@
 					      		<li class="list-group-item">
 								  	<a href="addpurchase.php" class="black">Purchase Order</a>
 							  	</li>
-							  	<li class="list-group-item">
+							  <!-- 	<li class="list-group-item">
 								  	<a href="addpurchasereturn.php" class="black">Purchase Return</a>
-							  	</li>
+							  	</li> -->
 							</ul>
 					      </div>
 					    </div>
@@ -250,9 +250,9 @@
 					     	<li class="list-group-item">
 						  	<a href="addexpenses.php" class="black">Expenses</a>
 						  </li>
-						  <li class="list-group-item">
+						  <!-- <li class="list-group-item">
 						  	<a href="addsalesreturn.php" class="black">Sales Return</a>
-						  </li>
+						  </li> -->
 						</ul>
 				      </div>
 				    </div>

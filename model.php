@@ -2013,7 +2013,7 @@ class Model {
 
 			$this->db->prepare($sql)->execute(array());
 
-			$this->updateMaterialInventory($_POST['id'], $_POST['qty'], true);
+			// $this->updateMaterialInventory($_POST['id'], $_POST['qty'], true);
 
 			die(json_encode(array("deleted")));
 		}
@@ -2072,7 +2072,7 @@ class Model {
 				$data['added'] = true;
 				$data['id'] = $this->db->lastInsertId();
 
-				$this->updateMaterialInventory($_POST['materialId'], $_POST['qty']);
+				// $this->updateMaterialInventory($_POST['materialId'], $_POST['qty']);
 			}
 
 			die(json_encode($data));
@@ -2465,6 +2465,7 @@ class Model {
 		$sql[] = "delete from purchase";
 		$sql[] = "delete from production";
 		$sql[] = "delete from sales";
+		$sql[] = "delete from subscription";
 		$sql[] = "delete from material_inventory";
 		// $sql[] = "delete from userinfo";
 
@@ -2698,7 +2699,7 @@ class Model {
 				}
 
 				if($exists['usertype'] == "admin"){
-					header("Location:admindashboard.php");
+					header("Location:users.php");
 				} else {
 					$this->getStoreNotifications();
 

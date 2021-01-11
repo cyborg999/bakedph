@@ -20,7 +20,8 @@
             <tr>
               <th scope="col">Batch #</th>
               <th scope="col">Product Name</th>
-              <th scope="col">Price</th>
+              <th scope="col">Unit</th>
+              <!-- <th scope="col">Price</th> -->
               <th scope="col">Quantity</th>
               <th scope="col">Date Produced</th>
               <th scope="col">Expiry Date</th>
@@ -63,7 +64,8 @@
             <tr class="result <?=($product['qty'] <= $store['product_low']) ? 'lowstock' : ''; ?>" id="edit<?= $product['id']; ?>">
               <td class="editbatch"><?= $product['batchnumber']; ?></td>
               <td class="editname"><?= $product['name']; ?></td>
-              <td class="editsrp"><?= $product['price']; ?></td>
+              <td class="editsrp"><?= $product['unit']; ?></td>
+              <!-- <td class="editsrp"><?= $product['price']; ?></td> -->
               <td class="editqty"><?= $product['quantity']; ?></td>
               <td class="editproduced"><?= $product['date_produced']; ?></td>
               <td class="editexpiry"><?= $product['date_expired']; ?></td>
@@ -221,7 +223,8 @@
       <tr class="result [LOWSTOCK]" id="edit[ID]">
           <td class="editname">[BATCH]</td>
           <td class="editname">[NAME]</td>
-          <td class="editsrp">[PRICE]</td>
+          <!-- <td class="editsrp">[PRICE]</td> -->
+          <td class="editsrp">[UNIT]</td>
           <td class="editqty">[QUANTITY]</td>
           <td class="editqty">[DATE_PRODUCED]</td>
           <td class="editqty">[EXPIRY_DATE]</td>
@@ -486,6 +489,7 @@
                   replace("[NAME]", response[i].name).
                    replace("[BATCH]", response[i].batchnumber).
                     replace("[ID]", response[i].id).
+                    replace("[UNIT]", response[i].unit).
                     replace("[QUANTITY]", response[i].quantity).
                     replace("[DATE_PRODUCED]", response[i].date_produced).
                     replace("[EXPIRY_DATE]", response[i].date_expired).

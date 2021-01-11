@@ -47,6 +47,10 @@ https://stripe.com/docs/testing
 
 
 
+composer require league/omnipay omnipay/stripe
+
+
+
 admin backupdata
 
 

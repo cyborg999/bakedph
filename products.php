@@ -20,7 +20,7 @@
           <thead>
             <tr>
               <th scope="col">Product Name</th>
-              <th scope="col">SRP</th>
+              <!-- <th scope="col">SRP</th> -->
               <th scope="col">Quantity</th>
               <th scope="col">Action</th>
             </tr>
@@ -43,7 +43,7 @@
               }
             </style>
             <tr>
-              <td colspan="2">
+              <td>
                 <input type="text" class="form-control" id="searchName" placeholder="Name search..."/>
                 <a href="" class="advance">
                   <small>advance</small>
@@ -51,6 +51,7 @@
               </td>
               <td >
                 <input type="number" class="form-control" id="searchQuantity" placeholder="Quantity"/>
+                <a href="" class="btn-sm clearfilter">clear filter</a>
               </td>
               <td>
                 <button id="filter" class="btn btn-sm btn-primary"> <= Filter</button>
@@ -72,7 +73,7 @@
 
             <tr class="result <?=($product['qty'] <= $store['product_low']) ? 'lowstock' : ''; ?>" id="edit<?= $product['id']; ?>">
               <td class="editname"><?= $product['name']; ?></td>
-              <td class="editsrp"><?= $product['srp']; ?></td>
+              <!-- <td class="editsrp"><?= $product['srp']; ?></td> -->
               <td class="editqty"><?= $product['qty']; ?></td>
               <td>
                 <a href="" data-qty="<?= $product['qty']; ?>" data-expiry="<?= $product['expiry_date']; ?>" data-srp="<?= $product['srp']; ?>" data-id="<?= $product['id']; ?>" data-name="<?= $product['name']; ?>"class="btn btn-sm btn-warning edit"  data-toggle="modal" data-target="#editProductModal" alt="Edit product"><svg class="bi" width="18" height="18" fill="currentColor"><use xlink:href="./node_modules/bootstrap-icons/bootstrap-icons.svg#pencil"/></svg> </a>
@@ -231,7 +232,7 @@
 <script type="text/html" id="productTPL">
       <tr class="result [LOWSTOCK]" id="edit[ID]">
           <td class="editname">[NAME]</td>
-          <td class="editsrp">[SRP]</td>
+          <!-- <td class="editsrp">[SRP]</td> -->
           <td class="editqty">[QTY]</td>
           <td>
             <a href="" data-qty="[QTY]" data-expiry="[EXPIRY]" data-srp="[SRP]" data-id="[ID]" data-name="[NAME]" class="btn btn-sm btn-warning edit"  data-toggle="modal" data-target="#editProductModal" alt="Edit product"><svg class="bi" width="18" height="18" fill="currentColor"><use xlink:href="./node_modules/bootstrap-icons/bootstrap-icons.svg#pencil"/></svg> </a>
@@ -450,6 +451,13 @@
           },1000);
         }
 
+        $(".clearfilter").on("click", function(e){
+          e.preventDefault();
+
+          $("#searchName, #searchQuantity").val("");
+          $("#searchName").trigger("keyup");
+        });
+        
         $("#materialName").on("change", function(){
           var me = $(this);
 

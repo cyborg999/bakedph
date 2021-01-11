@@ -6,15 +6,15 @@ $check = $model->preventReaccessIfPayed();
  ?> 
 <body>
   <?php include_once "./spinner.php"; ?>
-	<div class="container-sm">s
-		<?php include "./dashboardnav.php"; ?>
+	<div class="container">
 		<div class="row">
 			<br>
-			<div class="col-sm-3">
+			<div class="col-sm-2 sidenav">
 				<?php 
 				$active = "user";   include_once "./sidenav.php"; ?>
 			</div>
-			<div class="col-sm-9">
+			<div class="col-sm-10">
+				<?php include "./dashboardnav.php"; ?>
 				<br>
 				<h3>Activate your account</h3>
 				<div class="row">
