@@ -51,7 +51,6 @@
 									</div>
 							  	</div>
 							  	<div class="row">
-									<?php $monthlyData = $model->getMonthlyProductionReport(false,true); ?>
 									<div class="col-sm">
 										<figure class="highcharts-figure">
 										    <div id="container"></div>
@@ -158,7 +157,7 @@
 										</tr>
 										<tr>
 											<td colspan="6">
-												<b>Net Total: <span id="NetTotal"><?= $storeExpenses['total']+ $total;?></span></b>
+												<b>Net Total: <span id="NetTotal"><?=  $total-$storeExpenses['total'];?></span></b>
 											</td>
 										</tr>
 									</tfoot>
@@ -263,6 +262,9 @@
 		<tr>
 			<td>[NAME]</td>
 			<td>[QUANTITY]</td>
+			<td>[PRICE]</td>
+			<td>[UNIT]</td>
+			<td>[AMOUNT]</td>
 			<td>[DATE_PURCHASED]</td>
 		</tr>
 	</script>
@@ -425,6 +427,9 @@
 
     							tpl = tpl.replace("[NAME]", response[i].name).
     							replace("[QUANTITY]", response[i].qty).
+    							replace("[UNIT]", response[i].unit).
+    							replace("[PRICE]", response[i].srp).
+    							replace("[AMOUNT]", response[i].revenue).
     							replace("[DATE_PURCHASED]", response[i].date_purchased);
     							total += parseInt(response[i].revenue);
 

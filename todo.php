@@ -77,16 +77,10 @@ Cyborg99912@
 
 
 todo
-export ng sales
-add expenses sa report
-mababawas ba yung purchase return at sales return if binalik?
-all products/all materials
 add edit business profile
-incorrect filter sa expired  side nav, dapat sa production and check instead of product
 upload profile picture
-material>add material > unit (dito pala magbabase yung nasa purchase orderng unit)
-pag nag delete ng material/product, update qty
 admin dashboard
-
-important note
-subscription minimum of 50 pesos
+auto deduct ang expired product and mats
+business profile 
+slideshow
+free trial logic

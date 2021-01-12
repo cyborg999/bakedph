@@ -18,19 +18,19 @@
 							<input type="text" required class="form-control" name="name" value="<?= isset($_POST['name']) ? $_POST['name'] : '';?>" placeholder="Product Name..."/>
 						</label>
 					</div>
-					<div class="form-group">
+					<div class="form-group hidden">
 						<label>Price:
-							<input type="text" required class="form-control" name="price" placeholder="Price..."/>
+							<input type="text"  class="form-control" name="price" placeholder="Price..."/>
 						</label>
 					</div>
 					<div class="form-group hidden">
 						<label>Quantity:
-							<input type="number" required class="form-control" name="qty" placeholder="Quantity..." value="0" />
+							<input type="number"  class="form-control" name="qty" placeholder="Quantity..." value="0" />
 						</label>
 					</div>
 					<div class="form-group hidden">
 						<label>Expiry Date:
-							<input type="date" required class="form-control" name="expiry" placeholder="Expiry Date..."/>
+							<input type="date"  class="form-control" name="expiry" placeholder="Expiry Date..."/>
 						</label>
 					</div>
 					<input type="submit" class="btn btn-lg btn-primary" value="submit">

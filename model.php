@@ -10,6 +10,7 @@ class Model {
 		require_once "config.php";
 
 		$this->db = $db;
+
 		$this->signUpListener();
 		$this->loginListener();
 		$this->addStoreListener();
@@ -81,9 +82,6 @@ class Model {
 		$this->addSocialListener();
 		$this->removeSocialListener();
 		$this->viewUserListener();
-
-
-						// $this->getSubscriptionExpiration();
 	}
 
 	public function viewUserListener(){
@@ -197,6 +195,50 @@ class Model {
 		return $this;
 	}
 
+	public function deductExpiredProduct($products){
+		$data = array();
+
+		foreach($products as $idx => $p){
+			if($p['deducted'] == 0){
+				//update deducted
+				$sql = "
+					update production
+					set deducted = ?
+					where id = ?
+				";
+
+				$this->db->prepare($sql)->execute(array(1, $p['id']));
+
+				//deduct expired qty to inventory
+				$this->updateProductInventory($p['productid'], $p['quantity']);
+			}
+		}
+
+		return $this;
+	}
+
+	public function deductExpiredMaterials($materials){
+		$data = array();
+
+		foreach($materials as $idx => $p){
+			if($p['deducted'] == 0){
+				//update deducted
+				$sql = "
+					update purchase
+					set deducted = ?
+					where id = ?
+				";
+
+				$this->db->prepare($sql)->execute(array(1, $p['id']));
+
+				//deduct expired qty to inventory
+				$this->updateMaterialInventory($p['materialid'], $p['qty']);
+			}
+		}
+
+		return $this;
+	}
+
 	public function getLowStockProductNotification(&$notifications){
 		$lowStockProducts = array();
 		$products = $this->getAllProducts(true);
@@ -206,7 +248,8 @@ class Model {
                       </div>
                   </div>
                   <div>';
-                    
+
+
 		if(count($products)){
 			$title .= "Low Stock Alert: <b>".count($products) ." Product(s)</b> are currently low in stock.";
 		}
@@ -274,7 +317,9 @@ class Model {
                       </div>
                   </div>
                   <div>';
-                    
+
+        $this->deductExpiredMaterials($products);
+
 		if(count($products)){
 			$title .= "Expired Item Alert: <b>".count($products) ." Material(s)</b> are expired.";
 		}
@@ -308,7 +353,9 @@ class Model {
                       </div>
                   </div>
                   <div>';
-                    
+               //auto deduct expired products
+        $this->deductExpiredProduct($products);
+
 		if(count($products)){
 			$title .= "Expired Item Alert: <b>".count($products) ." Product(s)</b> are expired.";
 		}
@@ -415,7 +462,6 @@ class Model {
 		$this->getExpiredProductNotification($notifications);
 
 		return $this;
-		//if malapit na credit date
 	}
 
 	public function addPurchaseReturnListener(){
@@ -861,6 +907,8 @@ class Model {
 					$where
 					 
 				";
+
+				opd($sql);
 			}
 		} else {
 			$sql = "
@@ -869,7 +917,7 @@ class Model {
 				WHERE t1.storeid = ".$_SESSION['storeid']."
 			";
 		}
-		
+
 		return $this->db->query($sql)->fetch(PDO::FETCH_ASSOC);
 	}
 
@@ -1054,31 +1102,36 @@ class Model {
 				$where = ($_POST['date1'] == "")  ? "" : " AND t1.date_purchased = '".$_POST['date1']."'";
 
 				$sql = "
-					SELECT t1.* , t2.name, t2.srp, t2.srp * t1.qty as 'revenue'
+					SELECT t1.*, t3.name ,t2.price as 'srp',t2.price * t1.qty as 'revenue'
 					FROM sales t1
-					LEFT JOIN  product t2 
-					ON t1.productid = t2.id
+					LEFT JOIN production t2
+					ON t1.productid = t2.productid
+					left join product t3
+					on t1.productid = t3.id
 					where t1.storeid = ".$_SESSION['storeid']."
 					$where
 				";
 			} elseif($_POST['filter'] == "daterange"){
 				$where = ($_POST['date2'] == "")  ? "" : " AND t1.date_purchased BETWEEN '".$_POST['date2']."' AND '".$_POST['date3']."'";
 				$sql = "
-					SELECT t1.* , t2.name, t2.srp,t2.srp * t1.qty as 'revenue'
+					SELECT t1.*, t3.name ,t2.price as 'srp',t2.price * t1.qty as 'revenue'
 					FROM sales t1
-					LEFT JOIN  product t2 
-					ON t1.productid = t2.id
-					where t1.storeid = ".$_SESSION['storeid']."
+					LEFT JOIN production t2
+					ON t1.productid = t2.productid
+					left join product t3
+					on t1.productid = t3.id
 					$where
 				";
 			} else {
 				//year
 				$where = ($_POST['year'] == "")  ? "" : " AND YEAR(t1.date_purchased) = '".$_POST['year']."' ";
 				$sql = "
-					SELECT t1.* , t2.name, t2.srp, t2.srp * t1.qty as 'revenue'
+					SELECT t1.*, t3.name ,t2.price as 'srp',t2.price * t1.qty as 'revenue'
 					FROM sales t1
-					LEFT JOIN  product t2 
-					ON t1.productid = t2.id
+					LEFT JOIN production t2
+					ON t1.productid = t2.productid
+					left join product t3
+					on t1.productid = t3.id
 					where t1.storeid = ".$_SESSION['storeid']."
 					$where
 				";
@@ -1647,7 +1700,7 @@ class Model {
 
 	public function getAllProduction(){
 		$sql = "
-			SELECT t1.*, t2.name ,t2.srp
+			SELECT t1.*, t2.name ,t1.price as 'srp'
 			FROM production t1
 			LEFT JOIN product t2
 			ON t1.productid = t2.id
@@ -1703,14 +1756,15 @@ class Model {
 
 	public function getAllSales(){
 		$sql = "
-			SELECT t1.*, t2.name ,t2.srp,t2.srp * t1.qty as 'revenue'
+			SELECT t1.*, t3.name ,t2.price as 'srp',t2.price * t1.qty as 'revenue'
 			FROM sales t1
-			LEFT JOIN product t2
-			ON t1.productid = t2.id
+			LEFT JOIN production t2
+			ON t1.productid = t2.productid
+			left join product t3
+			on t1.productid = t3.id
 			WHERE t1.storeid = ".$_SESSION['storeid']."
 			ORDER BY t1.id desc
 		";	
-
 
 		$_SESSION['lastSaleQuery'] = $sql;
 
@@ -2609,11 +2663,11 @@ class Model {
 
 			if(!$exists){
 				$sql = "
-					INSERT INTO product(name,srp,qty,expiry_date,storeid)
-					VALUES(?,?,?,?,?)
+					INSERT INTO product(name,storeid)
+					VALUES(?,?)
 				";
 
-				$this->db->prepare($sql)->execute(array($_POST['name'], $_POST['price'],$_POST['qty'],$_POST['expiry'],$_SESSION['storeid']));
+				$this->db->prepare($sql)->execute(array($_POST['name'], $_SESSION['storeid']));
 
 				$this->success = "You have sucesfully added this product.";
 
