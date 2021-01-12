@@ -87,3 +87,6 @@ upload profile picture
 material>add material > unit (dito pala magbabase yung nasa purchase orderng unit)
 pag nag delete ng material/product, update qty
 admin dashboard
+
+important note
+subscription minimum of 50 pesos

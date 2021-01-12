@@ -38,7 +38,7 @@
 								</div>
 
 								<div class="form-group">
-									<label>Date of Purchase:</label>
+									<label>Date:</label>
 									<input type="date" required class="form-control" value="<?= isset($_POST['date_purchased']) ? $_POST['date_purchased'] : '';?>"" name="date_purchased" id="date_purchased" placeholder="Date..."/>
 								</div>
 								<input type="submit" value="Add" class="btn btn-lg btn-primary">

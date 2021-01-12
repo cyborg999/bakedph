@@ -1,5 +1,6 @@
 <?php include_once "./head.php"; ?>
 <body>
+		<?php include_once "./spinner.php"; ?>
 	<div class="container-sm">
 		<?php include_once "./admindashboardnav.php"; ?>
 		<div class="row">
@@ -25,7 +26,7 @@
 					<tbody>
 						<?php foreach($users as $idx => $u): ?>
 						<tr>
-							<td><a href="" data-toggle="modal" data-target="#checkPayment"><?= $u['username'];?></a></td>
+							<td><a href="" data-id="<?= $u['id'];?>" class="view"><?= $u['username'];?></a></td>
 							<td><?= $u['contact'];?></td>
 							<td><?= $u['email'];?></td>
 							<td><span class="badge <?= (!$u['verified']) ? 'btn-warning' : 'btn-info'; ?>""><?= ($u['verified']) ? 'verified' : 'unverified'; ?></span></td>
@@ -45,7 +46,7 @@
   <div class="modal-dialog modal-lg">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title" id="exampleModalLabel">Payment Details</h5>
+        <h5 class="modal-title" id="exampleModalLabel">User Information</h5>
         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
           <span aria-hidden="true">&times;</span>
         </button>
@@ -58,8 +59,11 @@
         <div class="row">
 
           <div class="col-sm">
-            <h5>To Do</h5>
-            
+            <table class="table">
+            	<tbody id="tbody">
+            		
+            	</tbody>
+            </table>
           </div>
         </div>
       </div>
@@ -70,11 +74,81 @@
   </div>
 </div>
 
+<script type="text/html" id="tpl">
+	<tr>
+		<th>Name:</th>
+		<td>[NAME]</td>
+	</tr>
+	<tr>
+		<th>Address:</th>
+		<td>[ADDRESS]</td>
+	</tr>
+	<tr>
+		<th>Contact:</th>
+		<td>[CONTACT]</td>
+	</tr>
+	<tr>
+		<th>Email:</th>
+		<td>[EMAIL]</td>
+	</tr>
+	<tr>
+		<th>Store:</th>
+		<td>[STORE]</td>
+	</tr>
+	<tr>
+		<th>Business Contact:</th>
+		<td>[BCONTACT]</td>
+	</tr>
+	<tr>
+		<th>Business Email:</th>
+		<td>[BEMAIL]</td>
+	</tr>
+</script>
+
 	<?php include_once "./foot.php"; ?>
 	<script type="text/javascript">
 		(function($){
 			$(document).ready(function(){
 				function __listen(){
+					$(".view").off().on("click", function(e){
+						e.preventDefault();
+
+						var me = $(this);
+
+						showPreloader();
+
+						$("#tbody").html("");
+
+						$.ajax({
+							url : "ajax.php",
+							data : { viewUser : true, id : me.data("id")},
+							type : "post",
+							dataType : "json",
+							success : function(response){
+								console.log(response);
+
+								if(response){
+									var tpl = $("#tpl").html();
+
+									tpl = tpl.replace("[NAME]", response.fullname).
+										replace("[ADDRESS]", response.address).
+										replace("[CONTACT]", response.contact).
+										replace("[EMAIL]", response.email).
+										replace("[STORE]", response.store).
+										replace("[BCONTACT]", response.storecontact).
+										replace("[BEMAIL]", response.storeemail);
+
+									$("#tbody").append(tpl);
+									$("#checkPayment").modal("show");
+								}
+							}
+							, complete : function(){
+								hidePreloader();
+							}
+						});
+
+					});
+
 					$(".verify").off().on("click", function(e){
 						e.preventDefault();
 

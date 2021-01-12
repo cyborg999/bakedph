@@ -131,7 +131,32 @@
 				    </div>
 				  </div>
 
-				  
+
+
+
+				  <div class="card">
+					    <div class="card-header" id="headingPurchaseOrder">
+					      <h2 class="mb-0">
+					        <button class="btn btn-link btn-block text-left collapsed " type="button" data-toggle="collapse" data-target="#collapsePurchaseOrder" aria-expanded="false" aria-controls="collapsePurchaseOrder">
+					          <svg class="bi" width="18" height="18" fill="currentColor"><use xlink:href="./node_modules/bootstrap-icons/bootstrap-icons.svg#receipt"/></svg> Purchase Order
+					        </button>
+					      </h2>
+					    </div>
+					    <div id="collapsePurchaseOrder" class="<?= ($active == "purchaseOrder") ? "show" : ""; ?> collapse" aria-labelledby="headingPurchaseOrder" data-parent="#accordionExample">
+					      <div class="card-body">
+					      	<ul class="list-group list-group-flush">
+					      		<li class="list-group-item">
+								  	<a href="addpurchase.php" class="black">Purchase Order</a>
+							  	</li>
+							  <!-- 	<li class="list-group-item">
+								  	<a href="addpurchasereturn.php" class="black">Purchase Return</a>
+							  	</li> -->
+							</ul>
+					      </div>
+					    </div>
+					  </div>
+
+
 
 			    <div class="card">
 				    <div class="card-header" id="headingOne">
@@ -211,27 +236,7 @@
 					    </div>
 					  </div>
 					
-					<div class="card">
-					    <div class="card-header" id="headingPurchaseOrder">
-					      <h2 class="mb-0">
-					        <button class="btn btn-link btn-block text-left collapsed " type="button" data-toggle="collapse" data-target="#collapsePurchaseOrder" aria-expanded="false" aria-controls="collapsePurchaseOrder">
-					          <svg class="bi" width="18" height="18" fill="currentColor"><use xlink:href="./node_modules/bootstrap-icons/bootstrap-icons.svg#receipt"/></svg> Purchase Order
-					        </button>
-					      </h2>
-					    </div>
-					    <div id="collapsePurchaseOrder" class="<?= ($active == "purchaseOrder") ? "show" : ""; ?> collapse" aria-labelledby="headingPurchaseOrder" data-parent="#accordionExample">
-					      <div class="card-body">
-					      	<ul class="list-group list-group-flush">
-					      		<li class="list-group-item">
-								  	<a href="addpurchase.php" class="black">Purchase Order</a>
-							  	</li>
-							  <!-- 	<li class="list-group-item">
-								  	<a href="addpurchasereturn.php" class="black">Purchase Return</a>
-							  	</li> -->
-							</ul>
-					      </div>
-					    </div>
-					  </div>
+					
 
 				  <div class="card">
 				    <div class="card-header" id="headingTwo">

@@ -113,19 +113,19 @@
                 <label>Product Name:</label>
                 <input type="text" id="editname" required class="form-control" name="name" value="" placeholder="Product Name..."/>
               </div>
-              <div class="form-group">
+           <!--    <div class="form-group">
                 <label>Price:</label>
                 <input type="text" id="editprice" required class="form-control" name="price" placeholder="Price..."/>
-              </div>
+              </div> -->
               <div class="form-group">
                 <label>Quantity:</label>
-                <input type="number" id="editqty" required class="form-control" name="qty" placeholder="Quantity..."/>
+                <input type="number" readonly id="editqty" required class="form-control" name="qty" placeholder="Quantity..."/>
 
               </div>
-              <div class="form-group">
+              <!-- <div class="form-group">
                 <label>Expiry Date:</label>
                 <input type="date" id="editexpiry" required class="form-control" name="expiry" placeholder="Expiry Date..."/>
-              </div>
+              </div> -->
               <input type="submit" class="btn btn-lg btn-success" value="Update">
 
             </form>
@@ -145,7 +145,7 @@
                   <thead>
                     <tr>
                       <th scope="col">Name</th>
-                      <th scope="col">Price</th>
+                      <!-- <th scope="col">Price</th> -->
                       <th scope="col">Quantity</th>
                       <th scope="col">Action</th>
                     </tr>
@@ -172,9 +172,9 @@
                         </select>
 
                       </td>
-                      <td>
+                     <!--  <td>
                         <input type="text" id="materialSrp" readonly class="form-control" name="price" placeholder="SRP..." required />
-                      </td>
+                      </td> -->
                       <td>
                         <input type="number" id="materialQty" class="form-control" name="qty" placeholder="Quantity..." min="1" required/>
                       </td>
@@ -184,7 +184,7 @@
                     </tr>
                   </tfoot> 
                 </table>
-                <h4 >Total Material Cost/<small>product quantity</small> : P<span id="total">0.00</span></h4>
+                <!-- <h4 >Total Material Cost/<small>product quantity</small> : P<span id="total">0.00</span></h4> -->
               </div>
              <!--  <div class="tab-pane fade " id="expenses" role="tabpanel" aria-labelledby="home-tab">
                   <table class="table table-hover table-sm" id="expensesTbl">
@@ -243,7 +243,7 @@
 <script type="text/html" id="mats">
   <tr>
     <td>[NAME]</td>
-    <td>[PRICE]</td>
+    <!-- <td>[PRICE]</td> -->
     <td>[QTY]</td>
     <td>
       <button  class="btn btn-sm btn-danger deleteMaterial" data-mid="[MID]" data-id="[ID]" data-price="[PRICE]" data-qty="[QTY]"><svg class="bi" width="18" height="18" fill="currentColor"><use xlink:href="./node_modules/bootstrap-icons/bootstrap-icons.svg#trash"/></svg></button>

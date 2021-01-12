@@ -5,7 +5,7 @@ include_once "./head.php";
 $check = $model->preventReaccessIfPayed();
  ?> 
 <body>
-  <?php include_once "./spinner.php"; ?>
+  <!-- <?php include_once "./spinner.php"; ?> -->
 	<div class="container">
 		<div class="row">
 			<br>
@@ -18,25 +18,32 @@ $check = $model->preventReaccessIfPayed();
 				<br>
 				<h3>Activate your account</h3>
 				<div class="row">
-					<?php 					
-					$store = $model->getUserStore();
-					$amount = $store['cost'] * $store['duration'];
-					$subscription = $model->getActiveSubscriptions();
+					<div class="col-sm">
+						<div class="row">
+							<?php 					
+							$store = $model->getUserStore();
+							$amount = $store['cost'] * $store['duration'];
+							$subscription = $model->getActiveSubscriptions();
 
-					foreach($subscription as $idx => $sub): ?>
-						<div class="col-sm-4 cardd">
-							<div class="card mb-3 <?= ($sub['id'] == $store['subscriptionid']) ? 'border-success' : '';?>"  data-id="<?= $sub['id'];?>" data-price="<?= $sub['cost'] * $sub['duration'];?>" style="max-width: 18rem;">
-							  <div class="card-header"><?= $sub['title'];?></div>
-							  <div class="card-body <?= ($sub['id'] == $store['subscriptionid']) ? 'text-success' : '';?>">
-							    <h5 class="card-title"><?= $sub['caption'];?></h5>
-							    <p class="card-text"><?= $sub['cost'];?>/<small>Month</small></p>
-							  </div>
-							</div>
+							foreach($subscription as $idx => $sub): ?>
+								<div class="col-sm-4 cardd">
+									<div class="card mb-3 <?= ($sub['id'] == $store['subscriptionid']) ? 'border-success' : '';?>"  data-id="<?= $sub['id'];?>" data-price="<?= $sub['cost'] * $sub['duration'];?>" style="max-width: 18rem;">
+									  <div class="card-header"><?= $sub['title'];?></div>
+									  <div class="card-body <?= ($sub['id'] == $store['subscriptionid']) ? 'text-success' : '';?>">
+									    <h5 class="card-title"><?= $sub['caption'];?></h5>
+									    <p class="card-text"><?= $sub['cost'];?>/<small>Month</small></p>
+									  </div>
+									</div>
+								</div>
+							<?php endforeach ?>
 						</div>
-					<?php endforeach ?>
+					</div>
 				</div>
 				<div class="row">
 					<style type="text/css">
+						.cardd .card-body {
+							background: white;
+						}
 						.card {
 							cursor: pointer;
 						}
@@ -93,20 +100,22 @@ $check = $model->preventReaccessIfPayed();
 						}
 					</style>
 					<script src="https://js.stripe.com/v3/"></script>
-					<form action="charge.php" method="post" id="payment-form">
-					    <div class="form-row">
-					        <input type="hidden" name="subscriptionid" id="subscriptionid" value="<?= $store['subscriptionid'];?>" />
-					        <input type="text" name="amount" id="amount" placeholder="Enter Amount" value="<?= $amount;?>" />
-					        <label for="card-element">Credit/Debit Card</label>
-					        <div id="card-element">
-					        <!-- A Stripe Element will be inserted here. -->
-					        </div>
-					 
-					        <!-- Used to display form errors. -->
-					        <div id="card-errors" class="alert alert-danger" role="alert"></div>
-					    </div>
-					    <button  id="submitpayment">Submit Payment</button>
-					</form>
+					<div class="col-sm">
+						<form action="charge.php" method="post" id="payment-form">
+						    <div class="form-row">
+						        <input type="hidden" name="subscriptionid" id="subscriptionid" value="<?= $store['subscriptionid'];?>" />
+						        <input type="text" name="amount" id="amount" placeholder="Enter Amount" value="<?= $amount;?>" />
+						        <label for="card-element">Credit/Debit Card</label>
+						        <div id="card-element">
+						        <!-- A Stripe Element will be inserted here. -->
+						        </div>
+						 
+						        <!-- Used to display form errors. -->
+						        <div id="card-errors" class="alert alert-danger" role="alert"></div>
+						    </div>
+						    <button  id="submitpayment">Submit Payment</button>
+						</form>
+					</div>
 				</div>
 			</div>
 		</div>
@@ -127,9 +136,13 @@ $check = $model->preventReaccessIfPayed();
 					me.addClass("border-success");
 					me.find(".card-body").addClass("text-success");
 
+					if(price == 0){
+						price = 50;
+					}
+
 					$("#amount").val(price);
 					$("#subscriptionid").val(me.data("id"));
-					console.log(me.data);
+					console.log(me.data, price);
 				});  
 
 		         $("#payment-form").on("submit", function(){

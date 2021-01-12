@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Jan 11, 2021 at 01:21 PM
+-- Generation Time: Jan 12, 2021 at 04:45 AM
 -- Server version: 10.4.13-MariaDB
 -- PHP Version: 7.4.8
 
@@ -46,7 +46,10 @@ INSERT INTO `expenses` (`id`, `name`, `cost`, `productid`, `date_added`, `storei
 (10, 'ASD2', '1', 11, '2020-12-08 06:49:47', 21, '0234-11-11'),
 (11, 'labor', '120', 16, '2021-01-08 07:18:57', 21, '2021-01-08'),
 (12, 'transporation', '120', 16, '2021-01-08 07:19:05', 21, '2021-01-08'),
-(13, 'desc', '345', 0, '2021-01-08 09:03:55', 21, '2021-01-08');
+(13, 'desc', '345', 0, '2021-01-08 09:03:55', 21, '2021-01-08'),
+(14, 'labor', '200', NULL, '2021-01-12 00:56:16', 35, '2021-01-12'),
+(15, 'meryenda', '29', NULL, '2021-01-12 01:21:02', 35, '2021-01-12'),
+(16, 'meryenda', '29', NULL, '2021-01-12 01:21:02', 35, '2022-06-07');
 
 -- --------------------------------------------------------
 
@@ -67,7 +70,7 @@ CREATE TABLE `material` (
 --
 
 INSERT INTO `material` (`id`, `materialid`, `qty`, `productid`, `date_created`) VALUES
-(75, 17, 1, 17, '2021-01-10 06:24:31');
+(83, 21, 1, 22, '2021-01-12 00:46:54');
 
 -- --------------------------------------------------------
 
@@ -91,7 +94,7 @@ CREATE TABLE `material_inventory` (
 --
 
 INSERT INTO `material_inventory` (`id`, `storeid`, `name`, `qty`, `price`, `expiry_date`, `date_created`, `unit`) VALUES
-(17, 30, 'Flour', 99, 0, '0000-00-00', '2021-01-10 06:19:57', 'kg');
+(21, 35, 'material1', 99, 0, '0000-00-00', '2021-01-11 23:43:12', 'kg');
 
 -- --------------------------------------------------------
 
@@ -107,30 +110,6 @@ CREATE TABLE `notification` (
   `date_added` timestamp NOT NULL DEFAULT current_timestamp(),
   `storeid` int(11) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
-
---
--- Dumping data for table `notification`
---
-
-INSERT INTO `notification` (`id`, `title`, `body`, `seen`, `date_added`, `storeid`) VALUES
-(52, '<div class=\"mr-3\">\r\n                      <div class=\"icon-circle bg-warning\">\r\n                          <i class=\"fas fa-exclamation-triangle text-white\"></i>\r\n                      </div>\r\n                  </div>\r\n                  <div>Credit Payment Alert: <b>2</b> Credit Payment(s) are near.<!-- <div class=\"small text-gray-500\">December 2, 2019</div> -->\r\n			  	</div>', '<b>The following Purchase Order\'s credit deadline are near:</b> <ul><li>Flour(2021-01-08)</li><li>Flour(2021-01-09)</li></ul>', 1, '2021-01-08 17:19:12', 21),
-(53, '<div class=\"mr-3\">\r\n                      <div class=\"icon-circle bg-warning\">\r\n                          <i class=\"fas fa-exclamation-triangle text-white\"></i>\r\n                      </div>\r\n                  </div>\r\n                  <div>Low Stock Alert: <b>1 Product(s)</b> are currently low in stock.<!-- <div class=\"small text-gray-500\">December 2, 2019</div> -->\r\n              	</div>', '<b>The following products are low in stock:</b> <ul><li>Cheese Cake(99)</li></ul>', 1, '2021-01-08 17:19:12', 21),
-(54, '<div class=\"mr-3\">\r\n                      <div class=\"icon-circle bg-warning\">\r\n                          <i class=\"fas fa-exclamation-triangle text-white\"></i>\r\n                      </div>\r\n                  </div>\r\n                  <div>Low Stock Alert: <b>4 Material(s)</b> are currently low in stock.<!-- <div class=\"small text-gray-500\">December 2, 2019</div> -->\r\n              	</div>', '<b>The following materials are low in stock:</b> <ul><li>Egg(0)</li><li>Sugar(94)</li><li>asdas(0)</li><li>test(0)</li></ul>', 1, '2021-01-08 17:19:12', 21),
-(55, '<div class=\"mr-3\">\r\n                      <div class=\"icon-circle bg-danger\">\r\n                          <i class=\"fas fa-exclamation-triangle text-white\"></i>\r\n                      </div>\r\n                  </div>\r\n                  <div>Expired Item Alert: <b>5 Material(s)</b> are expired.<!-- <div class=\"small text-gray-500\">December 2, 2019</div> -->\r\n              	</div>', '<b>The following materials are expired:</b> <ul><li>Flour(2021-01-08)</li><li>Flour(2021-01-08)</li><li>Flour(2021-01-08)</li><li>Flour(2021-01-08)</li><li>Flour(2021-01-08)</li></ul>', 1, '2021-01-08 17:19:12', 21),
-(56, '<div class=\"mr-3\">\r\n                      <div class=\"icon-circle bg-danger\">\r\n                          <i class=\"fas fa-exclamation-triangle text-white\"></i>\r\n                      </div>\r\n                  </div>\r\n                  <div>Expired Item Alert: <b>5 Product(s)</b> are expired.<!-- <div class=\"small text-gray-500\">December 2, 2019</div> -->\r\n              	</div>', '<b>The following products are expired:</b> <ul><li>Cheese Cake(2021-01-07)</li><li>Cheese Cake(2021-01-07)</li><li>Cheese Cake(2021-01-08)</li><li>Cheese Cake(2021-01-08)</li><li>Cheese Cake(2021-01-08)</li></ul>', 1, '2021-01-08 17:19:12', 21),
-(57, '<div class=\"mr-3\">\r\n                      <div class=\"icon-circle bg-warning\">\r\n                          <i class=\"fas fa-exclamation-triangle text-white\"></i>\r\n                      </div>\r\n                  </div>\r\n                  <div>Credit Payment Alert: <b>2</b> Credit Payment(s) are near.<!-- <div class=\"small text-gray-500\">December 2, 2019</div> -->\r\n			  	</div>', '<b>The following Purchase Order\'s credit deadline are near:</b> <ul><li>Flour(2021-01-08)</li><li>Flour(2021-01-09)</li></ul>', 1, '2021-01-09 09:22:11', 21),
-(58, '<div class=\"mr-3\">\r\n                      <div class=\"icon-circle bg-warning\">\r\n                          <i class=\"fas fa-exclamation-triangle text-white\"></i>\r\n                      </div>\r\n                  </div>\r\n                  <div>Low Stock Alert: <b>1 Product(s)</b> are currently low in stock.<!-- <div class=\"small text-gray-500\">December 2, 2019</div> -->\r\n              	</div>', '<b>The following products are low in stock:</b> <ul><li>Cheese Cake(99)</li></ul>', 1, '2021-01-09 09:22:12', 21),
-(59, '<div class=\"mr-3\">\r\n                      <div class=\"icon-circle bg-warning\">\r\n                          <i class=\"fas fa-exclamation-triangle text-white\"></i>\r\n                      </div>\r\n                  </div>\r\n                  <div>Low Stock Alert: <b>4 Material(s)</b> are currently low in stock.<!-- <div class=\"small text-gray-500\">December 2, 2019</div> -->\r\n              	</div>', '<b>The following materials are low in stock:</b> <ul><li>Egg(0)</li><li>Sugar(94)</li><li>asdas(0)</li><li>test(0)</li></ul>', 1, '2021-01-09 09:22:12', 21),
-(60, '<div class=\"mr-3\">\r\n                      <div class=\"icon-circle bg-danger\">\r\n                          <i class=\"fas fa-exclamation-triangle text-white\"></i>\r\n                      </div>\r\n                  </div>\r\n                  <div>Expired Item Alert: <b>5 Material(s)</b> are expired.<!-- <div class=\"small text-gray-500\">December 2, 2019</div> -->\r\n              	</div>', '<b>The following materials are expired:</b> <ul><li>Flour(2021-01-08)</li><li>Flour(2021-01-08)</li><li>Flour(2021-01-08)</li><li>Flour(2021-01-08)</li><li>Flour(2021-01-08)</li></ul>', 1, '2021-01-09 09:22:12', 21),
-(61, '<div class=\"mr-3\">\r\n                      <div class=\"icon-circle bg-danger\">\r\n                          <i class=\"fas fa-exclamation-triangle text-white\"></i>\r\n                      </div>\r\n                  </div>\r\n                  <div>Expired Item Alert: <b>5 Product(s)</b> are expired.<!-- <div class=\"small text-gray-500\">December 2, 2019</div> -->\r\n              	</div>', '<b>The following products are expired:</b> <ul><li>Cheese Cake(2021-01-07)</li><li>Cheese Cake(2021-01-07)</li><li>Cheese Cake(2021-01-08)</li><li>Cheese Cake(2021-01-08)</li><li>Cheese Cake(2021-01-08)</li></ul>', 1, '2021-01-09 09:22:12', 21),
-(62, '<div class=\"mr-3\">\r\n                      <div class=\"icon-circle bg-warning\">\r\n                          <i class=\"fas fa-exclamation-triangle text-white\"></i>\r\n                      </div>\r\n                  </div>\r\n                  <div>Credit Payment Alert: <b>2</b> Credit Payment(s) are near.<!-- <div class=\"small text-gray-500\">December 2, 2019</div> -->\r\n			  	</div>', '<b>The following Purchase Order\'s credit deadline are near:</b> <ul><li>Flour(2021-01-08)</li><li>Flour(2021-01-09)</li></ul>', 1, '2021-01-09 09:22:54', 21),
-(63, '<div class=\"mr-3\">\r\n                      <div class=\"icon-circle bg-warning\">\r\n                          <i class=\"fas fa-exclamation-triangle text-white\"></i>\r\n                      </div>\r\n                  </div>\r\n                  <div>Low Stock Alert: <b>1 Product(s)</b> are currently low in stock.<!-- <div class=\"small text-gray-500\">December 2, 2019</div> -->\r\n              	</div>', '<b>The following products are low in stock:</b> <ul><li>Cheese Cake(99)</li></ul>', 0, '2021-01-09 09:22:54', 21),
-(64, '<div class=\"mr-3\">\r\n                      <div class=\"icon-circle bg-warning\">\r\n                          <i class=\"fas fa-exclamation-triangle text-white\"></i>\r\n                      </div>\r\n                  </div>\r\n                  <div>Low Stock Alert: <b>4 Material(s)</b> are currently low in stock.<!-- <div class=\"small text-gray-500\">December 2, 2019</div> -->\r\n              	</div>', '<b>The following materials are low in stock:</b> <ul><li>Egg(0)</li><li>Sugar(94)</li><li>asdas(0)</li><li>test(0)</li></ul>', 0, '2021-01-09 09:22:54', 21),
-(65, '<div class=\"mr-3\">\r\n                      <div class=\"icon-circle bg-danger\">\r\n                          <i class=\"fas fa-exclamation-triangle text-white\"></i>\r\n                      </div>\r\n                  </div>\r\n                  <div>Expired Item Alert: <b>5 Material(s)</b> are expired.<!-- <div class=\"small text-gray-500\">December 2, 2019</div> -->\r\n              	</div>', '<b>The following materials are expired:</b> <ul><li>Flour(2021-01-08)</li><li>Flour(2021-01-08)</li><li>Flour(2021-01-08)</li><li>Flour(2021-01-08)</li><li>Flour(2021-01-08)</li></ul>', 0, '2021-01-09 09:22:54', 21),
-(66, '<div class=\"mr-3\">\r\n                      <div class=\"icon-circle bg-danger\">\r\n                          <i class=\"fas fa-exclamation-triangle text-white\"></i>\r\n                      </div>\r\n                  </div>\r\n                  <div>Expired Item Alert: <b>5 Product(s)</b> are expired.<!-- <div class=\"small text-gray-500\">December 2, 2019</div> -->\r\n              	</div>', '<b>The following products are expired:</b> <ul><li>Cheese Cake(2021-01-07)</li><li>Cheese Cake(2021-01-07)</li><li>Cheese Cake(2021-01-08)</li><li>Cheese Cake(2021-01-08)</li><li>Cheese Cake(2021-01-08)</li></ul>', 0, '2021-01-09 09:22:54', 21),
-(67, '<div class=\"mr-3\">\r\n                      <div class=\"icon-circle bg-warning\">\r\n                          <i class=\"fas fa-exclamation-triangle text-white\"></i>\r\n                      </div>\r\n                  </div>\r\n                  <div>Low Stock Alert: <b>1 Product(s)</b> are currently low in stock.<!-- <div class=\"small text-gray-500\">December 2, 2019</div> -->\r\n              	</div>', '<b>The following products are low in stock:</b> <ul><li>Cheese Cake(4)</li></ul>', 0, '2021-01-11 06:21:14', 30),
-(68, '<div class=\"mr-3\">\r\n                      <div class=\"icon-circle bg-danger\">\r\n                          <i class=\"fas fa-exclamation-triangle text-white\"></i>\r\n                      </div>\r\n                  </div>\r\n                  <div>Expired Item Alert: <b>6 Material(s)</b> are expired.<!-- <div class=\"small text-gray-500\">December 2, 2019</div> -->\r\n              	</div>', '<b>The following materials are expired:</b> <ul><li>Flour(2021-01-10)</li><li>Flour(2021-01-10)</li><li>Flour(2021-01-10)</li><li>Flour(2021-01-10)</li><li>Flour(2021-01-10)</li><li>Flour(2021-01-11)</li></ul>', 0, '2021-01-11 06:21:14', 30),
-(69, '<div class=\"mr-3\">\r\n                      <div class=\"icon-circle bg-danger\">\r\n                          <i class=\"fas fa-exclamation-triangle text-white\"></i>\r\n                      </div>\r\n                  </div>\r\n                  <div>Expired Item Alert: <b>4 Product(s)</b> are expired.<!-- <div class=\"small text-gray-500\">December 2, 2019</div> -->\r\n              	</div>', '<b>The following products are expired:</b> <ul><li>Cheese Cake(2021-01-10)</li><li>Cheese Cake(2021-01-10)</li><li>Cheese Cake(2021-01-10)</li><li>Cheese Cake(2021-01-10)</li></ul>', 0, '2021-01-11 06:21:15', 30);
 
 -- --------------------------------------------------------
 
@@ -153,9 +132,7 @@ CREATE TABLE `payments` (
 --
 
 INSERT INTO `payments` (`id`, `payment_id`, `amount`, `currency`, `payment_status`, `captured_at`, `userid`) VALUES
-(11, 'ch_1HuBIbJmfnsrzK57UqMzcfqG', 1800.00, 'PHP', 'Captured', '2020-12-03 15:28:21', 37),
-(12, 'ch_1HuBMhJmfnsrzK5769NNWqzx', 1800.00, 'PHP', 'Captured', '2020-12-03 15:32:33', 37),
-(13, 'ch_1HuBTwJmfnsrzK573SpNZBoV', 3000.00, 'PHP', 'Captured', '2020-12-03 15:40:03', 37);
+(16, 'ch_1I8ZXjJmfnsrzK57BzZ9uHh2', 1500.00, 'PHP', 'Captured', '2021-01-12 08:11:24', 53);
 
 -- --------------------------------------------------------
 
@@ -179,7 +156,7 @@ CREATE TABLE `product` (
 --
 
 INSERT INTO `product` (`id`, `name`, `srp`, `qty`, `expiry_date`, `storeid`, `date_created`, `status`) VALUES
-(17, 'Cheese Cake', 99, 4, '2021-01-10', 30, 2147483647, 1);
+(22, 'Product2', 20, 0, '2021-01-12', 35, 2147483647, 1);
 
 -- --------------------------------------------------------
 
@@ -205,10 +182,7 @@ CREATE TABLE `production` (
 --
 
 INSERT INTO `production` (`id`, `productid`, `batchnumber`, `quantity`, `date_produced`, `storeid`, `date_created`, `unit`, `date_expired`, `price`) VALUES
-(53, 17, 'Batch #1', 2, '2021-01-10', 30, '2021-01-10 06:25:35', 'pcs', '2021-01-10', 120),
-(54, 17, 'Batch #54', 1, '2021-01-10', 30, '2021-01-10 06:41:33', 'pcs', '2021-01-10', 1),
-(55, 17, 'Batch #55', 1, '2021-01-10', 30, '2021-01-10 06:41:49', 'pcs', '2021-01-10', 1),
-(56, 17, 'Batch #55', 1, '2021-01-10', 30, '2021-01-10 06:41:49', 'pcs', '2021-01-10', 1);
+(63, 22, 'Batch #1', 1, '2021-01-12', 35, '2021-01-12 00:54:39', 'pcs', '2021-01-12', 100);
 
 -- --------------------------------------------------------
 
@@ -236,12 +210,7 @@ CREATE TABLE `purchase` (
 --
 
 INSERT INTO `purchase` (`id`, `vendorid`, `materialid`, `date_purchased`, `type`, `qty`, `date_created`, `storeid`, `credit_date`, `expiry_date`, `unit`, `price`) VALUES
-(58, 5, 17, '2021-01-10', 'cash', 2, '2021-01-10 06:23:44', 30, '2021-01-10', '2021-01-10', 'kg', 40),
-(59, 5, 17, '2021-01-10', 'cash', 1, '2021-01-10 07:22:51', 30, '2021-01-10', '2021-01-10', 'kg', 1),
-(60, 5, 17, '2021-01-10', 'cash', 1, '2021-01-10 07:22:51', 30, '2021-01-10', '2021-01-10', 'kg', 1),
-(61, 5, 17, '2021-01-10', 'cash', 1, '2021-01-10 07:23:15', 30, '2021-01-10', '2021-01-10', 'kg', 22),
-(62, 5, 17, '2021-01-10', 'cash', 1, '2021-01-10 07:23:40', 30, '2021-01-10', '2021-01-10', 'kg', 1),
-(63, 5, 17, '2021-01-11', 'cash', 1, '2021-01-11 05:29:46', 30, '2021-01-11', '2021-01-11', 'kg', 11);
+(69, 7, 21, '2021-01-12', 'cash', 100, '2021-01-11 23:45:12', 35, '2021-01-12', '2021-01-12', 'kg', 1);
 
 -- --------------------------------------------------------
 
@@ -288,7 +257,7 @@ CREATE TABLE `sales` (
 --
 
 INSERT INTO `sales` (`id`, `storeid`, `productid`, `qty`, `date_purchased`, `other_details`, `date_created`, `unit`) VALUES
-(21, 30, 17, 1, '2021-01-10', '', '2021-01-10 06:42:22', 'pcs');
+(24, 35, 22, 1, '2021-01-12', '', '2021-01-12 00:54:52', 'pcs');
 
 -- --------------------------------------------------------
 
@@ -340,7 +309,7 @@ CREATE TABLE `settings` (
 --
 
 INSERT INTO `settings` (`id`, `logo`, `userid`, `terms`, `privacy`, `about`, `contact`, `overview`) VALUES
-(1, './uploads/logo/logo.png', 36, '<div class=\"EN\">\r\n                        <div>\r\n                            <h2>TERMS AND CONDITIONS</h2>\r\n                            <p><span>This site is owned and operated by BakedPH.</span></p>\r\n                            <h3>AGREEMENT</h3>\r\n                            <p><span>BakedPH contains multiple Web pages operated by BakedPH. This offer is available for you and is subject to the acceptance of the following terms and conditions. Your use of the BakedPH site and related offers represents your consent to all such terms contained herein. BakedPH reserves the right to change the terms in which this offer is being offered. Please check this page for any changes. BakedPH seeks to ensure that all available information on the website is accurate and true, however there is no guarantee. These terms and conditions apply exclusively, although in contrast to the general or specific conditions or stipulations of the buyer. These conditions will remain in force during the sale and during the relevant activities relating to such sale.</span></p>\r\n                            <h3>BASIC TERMS OF THE AGREEMENT</h3>\r\n                            <p><span>The price of this product is the price set at the time of purchase and may change from time to time if it is used to complete a new purchase. In no event shall the purchase price of today guarantee a price for future purchases not related. The price does not include shipping and applicable operating costs that may be evaluated based on the amount of purchase.</span></p>\r\n                            <p><span>Live email support is available:</span><span> </span><a href=\"mailto:support@bakedph.com\"><span> </span><span>support@bakedph.com</span></a></p>\r\n                            <p>Or you may call us toll-free:</p>\r\n                            <div class=\"billing_support\">\r\n                                <div>\r\n                                    <p><strong>CA : </strong><span>1 (888) 254-5183</span></p>\r\n                                    <p><strong>IE : </strong><span>1800 903 218</span></p>\r\n                                    <p><strong>NZ : </strong><span>0800 359 816</span></p>\r\n                                    <p><strong>US : </strong><span>1 (877) 359-4160</span></p>\r\n                                    <p><strong>ZA : </strong><span>080 099 5067</span></p>\r\n                                </div>\r\n                            </div>\r\n                            <h3>CANCELLATIONS / REFUNDS</h3>\r\n                            <p>To cancel your order at any time, please contact our Customer Service Department.</p>\r\n                            <p><span>Live Email Support</span><span>:&nbsp;&nbsp;</span><a class=\"supp\" href=\"mailto:support@bakedph.com\">support@bakedph.com</a></p>\r\n                            <div class=\"billing_support\">\r\n                                <div>\r\n                                    <p><strong>CA : </strong><span>1 (888) 254-5183</span></p>\r\n                                    <p><strong>IE : </strong><span>1800 903 218</span></p>\r\n                                    <p><strong>NZ : </strong><span>0800 359 816</span></p>\r\n                                    <p><strong>US : </strong><span>1 (877) 359-4160</span></p>\r\n                                    <p><strong>ZA : </strong><span>080 099 5067</span></p>\r\n                                </div>\r\n                            </div>\r\n                            <p><span>If the cancellation is made after the order has been shipped, you will be responsible for the payment of the product that has been (1) already been shipped or (2) has already been given to you when you call.</span></p>\r\n                            <p><span>You can receive a refund of any Product that you ordered up to thirty (30) days after the completion of your order. Customers will receive a refund for the product ordered, and repetitive refunds are not allowed, unless at the time of delivery the product is defective. BakedPH reserves the right to refuse to refund all customers who make repeated requests for refunds or who, in the opinion of BakedPH, require refunds in bad faith.</span></p>\r\n                            <p><span>In order to process the refund, you must contact our customer service and provide your name and account information. If you provide incorrect information, we will not be able to access your account and we will not complete the return. Refunds can take up to two weeks to appear on your credit card according to the bank that issued the credit card.</span></p>\r\n                            <h3>SHIPPING / RETURNS</h3>\r\n                            <p><span>Standard shipping usually takes 14-21 working days. If you want to return the unused product please do so by sending the address indicated below.</span></p>\r\n                            <p>Please send all returns to:</p>\r\n                            <p><span><strong>BakedPH</strong>: <br>6525 Gunpark Dr, Ste 370-346<br> Boulder, CO 80301 USA</span></p>\r\n                            <p><span>Customers are responsible for any shipping fees associated with their return, and may be subject to a restocking fee.</span></p>\r\n                            <h3>RELATIONS WITH THIRD PARTIES</h3>\r\n                            <p><span>BakedPH is not responsible for web-casting or any other form of transmission received from any Linked Site. BakedPH is providing these links to you only as a convenience, and the inclusion of any link does not imply endorsement by BakedPH the site or any association with its officers or directors.</span></p>\r\n                            <h3>NO UNLAWFUL OR PROHIBITED USE</h3>\r\n                            <p><span>As a condition of your use of BakedPH, you agree not to use the Site for any purpose that is unlawful or prohibited by these terms and conditions. You may not use BakedPH to damage, disable or impair the website BakedPH. You may not obtain or seek to obtain any materials or information through any means not intentionally made available or provided for through our website.</span></p>\r\n                            <h3>USER REGISTRATION AND ELECTRONIC SIGNATURE</h3>\r\n                            <p><span>You must register as a \"member\" of the BakedPH in order to access certain functions of the site. You must provide current, complete and accurate information about you when you register as a member. You agree that such information is true and complete. You agree to maintain and keep your personal information current and update the information as needed. Without your true information, BakedPH can not be held responsible for any access or access problem.</span></p>\r\n                            <p><span>Once the registration is completed you consent to these Terms and Conditions, you gave us your approval and electronic signature for this offer, and, therefore, the authorization. Only in this way the charge and the acceptance can be confirmed.</span></p>\r\n                            <h3>DISCLAIMER</h3>\r\n                            <p><span>THE INFORMATION, SOFTWARE, PRODUCTS, AND SERVICES INCLUDED IN OR AVAILABLE THROUGH THE WEB SITE BakedPH MAY INCLUDE INACCURACIES OR TYPOGRAPHICAL ERRORS. CHANGES ARE PERIODICALLY ADDED TO THE INFORMATION.</span></p>\r\n                            <p><span>BakedPH MAKES NO REPRESENTATIONS OR WARRANTIES AS TO THE RELIABILITY, FITNESS, TIMELINESS, AND ACCURACY OF THE INFORMATION, SOFTWARE, PRODUCTS, SERVICES AND RELATED GRAPHICS CONTAINED ON THE SITE. TO THE MAXIMUM EXTENT PERMITTED BY APPLICABLE LAW, IN NO EVENT SHALL BakedPH AND / OR ITS SUPPLIERS BE LIABLE FOR ANY DIRECT, INDIRECT, PUNITIVE, INCIDENTAL, SPECIAL, CONSEQUENTIAL DAMAGES OR ANY DAMAGES WHATSOEVER INCLUDING, WITHOUT LIMITATION, DAMAGES FOR LOSS OF USE, DATA OR PROFITS, ARISING OUT OF OR IN ANY WAY CONNECTED WITH THE USE OR PERFORMANCE OF THE PRODUCTS OR SERVICES.</span></p>\r\n                            <h3>TERMINATION / ACCESS RESTRICTION</h3>\r\n                            <div>\r\n                                <p><span>BakedPH reserves the right, in its sole discretion, to terminate your access to the website and the related services or any portion thereof at any time, without notice. You agree that no joint venture, partnership, employment, or agency relationship exists between you and BakedPH as a result of this agreement or use of the services. This agreement is written in English, which must be considered the official language of the text of this contract, regardless of the language in which these terms may have been translated. If you wish to receive a copy of these terms, please send a request to:</span><span> </span><a href=\"mailto:support@bakedph.com\"><span> </span><span>support@bakedph.com</span></a></p>\r\n                            </div>\r\n                            <h3>NOTICES OF INTELLECTUAL PROPERTY, COPYRIGHT AND TRADEMARKS:</h3>\r\n                            <p><span>BakedPH and all its related logos are trademarks or trade names. You may not copy, imitate or use the above without the prior written consent of BakedPH. You may not alter, modify or in any way change these HTML logos, or use them in a manner deemed offensive according BakedPH or use them in any way that implies sponsorship or endorsement of BakedPH.</span></p>\r\n                            <h3>TRADEMARKS</h3>\r\n                            <p><span>The names of actual companies and products mentioned herein may be the trademarks of their respective owners. The example companies, organizations, products, people and events depicted herein are fictitious. No association with any real company, organization, product, person, or event is intended or should be inferred. All rights not expressly granted herein are reserved.</span></p>\r\n                            <h3>PRIVACY POLICY</h3>\r\n                            <p><span>Please consult the privacy policy of BakedPH. By accepting these Terms and Conditions, and each time you use the service, you consent to the collection, use and disclosure of information or data recording by BakedPH, in accordance with the privacy policy without notice or liability to you or any other person.</span></p>\r\n                            <p><span>Customer Service is available 24 hours a day at:</span><span> </span><a href=\"mailto:support@bakedph.com\"><span> </span><span>support@bakedph.com</span></a></p>\r\n                            <p class=\"termscopy\"><span>Copyright</span><span> © </span><span>2021</span><span> </span><span>BakedPH</span><span> </span><span class=\"mobilef\">All Rights Reserved</span><span> </span></p>\r\n                        </div>\r\n                    </div>', '<div data-reactid=\".2.1.0.0.$=11:0.0.0\">\r\n                <figure class=\"logo\"></figure>\r\n                <h2 data-reactid=\".2.1.0.0.$=11:0.0.0.0\">PRIVACY POLICY</h2><h3 data-reactid=\".2.1.0.0.$=11:0.0.0.1\">THE INFORMATION WE COLLECT</h3><p data-reactid=\".2.1.0.0.$=11:0.0.0.2\">We use the information we collect on our websites to provide a superior shopping experience and to communicate with you about products, services and promotions. We collect information about you when you register on our site, place an order, subscribe to our newsletter, respond to a survey, or fill out a form.</p><p data-reactid=\".2.1.0.0.$=11:0.0.0.3\">The following types of information about a user are among those that may be collected by us in relation to the site: name, postal address, e-mail address, telephone number, mobile phone number, payment information (such as card numbers credit and billing address if purchases or payments are made), date of birth, age, sex, other demographic information (such as occupation, income bracket), IP address, referring site, and other technical information collected by the site server.</p><h3 data-reactid=\".2.1.0.0.$=11:0.0.0.4\">INFORMATION</h3><p data-reactid=\".2.1.0.0.$=11:0.0.0.5\">In connection with the web site, we may collect information in the following ways:</p><ul data-reactid=\".2.1.0.0.$=11:0.0.0.6\"><li data-reactid=\".2.1.0.0.$=11:0.0.0.6.0\">Through registration forms filled out by a user on the Site</li><li data-reactid=\".2.1.0.0.$=11:0.0.0.6.1\">Through the information provided by a user in connection with the purchase of products or services on the Site</li><li data-reactid=\".2.1.0.0.$=11:0.0.0.6.2\">Through the maintenance and analysis of Web server logs</li><li data-reactid=\".2.1.0.0.$=11:0.0.0.6.3\">Through calls and e-mail users</li><li data-reactid=\".2.1.0.0.$=11:0.0.0.6.4\">Through Internet chat sessions between a user and this site</li><li data-reactid=\".2.1.0.0.$=11:0.0.0.6.5\">Through the use of this site to third-party databases from which user information is extracted and combined with information obtained from this site by other means</li></ul><p data-reactid=\".2.1.0.0.$=11:0.0.0.7\">We can also connect to personally and non-personally identifiable information from users via \"cookies\" (small text files placed by this site on users\' computers), GIF image files to single-pixel (also called \"Web beacons\"), the Web server log analysis and other similar technological means. This information can be used to track the trends of the site and improve the user experience, and may be shared with third parties.</p><p data-reactid=\".2.1.0.0.$=11:0.0.0.8\">To the extent that third parties may place advertisements on the Site, such third parties may use cookies or other technological means within the advertising to collect and use non-personally identifiable information. We are not responsible for information collected by third parties in this manner, nor for the collection or use of information from other sites which are connected to the site.</p><h3 data-reactid=\".2.1.0.0.$=11:0.0.0.9\">USE OF INFORMATION</h3><p data-reactid=\".2.1.0.0.$=11:0.0.0.a\">We may use information collected in connection with the Site in the following ways:</p><ul data-reactid=\".2.1.0.0.$=11:0.0.0.b\"><li data-reactid=\".2.1.0.0.$=11:0.0.0.b.0\">Provide the requested information, products, and services to users via the Site or through other online or offline channels</li><li data-reactid=\".2.1.0.0.$=11:0.0.0.b.1\">To enable users to enter prize promotions and receive prizes from us and / or third parties</li><li data-reactid=\".2.1.0.0.$=11:0.0.0.b.2\">To improve the user experience with the site</li><li data-reactid=\".2.1.0.0.$=11:0.0.0.b.3\">In relation to the operation of the Site and for our internal business</li><li data-reactid=\".2.1.0.0.$=11:0.0.0.b.4\">In order for users to obtain information and offers for products and services offered by us and selected third parties</li></ul><p data-reactid=\".2.1.0.0.$=11:0.0.0.c\">To do the above, we can provide the information to trusted third parties, including but not limited to third-party contractors that provide us with services, such as the operation of the Site, communication services and the creation of test orders, credit cards and payment services, and other online and offline marketing in connection with the offerings provided to users by us and / or such other sellers. We will use commercially reasonable efforts to limit the use of information by such third parties for the specific uses mentioned above. We also use electronic and physical security to reduce the risk of improper access or manipulation of information during transmission and storage, but can not guarantee the security and integrity of the information and shall have no liability for breaches of security or integrity or third-party interception in transit.</p><p data-reactid=\".2.1.0.0.$=11:0.0.0.d\">We may also disclose information when it determines that it is necessary to comply with applicable laws and regulations and protect the interests or safety of our business, its customers, or other visitors to the site.</p><p data-reactid=\".2.1.0.0.$=11:0.0.0.e\">Note: If at any time you would like to unsubscribe from receiving e-mail in the future, there are detailed instructions for cancellation of registration at the bottom of each email.</p><h3 data-reactid=\".2.1.0.0.$=11:0.0.0.f\">HOW DO WE PROTECT YOUR INFORMATION?</h3><p data-reactid=\".2.1.0.0.$=11:0.0.0.g\">We implement a variety of security measures to ensure the safety of your personal information when you place an order or access your personal information.</p><p data-reactid=\".2.1.0.0.$=11:0.0.0.h\">We offer the use of a secure server. All information supplied sensitive / credit supply is transmitted via Secure Socket Layer (SSL) technology and then encrypted into our Payment gateway providers database only to be accessible by those authorized with special access rights to such systems, and are required to maintain the confidentiality of information.</p><h3 data-reactid=\".2.1.0.0.$=11:0.0.0.i\">COOKIES</h3><p data-reactid=\".2.1.0.0.$=11:0.0.0.j\">From time to time, we may send a \"cookie\" to your computer. A cookie is a small piece of data that is sent to your browser from a web server and stored on your computer\'s hard drive. A cookie can not read data on your hard disk or read cookie files created by other sites. Cookies do not damage your system. We use cookies to recognize you when you return to our sites, or to identify which areas of our network of web sites you have visited (i.e. e-commerce sites, etc.) We can use this information to better personalize the content you see on our sites.</p><p data-reactid=\".2.1.0.0.$=11:0.0.0.k\">Many web sites place cookies on your hard drive. You can choose whether to accept cookies by changing the settings of your browser. Your browser can refuse all cookies, or show you when a cookie is being sent. If you choose not to accept cookies, your experience at our site and other websites may be diminished and some features may not work as expected.</p><h3 data-reactid=\".2.1.0.0.$=11:0.0.0.l\">DISCLOSE ANY INFORMATION TO OUTSIDE PARTIES?</h3><p data-reactid=\".2.1.0.0.$=11:0.0.0.m\">We do not sell, trade, or otherwise transfer your personal information to third parties. This does not include trusted third parties who assist us in operating our website, conducting our business, or offer services, provided that such parties undertake to keep such information confidential. We may also release your information when we believe release is appropriate to comply with the law and, by enforcing our site policies, or protect ours or others rights, property, or safety. However, if the information is not personally identifiable it may be provided to other parties for marketing, advertising, or other uses.</p><h3 data-reactid=\".2.1.0.0.$=11:0.0.0.n\">PURCHASES FROM MINORS</h3><p data-reactid=\".2.1.0.0.$=11:0.0.0.o\">We do not knowingly collect any information from children under 18 years of age. Our website, products and services are all directed to people who are at least 18 years or more.</p><h3 data-reactid=\".2.1.0.0.$=11:0.0.0.p\">YOUR CONSENT</h3><p data-reactid=\".2.1.0.0.$=11:0.0.0.q\">By using our site, you consent to our privacy policy.</p><p data-reactid=\".2.1.0.0.$=11:0.0.0.r\">We reserve the right to revise and update this Privacy Policy at any time. Any such revisions will be effective from the date of publication on the Site, and applies to all information collected by us both before and after the effective date. Your use of the Site after any such changes will be deemed acceptance of those revisions. Users should periodically visit this page to review the current policies with respect to information.</p><h3 data-reactid=\".2.1.0.0.$=11:0.0.0.s\">GDPR</h3><p data-reactid=\".2.1.0.0.$=11:0.0.0.t\"><span data-reactid=\".2.1.0.0.$=11:0.0.0.t.0\">In accordance with GDPR, BakedPH will honor requests for personal data. This may include the transfer or deletion of personal data from BakedPH servers and database. Requests may be sent to <a href=\"mailto:support@bakedph.com\">support@bakedph.com</a>. Requests will be answered in the order they are received (always within 30 days).</span></p></div>', 'teest about', '<p>\r\n              A108 Adam Street <br>\r\n              New York, NY 535022<br>\r\n              United States <br><br>\r\n              <strong>Phone:</strong> +1 5589 55488 55<br>\r\n              <strong>Email:</strong> info@example.com<br>\r\n            </p>', 'Cras fermentum odio eu feugiat lide par naso tierra. Justo eget nada terra videa magna derita valies darta donna mare fermentum iaculis eu non diam phasellus.');
+(1, './uploads/logo/logo.png', 36, '<div class=\"EN\">\r\n                        <div>\r\n                            <h2>TERsMS AND CONDITIONS</h2>\r\n                            <p><span>This site is owned and operated by BakedPH.</span></p>\r\n                            <h3>AGREEMENT</h3>\r\n                            <p><span>BakedPH contains multiple Web pages operated by BakedPH. This offer is available for you and is subject to the acceptance of the following terms and conditions. Your use of the BakedPH site and related offers represents your consent to all such terms contained herein. BakedPH reserves the right to change the terms in which this offer is being offered. Please check this page for any changes. BakedPH seeks to ensure that all available information on the website is accurate and true, however there is no guarantee. These terms and conditions apply exclusively, although in contrast to the general or specific conditions or stipulations of the buyer. These conditions will remain in force during the sale and during the relevant activities relating to such sale.</span></p>\r\n                            <h3>BASIC TERMS OF THE AGREEMENT</h3>\r\n                            <p><span>The price of this product is the price set at the time of purchase and may change from time to time if it is used to complete a new purchase. In no event shall the purchase price of today guarantee a price for future purchases not related. The price does not include shipping and applicable operating costs that may be evaluated based on the amount of purchase.</span></p>\r\n                            <p><span>Live email support is available:</span><span> </span><a href=\"mailto:support@bakedph.com\"><span> </span><span>support@bakedph.com</span></a></p>\r\n                            <p>Or you may call us toll-free:</p>\r\n                            <div class=\"billing_support\">\r\n                                <div>\r\n                                    <p><strong>CA : </strong><span>1 (888) 254-5183</span></p>\r\n                                    <p><strong>IE : </strong><span>1800 903 218</span></p>\r\n                                    <p><strong>NZ : </strong><span>0800 359 816</span></p>\r\n                                    <p><strong>US : </strong><span>1 (877) 359-4160</span></p>\r\n                                    <p><strong>ZA : </strong><span>080 099 5067</span></p>\r\n                                </div>\r\n                            </div>\r\n                            <h3>CANCELLATIONS / REFUNDS</h3>\r\n                            <p>To cancel your order at any time, please contact our Customer Service Department.</p>\r\n                            <p><span>Live Email Support</span><span>:  </span><a class=\"supp\" href=\"mailto:support@bakedph.com\">support@bakedph.com</a></p>\r\n                            <div class=\"billing_support\">\r\n                                <div>\r\n                                    <p><strong>CA : </strong><span>1 (888) 254-5183</span></p>\r\n                                    <p><strong>IE : </strong><span>1800 903 218</span></p>\r\n                                    <p><strong>NZ : </strong><span>0800 359 816</span></p>\r\n                                    <p><strong>US : </strong><span>1 (877) 359-4160</span></p>\r\n                                    <p><strong>ZA : </strong><span>080 099 5067</span></p>\r\n                                </div>\r\n                            </div>\r\n                            <p><span>If the cancellation is made after the order has been shipped, you will be responsible for the payment of the product that has been (1) already been shipped or (2) has already been given to you when you call.</span></p>\r\n                            <p><span>You can receive a refund of any Product that you ordered up to thirty (30) days after the completion of your order. Customers will receive a refund for the product ordered, and repetitive refunds are not allowed, unless at the time of delivery the product is defective. BakedPH reserves the right to refuse to refund all customers who make repeated requests for refunds or who, in the opinion of BakedPH, require refunds in bad faith.</span></p>\r\n                            <p><span>In order to process the refund, you must contact our customer service and provide your name and account information. If you provide incorrect information, we will not be able to access your account and we will not complete the return. Refunds can take up to two weeks to appear on your credit card according to the bank that issued the credit card.</span></p>\r\n                            <h3>SHIPPING / RETURNS</h3>\r\n                            <p><span>Standard shipping usually takes 14-21 working days. If you want to return the unused product please do so by sending the address indicated below.</span></p>\r\n                            <p>Please send all returns to:</p>\r\n                            <p><span><strong>BakedPH</strong>: <br>6525 Gunpark Dr, Ste 370-346<br> Boulder, CO 80301 USA</span></p>\r\n                            <p><span>Customers are responsible for any shipping fees associated with their return, and may be subject to a restocking fee.</span></p>\r\n                            <h3>RELATIONS WITH THIRD PARTIES</h3>\r\n                            <p><span>BakedPH is not responsible for web-casting or any other form of transmission received from any Linked Site. BakedPH is providing these links to you only as a convenience, and the inclusion of any link does not imply endorsement by BakedPH the site or any association with its officers or directors.</span></p>\r\n                            <h3>NO UNLAWFUL OR PROHIBITED USE</h3>\r\n                            <p><span>As a condition of your use of BakedPH, you agree not to use the Site for any purpose that is unlawful or prohibited by these terms and conditions. You may not use BakedPH to damage, disable or impair the website BakedPH. You may not obtain or seek to obtain any materials or information through any means not intentionally made available or provided for through our website.</span></p>\r\n                            <h3>USER REGISTRATION AND ELECTRONIC SIGNATURE</h3>\r\n                            <p><span>You must register as a \"member\" of the BakedPH in order to access certain functions of the site. You must provide current, complete and accurate information about you when you register as a member. You agree that such information is true and complete. You agree to maintain and keep your personal information current and update the information as needed. Without your true information, BakedPH can not be held responsible for any access or access problem.</span></p>\r\n                            <p><span>Once the registration is completed you consent to these Terms and Conditions, you gave us your approval and electronic signature for this offer, and, therefore, the authorization. Only in this way the charge and the acceptance can be confirmed.</span></p>\r\n                            <h3>DISCLAIMER</h3>\r\n                            <p><span>THE INFORMATION, SOFTWARE, PRODUCTS, AND SERVICES INCLUDED IN OR AVAILABLE THROUGH THE WEB SITE BakedPH MAY INCLUDE INACCURACIES OR TYPOGRAPHICAL ERRORS. CHANGES ARE PERIODICALLY ADDED TO THE INFORMATION.</span></p>\r\n                            <p><span>BakedPH MAKES NO REPRESENTATIONS OR WARRANTIES AS TO THE RELIABILITY, FITNESS, TIMELINESS, AND ACCURACY OF THE INFORMATION, SOFTWARE, PRODUCTS, SERVICES AND RELATED GRAPHICS CONTAINED ON THE SITE. TO THE MAXIMUM EXTENT PERMITTED BY APPLICABLE LAW, IN NO EVENT SHALL BakedPH AND / OR ITS SUPPLIERS BE LIABLE FOR ANY DIRECT, INDIRECT, PUNITIVE, INCIDENTAL, SPECIAL, CONSEQUENTIAL DAMAGES OR ANY DAMAGES WHATSOEVER INCLUDING, WITHOUT LIMITATION, DAMAGES FOR LOSS OF USE, DATA OR PROFITS, ARISING OUT OF OR IN ANY WAY CONNECTED WITH THE USE OR PERFORMANCE OF THE PRODUCTS OR SERVICES.</span></p>\r\n                            <h3>TERMINATION / ACCESS RESTRICTION</h3>\r\n                            <div>\r\n                                <p><span>BakedPH reserves the right, in its sole discretion, to terminate your access to the website and the related services or any portion thereof at any time, without notice. You agree that no joint venture, partnership, employment, or agency relationship exists between you and BakedPH as a result of this agreement or use of the services. This agreement is written in English, which must be considered the official language of the text of this contract, regardless of the language in which these terms may have been translated. If you wish to receive a copy of these terms, please send a request to:</span><span> </span><a href=\"mailto:support@bakedph.com\"><span> </span><span>support@bakedph.com</span></a></p>\r\n                            </div>\r\n                            <h3>NOTICES OF INTELLECTUAL PROPERTY, COPYRIGHT AND TRADEMARKS:</h3>\r\n                            <p><span>BakedPH and all its related logos are trademarks or trade names. You may not copy, imitate or use the above without the prior written consent of BakedPH. You may not alter, modify or in any way change these HTML logos, or use them in a manner deemed offensive according BakedPH or use them in any way that implies sponsorship or endorsement of BakedPH.</span></p>\r\n                            <h3>TRADEMARKS</h3>\r\n                            <p><span>The names of actual companies and products mentioned herein may be the trademarks of their respective owners. The example companies, organizations, products, people and events depicted herein are fictitious. No association with any real company, organization, product, person, or event is intended or should be inferred. All rights not expressly granted herein are reserved.</span></p>\r\n                            <h3>PRIVACY POLICY</h3>\r\n                            <p><span>Please consult the privacy policy of BakedPH. By accepting these Terms and Conditions, and each time you use the service, you consent to the collection, use and disclosure of information or data recording by BakedPH, in accordance with the privacy policy without notice or liability to you or any other person.</span></p>\r\n                            <p><span>Customer Service is available 24 hours a day at:</span><span> </span><a href=\"mailto:support@bakedph.com\"><span> </span><span>support@bakedph.com</span></a></p>\r\n                            <p class=\"termscopy\"><span>Copyright</span><span> © </span><span>2021</span><span> </span><span>BakedPH</span><span> </span><span class=\"mobilef\">All Rights Reserved</span><span> </span></p>\r\n                        </div>\r\n                    </div>', '<div data-reactid=\".2.1.0.0.$=11:0.0.0\">\r\n                <figure class=\"logo\"></figure>\r\n                <h2 data-reactid=\".2.1.0.0.$=11:0.0.0.0\">PRIVACY POLICY</h2><h3 data-reactid=\".2.1.0.0.$=11:0.0.0.1\">THE INFORMATION WE COLLECT</h3><p data-reactid=\".2.1.0.0.$=11:0.0.0.2\">We use the information we collect on our websites to provide a superior shopping experience and to communicate with you about products, services and promotions. We collect information about you when you register on our site, place an order, subscribe to our newsletter, respond to a survey, or fill out a form.</p><p data-reactid=\".2.1.0.0.$=11:0.0.0.3\">The following types of information about a user are among those that may be collected by us in relation to the site: name, postal address, e-mail address, telephone number, mobile phone number, payment information (such as card numbers credit and billing address if purchases or payments are made), date of birth, age, sex, other demographic information (such as occupation, income bracket), IP address, referring site, and other technical information collected by the site server.</p><h3 data-reactid=\".2.1.0.0.$=11:0.0.0.4\">INFORMATION</h3><p data-reactid=\".2.1.0.0.$=11:0.0.0.5\">In connection with the web site, we may collect information in the following ways:</p><ul data-reactid=\".2.1.0.0.$=11:0.0.0.6\"><li data-reactid=\".2.1.0.0.$=11:0.0.0.6.0\">Through registration forms filled out by a user on the Site</li><li data-reactid=\".2.1.0.0.$=11:0.0.0.6.1\">Through the information provided by a user in connection with the purchase of products or services on the Site</li><li data-reactid=\".2.1.0.0.$=11:0.0.0.6.2\">Through the maintenance and analysis of Web server logs</li><li data-reactid=\".2.1.0.0.$=11:0.0.0.6.3\">Through calls and e-mail users</li><li data-reactid=\".2.1.0.0.$=11:0.0.0.6.4\">Through Internet chat sessions between a user and this site</li><li data-reactid=\".2.1.0.0.$=11:0.0.0.6.5\">Through the use of this site to third-party databases from which user information is extracted and combined with information obtained from this site by other means</li></ul><p data-reactid=\".2.1.0.0.$=11:0.0.0.7\">We can also connect to personally and non-personally identifiable information from users via \"cookies\" (small text files placed by this site on users\' computers), GIF image files to single-pixel (also called \"Web beacons\"), the Web server log analysis and other similar technological means. This information can be used to track the trends of the site and improve the user experience, and may be shared with third parties.</p><p data-reactid=\".2.1.0.0.$=11:0.0.0.8\">To the extent that third parties may place advertisements on the Site, such third parties may use cookies or other technological means within the advertising to collect and use non-personally identifiable information. We are not responsible for information collected by third parties in this manner, nor for the collection or use of information from other sites which are connected to the site.</p><h3 data-reactid=\".2.1.0.0.$=11:0.0.0.9\">USE OF INFORMATION</h3><p data-reactid=\".2.1.0.0.$=11:0.0.0.a\">We may use information collected in connection with the Site in the following ways:</p><ul data-reactid=\".2.1.0.0.$=11:0.0.0.b\"><li data-reactid=\".2.1.0.0.$=11:0.0.0.b.0\">Provide the requested information, products, and services to users via the Site or through other online or offline channels</li><li data-reactid=\".2.1.0.0.$=11:0.0.0.b.1\">To enable users to enter prize promotions and receive prizes from us and / or third parties</li><li data-reactid=\".2.1.0.0.$=11:0.0.0.b.2\">To improve the user experience with the site</li><li data-reactid=\".2.1.0.0.$=11:0.0.0.b.3\">In relation to the operation of the Site and for our internal business</li><li data-reactid=\".2.1.0.0.$=11:0.0.0.b.4\">In order for users to obtain information and offers for products and services offered by us and selected third parties</li></ul><p data-reactid=\".2.1.0.0.$=11:0.0.0.c\">To do the above, we can provide the information to trusted third parties, including but not limited to third-party contractors that provide us with services, such as the operation of the Site, communication services and the creation of test orders, credit cards and payment services, and other online and offline marketing in connection with the offerings provided to users by us and / or such other sellers. We will use commercially reasonable efforts to limit the use of information by such third parties for the specific uses mentioned above. We also use electronic and physical security to reduce the risk of improper access or manipulation of information during transmission and storage, but can not guarantee the security and integrity of the information and shall have no liability for breaches of security or integrity or third-party interception in transit.</p><p data-reactid=\".2.1.0.0.$=11:0.0.0.d\">We may also disclose information when it determines that it is necessary to comply with applicable laws and regulations and protect the interests or safety of our business, its customers, or other visitors to the site.</p><p data-reactid=\".2.1.0.0.$=11:0.0.0.e\">Note: If at any time you would like to unsubscribe from receiving e-mail in the future, there are detailed instructions for cancellation of registration at the bottom of each email.</p><h3 data-reactid=\".2.1.0.0.$=11:0.0.0.f\">HOW DO WE PROTECT YOUR INFORMATION?</h3><p data-reactid=\".2.1.0.0.$=11:0.0.0.g\">We implement a variety of security measures to ensure the safety of your personal information when you place an order or access your personal information.</p><p data-reactid=\".2.1.0.0.$=11:0.0.0.h\">We offer the use of a secure server. All information supplied sensitive / credit supply is transmitted via Secure Socket Layer (SSL) technology and then encrypted into our Payment gateway providers database only to be accessible by those authorized with special access rights to such systems, and are required to maintain the confidentiality of information.</p><h3 data-reactid=\".2.1.0.0.$=11:0.0.0.i\">COOKIES</h3><p data-reactid=\".2.1.0.0.$=11:0.0.0.j\">From time to time, we may send a \"cookie\" to your computer. A cookie is a small piece of data that is sent to your browser from a web server and stored on your computer\'s hard drive. A cookie can not read data on your hard disk or read cookie files created by other sites. Cookies do not damage your system. We use cookies to recognize you when you return to our sites, or to identify which areas of our network of web sites you have visited (i.e. e-commerce sites, etc.) We can use this information to better personalize the content you see on our sites.</p><p data-reactid=\".2.1.0.0.$=11:0.0.0.k\">Many web sites place cookies on your hard drive. You can choose whether to accept cookies by changing the settings of your browser. Your browser can refuse all cookies, or show you when a cookie is being sent. If you choose not to accept cookies, your experience at our site and other websites may be diminished and some features may not work as expected.</p><h3 data-reactid=\".2.1.0.0.$=11:0.0.0.l\">DISCLOSE ANY INFORMATION TO OUTSIDE PARTIES?</h3><p data-reactid=\".2.1.0.0.$=11:0.0.0.m\">We do not sell, trade, or otherwise transfer your personal information to third parties. This does not include trusted third parties who assist us in operating our website, conducting our business, or offer services, provided that such parties undertake to keep such information confidential. We may also release your information when we believe release is appropriate to comply with the law and, by enforcing our site policies, or protect ours or others rights, property, or safety. However, if the information is not personally identifiable it may be provided to other parties for marketing, advertising, or other uses.</p><h3 data-reactid=\".2.1.0.0.$=11:0.0.0.n\">PURCHASES FROM MINORS</h3><p data-reactid=\".2.1.0.0.$=11:0.0.0.o\">We do not knowingly collect any information from children under 18 years of age. Our website, products and services are all directed to people who are at least 18 years or more.</p><h3 data-reactid=\".2.1.0.0.$=11:0.0.0.p\">YOUR CONSENT</h3><p data-reactid=\".2.1.0.0.$=11:0.0.0.q\">By using our site, you consent to our privacy policy.</p><p data-reactid=\".2.1.0.0.$=11:0.0.0.r\">We reserve the right to revise and update this Privacy Policy at any time. Any such revisions will be effective from the date of publication on the Site, and applies to all information collected by us both before and after the effective date. Your use of the Site after any such changes will be deemed acceptance of those revisions. Users should periodically visit this page to review the current policies with respect to information.</p><h3 data-reactid=\".2.1.0.0.$=11:0.0.0.s\">GDPR</h3><p data-reactid=\".2.1.0.0.$=11:0.0.0.t\"><span data-reactid=\".2.1.0.0.$=11:0.0.0.t.0\">In accordance with GDPR, BakedPH will honor requests for personal data. This may include the transfer or deletion of personal data from BakedPH servers and database. Requests may be sent to <a href=\"mailto:support@bakedph.com\">support@bakedph.com</a>. Requests will be answered in the order they are received (always within 30 days).</span></p></div>', 'teest about', '<p>\r\n              A108 Adam Street <br>\r\n              New York, NY 535022<br>\r\n              United States <br><br>\r\n              <strong>Phone:</strong> +1 5589 55488 55<br>\r\n              <strong>Email:</strong> info@example.com<br>\r\n            </p>', 'Cras fermentum odio eu feugiat lide par naso tierra. Justo eget nada terra videa magna derita valies darta donna mare fermentum iaculis eu non diam phasellus.');
 
 -- --------------------------------------------------------
 
@@ -422,18 +391,7 @@ CREATE TABLE `store` (
 --
 
 INSERT INTO `store` (`id`, `name`, `description`, `logo`, `date_creaed`, `userid`, `subscriptionid`, `last_payment_id`, `material_low`, `product_low`, `b_address`, `dti`, `b_email`, `b_contact`) VALUES
-(20, 'jorjor', NULL, NULL, '2020-10-12 15:57:01', 36, 30, NULL, 20, 20, NULL, NULL, NULL, NULL),
-(21, 'cyborg999', NULL, NULL, '2020-10-17 04:48:07', 37, 32, 'ch_1HuBTwJmfnsrzK573SpNZBoV', 985, 350, NULL, NULL, NULL, NULL),
-(22, 'User2 Store', NULL, NULL, '2020-11-29 14:50:17', 38, 32, NULL, 20, 20, NULL, NULL, NULL, NULL),
-(23, 'merchanrt5', NULL, NULL, '2021-01-03 12:49:16', 39, 31, NULL, 20, 20, NULL, NULL, NULL, NULL),
-(24, 'test store', NULL, NULL, '2021-01-04 20:28:33', 40, 31, NULL, 20, 20, '234 asdsad', '34435', '3445@mail.com', '34534534'),
-(25, 'Trial Store', NULL, NULL, '2021-01-04 20:46:44', 41, 42, NULL, 20, 20, '234 asdas', '345435', 'sad@nauk.com', '3454353'),
-(26, 'Jordan Sadiwa', NULL, NULL, '2021-01-06 02:42:36', 42, 42, NULL, 20, 20, '1852 Sandejas Pasay City', '234', 'JORDAN-E14NWI096B87359TFWN@TEST.INFO', '234'),
-(27, 'Jordan Sadiwa345', NULL, NULL, '2021-01-06 14:32:00', 45, 42, NULL, 20, 20, '1852 Sandejas Pasay City', '234', 'sad@mail.com', '234'),
-(28, 'Jordan Sadiwa345', NULL, NULL, '2021-01-06 14:32:14', 46, 42, NULL, 20, 20, '1852 Sandejas Pasay City', '234', 'sad@mail.com', '234'),
-(29, 'Jordan Sadiwa345', NULL, NULL, '2021-01-06 14:32:34', 47, 42, NULL, 20, 20, '1852 Sandejas Pasay City', '234', 'sad@mail.com', '234'),
-(30, 'Jordan Sadiwa45345', NULL, NULL, '2021-01-10 06:07:38', 48, 42, NULL, 20, 20, '1852 Sandejas Pasay City', '324324', 'sad@mail.com', '23423'),
-(31, 'Jordan Sadiwa343', NULL, NULL, '2021-01-11 03:35:55', 49, 42, NULL, 20, 20, '1852 Sandejas Pasay City', '45', 'sad@mail.com', '234');
+(35, 'Store1', NULL, NULL, '2021-01-11 23:10:57', 53, 43, 'ch_1I8ZXjJmfnsrzK57BzZ9uHh2', 20, 20, '234 sdsa', '345', 'sad@mail.com', '234324');
 
 -- --------------------------------------------------------
 
@@ -457,25 +415,8 @@ CREATE TABLE `subscription` (
 --
 
 INSERT INTO `subscription` (`id`, `duration`, `cost`, `active`, `title`, `caption`, `deleted`, `is_trial`) VALUES
-(24, 23, 2, 1, '1', '2', 1, 0),
-(25, 1, 1, 1, '1', '1', 1, 0),
-(26, 1, 1, 1, '1', '1', 1, 0),
-(27, 23, 23, 1, 'q', '3', 1, 0),
-(28, 234, 242, 1, '4', '2344', 1, 0),
-(29, 234, 324, 1, '34', '42', 1, 0),
-(30, 3, 600, 1, 'Plan #1', '3 Months', 0, 0),
-(31, 1, 800, 1, 'Plan #2', '1 Month', 1, 0),
-(32, 6, 500, 1, 'Plan #3', '6 Months', 1, 0),
-(33, 12, 450, 0, 'Plan #4', '1 Year', 1, 0),
-(34, 7, 550, 0, 'Plan #5', '7 Months', 1, 0),
-(35, 345345, 0, 1, 'asdas', '345345', 1, 0),
-(36, 3453, 0, 1, 'asdsa', '345345', 1, 0),
-(37, 234, 0, 1, 'asdasd', '34', 1, 0),
-(38, 34543, 0, 1, 'test', '45', 1, 1),
-(39, 345, 0, 1, 'test', '345345', 1, 1),
-(40, 43, 46, 1, 'sdfsd', '345', 1, 0),
-(41, 345, 4, 1, 'test product', '43', 1, 0),
-(42, 1, 0, 1, 'Free Plan', '1 Month Free Trial', 0, 1);
+(43, 3, 500, 1, 'Plan #1', '3 Months', 0, 0),
+(44, 1, 0, 1, 'Plan #2', 'Free Trial', 0, 1);
 
 -- --------------------------------------------------------
 
@@ -498,15 +439,7 @@ CREATE TABLE `user` (
 
 INSERT INTO `user` (`id`, `username`, `password`, `usertype`, `verified`, `date_created`) VALUES
 (36, 'admin', 'eed57216df3731106517ccaf5da2122d', 'admin', 0, '2020-10-12 15:56:55'),
-(37, 'cyborg999', '5c07f19fdd6ce3b1a588f71d11ee2b23', 'basic', 1, '2020-10-17 04:48:06'),
-(38, 'user2', '5c07f19fdd6ce3b1a588f71d11ee2b23', 'basic', 0, '2020-11-29 14:50:17'),
-(39, 'merchant5', '5c07f19fdd6ce3b1a588f71d11ee2b23', 'basic', 0, '2021-01-03 12:49:16'),
-(40, 'test', '5c07f19fdd6ce3b1a588f71d11ee2b23', 'basic', 0, '2021-01-04 20:28:33'),
-(41, 'trialUser', '5c07f19fdd6ce3b1a588f71d11ee2b23', 'basic', 0, '2021-01-04 20:46:44'),
-(42, 'test9', '5c07f19fdd6ce3b1a588f71d11ee2b23', 'basic', 0, '2021-01-06 02:42:35'),
-(47, 'cyborg999asd', '5c07f19fdd6ce3b1a588f71d11ee2b23', 'basic', 0, '2021-01-06 14:32:33'),
-(48, 'store5', '5c07f19fdd6ce3b1a588f71d11ee2b23', 'basic', 0, '2021-01-10 06:07:34'),
-(49, 'store6', '5c07f19fdd6ce3b1a588f71d11ee2b23', 'basic', 0, '2021-01-11 03:35:54');
+(53, 'store1', '5c07f19fdd6ce3b1a588f71d11ee2b23', 'basic', 1, '2021-01-11 23:10:57');
 
 -- --------------------------------------------------------
 
@@ -531,13 +464,7 @@ CREATE TABLE `userinfo` (
 
 INSERT INTO `userinfo` (`id`, `fullname`, `address`, `contact`, `email`, `bday`, `date_created`, `userid`) VALUES
 (2, 'Jordan Sadiwa', '1852 Sandejas Pasay City', '09287655606', 'JORDAN-E14NWI096B87359TFWN@TEST.INFO', '2021-01-05', '2020-10-12 15:56:56', 36),
-(3, 'Jordan Sadiwa', '1852 Sandejas Pasay City', '09287655606', 'JORDAN-E14NWI096B87359TFWN@TEST.INFO', '2021-01-05', '2020-10-17 04:48:06', 37),
-(15, 'Jordan Sadiwa', '1852 Sandejas Pasay City', '09287655606', 'JORDAN-E14NWI096B87359TFWN@TEST.INFO', '2021-01-05', '2020-11-29 14:50:17', 38),
-(16, 'Jordan Sadiwa', '1852 Sandejas Pasay City', '09287655606', 'JORDAN-E14NWI096B87359TFWN@TEST.INFO', '2021-01-05', '2021-01-03 12:49:16', 39),
-(17, NULL, NULL, NULL, NULL, NULL, '2021-01-04 20:28:33', 40),
-(20, 'Jordan Sadiwa', '1852 Sandejas Pasay City', '234', 'sad@mail.com', NULL, '2021-01-06 14:32:34', 47),
-(21, 'Jordan Sadiwa', '1852 Sandejas Pasay City', '324', 'sad@mail.com', NULL, '2021-01-10 06:07:36', 48),
-(22, 'Jordan Sadiwa', '1852 Sandejas Pasay City', '54345', 'sad@mail.com', NULL, '2021-01-11 03:35:55', 49);
+(26, 'Jordan Sadiwa', '1852 Sandejas Pasay City', '324324', 'sad@mail.com', NULL, '2021-01-11 23:10:57', 53);
 
 -- --------------------------------------------------------
 
@@ -562,7 +489,9 @@ INSERT INTO `vendor` (`id`, `name`, `address`, `contact`, `date_created`, `store
 (1, 'Jordan Sadiwa', '1852 Sandejas Pasay City', 2342342, '2020-10-17 11:17:37', 21),
 (3, 'test345', '345', 234, '2020-10-17 11:20:20', 21),
 (4, 'testSupplier', '344353', 23432, '2021-01-04 21:34:58', 25),
-(5, 'Supplier #1', '534 asd fgfdg', 234324, '2021-01-10 06:21:54', 30);
+(5, 'Supplier #1', '534 asd fgfdg', 234324, '2021-01-10 06:21:54', 30),
+(6, 'vendor1', '32432432', 3432, '2021-01-11 14:41:40', 33),
+(7, 'Supplier1', 'dsa', 234234, '2021-01-11 23:43:56', 35);
 
 --
 -- Indexes for dumped tables
@@ -690,49 +619,49 @@ ALTER TABLE `vendor`
 -- AUTO_INCREMENT for table `expenses`
 --
 ALTER TABLE `expenses`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=14;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=17;
 
 --
 -- AUTO_INCREMENT for table `material`
 --
 ALTER TABLE `material`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=76;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=84;
 
 --
 -- AUTO_INCREMENT for table `material_inventory`
 --
 ALTER TABLE `material_inventory`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=18;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=22;
 
 --
 -- AUTO_INCREMENT for table `notification`
 --
 ALTER TABLE `notification`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=70;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=110;
 
 --
 -- AUTO_INCREMENT for table `payments`
 --
 ALTER TABLE `payments`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=14;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=17;
 
 --
 -- AUTO_INCREMENT for table `product`
 --
 ALTER TABLE `product`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=18;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=23;
 
 --
 -- AUTO_INCREMENT for table `production`
 --
 ALTER TABLE `production`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=57;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=64;
 
 --
 -- AUTO_INCREMENT for table `purchase`
 --
 ALTER TABLE `purchase`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=64;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=70;
 
 --
 -- AUTO_INCREMENT for table `purchase_return`
@@ -744,7 +673,7 @@ ALTER TABLE `purchase_return`
 -- AUTO_INCREMENT for table `sales`
 --
 ALTER TABLE `sales`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=22;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=25;
 
 --
 -- AUTO_INCREMENT for table `sales_return`
@@ -768,37 +697,37 @@ ALTER TABLE `slides`
 -- AUTO_INCREMENT for table `social`
 --
 ALTER TABLE `social`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
 
 --
 -- AUTO_INCREMENT for table `store`
 --
 ALTER TABLE `store`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=32;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=36;
 
 --
 -- AUTO_INCREMENT for table `subscription`
 --
 ALTER TABLE `subscription`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=43;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=45;
 
 --
 -- AUTO_INCREMENT for table `user`
 --
 ALTER TABLE `user`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=50;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=54;
 
 --
 -- AUTO_INCREMENT for table `userinfo`
 --
 ALTER TABLE `userinfo`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=23;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=27;
 
 --
 -- AUTO_INCREMENT for table `vendor`
 --
 ALTER TABLE `vendor`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;

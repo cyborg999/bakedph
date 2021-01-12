@@ -77,7 +77,7 @@
 											<input type="radio" class="filter" name="filter" value="year">
 										</label>
 										<br>
-                						<a href="ajax.php?&export=true&sales=true" class="export">export csv</a>
+                						<a href="ajax.php?&export=true&salesMonthly=true" class="export">export csv</a>
 										<br>
 									</div>
 									<div class="col-sm-5">
@@ -118,8 +118,11 @@
 										<a href="" class="btn btn-info clear">Clear</a>
 									</div>
 								</div>
-								<?php $sales = $model->getAllSales(); 
-								$total = 0;
+								<?php 
+									$sales = $model->getAllSales(); 
+									$total = 0;
+									$storeExpenses = $model->getExpensesTotal();
+
 								?>
 								<table class="table table-hover">
 									<thead>
@@ -147,8 +150,15 @@
 									</tbody>
 									<tfoot>
 										<tr>
-											<td colspan="3">
-												<h2>Sales Total: <span id="salestotal"><?= $total;?></span></h2>
+											<td colspan="6">
+												<br>
+												<p>Sales Total: <span id="salestotal"><?= $total;?></span></p>
+												<p>Expenses Total: <span id="eeTotal"><?= $storeExpenses['total'];?></span></p>
+											</td>
+										</tr>
+										<tr>
+											<td colspan="6">
+												<b>Net Total: <span id="NetTotal"><?= $storeExpenses['total']+ $total;?></span></b>
 											</td>
 										</tr>
 									</tfoot>
@@ -171,6 +181,7 @@
 											<input type="radio" class="filter" name="filter" value="year">
 										</label>
 										<br>
+                						<a href="ajax.php?&export=true&expenses=true" class="export">export csv</a>
 									</div>
 									<div class="col-sm-5">
 									
@@ -205,14 +216,13 @@
 									</div>
 									<div class="col-sm-3">
 										<br>
-										<br>
 										<button id="expensesFilter" class="btn btn-md btn-primary">Filter <svg class="bi" width="18" height="18" fill="currentColor"><use xlink:href="./node_modules/bootstrap-icons/bootstrap-icons.svg#search"/></svg></button>
 										<a href="" class="btn btn-info clear">Clear</a>
 									</div>
 								</div>
-								<?php 
-									$expenses = $model->getAllExpenses(); 
-									$total = 0;
+								<?php
+									$expenses = $model->getStoreExpenses(); 
+									$etotal = 0;
 								?>
 								<table class="table table-hover">
 									<thead>
@@ -224,6 +234,9 @@
 									</thead>
 									<tbody id="expensesTbody">
 										<?php foreach($expenses as $idx => $p): ?>
+											<?php
+												$etotal += $p['cost'];
+											?>
 		            						<tr>
 												<td><?= $p['name']; ?></td>
 												<td><?= $p['cost']; ?></td>
@@ -232,11 +245,11 @@
 		            					<?php endforeach ?>
 									</tbody>
 									<tfoot>
-									<!-- 	<tr>
+										<tr>
 											<td colspan="3">
-												<h2>Sales Total: <?= $total;?></h2>
+												<h2>Expenses Total: <span id="expensesTotal"><?= $etotal;?></span></h2>
 											</td>
-										</tr> -->
+										</tr>
 									</tfoot>
 								</table>
 							</div>
@@ -403,7 +416,9 @@
     					},
     					type : "post",
     					dataType : "json",
-    					success : function(response){
+    					success : function(res){
+    						var response = res.record;
+    						console.log(res.expensesTotal);
     						var total = 0;
     						for(var i in response){
     							var tpl = $("#tpl").html();
@@ -417,7 +432,9 @@
     						}
 
     						$("#salestotal").html(total);
-    						
+    						$("#eeTotal").html(res.expensesTotal.total);
+    						$("#NetTotal").html(total-res.expensesTotal.total);
+
     						hidePreloader();
     					},
     					error : function(){
@@ -434,6 +451,7 @@
     				var dateStart = $("#expensesDatestart").val();
     				var dateEnd = $("#expensesDateend").val();
     				var yeardate = $("#expensesYeardate").val();
+    				var total = 0;
 
     				$("#expensesTbody").html("");
 
@@ -458,8 +476,12 @@
     							replace("[COST]", response[i].cost).
     							replace("[DATE_PRODUCED]", response[i].date_produced);
 
+    							total += parseFloat(response[i].cost);
+
     							$("#expensesTbody").append(tpl);
     						}
+
+    						$("#expensesTotal").html(total);
 
     						hidePreloader();
     					},

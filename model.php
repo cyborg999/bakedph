@@ -80,6 +80,29 @@ class Model {
 		$this->searchAllProductsListener();
 		$this->addSocialListener();
 		$this->removeSocialListener();
+		$this->viewUserListener();
+
+
+						// $this->getSubscriptionExpiration();
+	}
+
+	public function viewUserListener(){
+		if(isset($_POST['viewUser'])){
+			$sql = "
+				select t1.*,t3.name as 'store', t3.b_email as 'storeemail', t3.b_contact as 'storecontact'
+				from userinfo t1
+				left join user t2
+				on t1.userid = t2.id
+				left join store t3
+				on t1.userid = t3.userid
+				where t1.userid = ".$_POST['id']."
+				limit 1
+			";
+
+			$record = $this->db->query($sql)->fetch(PDO::FETCH_ASSOC);
+
+			die(json_encode($record));
+		}
 	}
 
 	public function getAllSocialMedia(){
@@ -556,6 +579,40 @@ class Model {
 				}
 			}
 
+			if(isset($_GET['salesMonthly'])){
+				header('Content-Type: text/csv; charset=utf-8');
+				header('Content-Disposition: attachment; filename=Sales.csv');
+
+				$output = fopen('php://output', 'w');
+
+
+				fputcsv($output, array("Name", "Quantity", 'Price', "Unit", "Amount", "Date Purchased"));
+				
+				$records = $this->db->query($_SESSION['lastSaleQuery'])->fetchAll();
+
+				foreach($records as $idx => $r){
+					$data = array($r['name'],$r['qty'],$r['srp'],$r['unit'], $r['revenue'], $r['date_purchased']);
+					fputcsv($output, $data);
+				}
+			}
+
+			if(isset($_GET['expenses'])){
+				header('Content-Type: text/csv; charset=utf-8');
+				header('Content-Disposition: attachment; filename=Expenses.csv');
+
+				$output = fopen('php://output', 'w');
+
+
+				fputcsv($output, array("Description", "Cost", 'Date Produced'));
+
+				$records = $this->db->query($_SESSION['lastExpensesQuery'])->fetchAll();
+
+				foreach($records as $idx => $r){
+					$data = array($r['name'],$r['cost'], $r['date_produced']);
+					fputcsv($output, $data);
+				}
+			}
+
 			if(isset($_GET['materialExpired'])){
 				header('Content-Type: text/csv; charset=utf-8');
 				header('Content-Disposition: attachment; filename=ExpiredMaterials.csv');
@@ -767,12 +824,66 @@ class Model {
 				";
 			}
 
-			$_SESSION['lastQuery'] = $sql;
+			$_SESSION['lastExpensesQuery'] = $sql;
 
 			$records = $this->db->query($sql)->fetchAll();
 
 			die(json_encode($records));
 		}
+	}
+
+	function getExpensesTotal(){
+		if(isset($_POST['filter'])){
+			if($_POST['filter'] == "day"){
+				$where = ($_POST['date1'] == "")  ? "" : " AND  t1.date_produced = '".$_POST['date1']."'";
+				$sql = "
+					SELECT sum(t1.cost) as 'total'
+					FROM expenses t1
+					where t1.storeid = ".$_SESSION['storeid']."
+					$where 
+				";
+			} elseif($_POST['filter'] == "daterange"){
+				$where = ($_POST['date2'] == "")  ? "" : " AND t1.date_produced BETWEEN '".$_POST['date2']."' AND '".$_POST['date3']."'";
+				$sql = "
+					SELECT sum(t1.cost) as 'total'
+					FROM expenses t1
+					where t1.storeid = ".$_SESSION['storeid']."
+					$where
+					 
+				";
+			} else {
+				//year
+				$where = ($_POST['year'] == "")  ? "" : " AND YEAR(t1.date_produced) = '".$_POST['year']."' ";
+				$sql = "
+					SELECT sum(t1.cost) as 'total'
+					FROM expenses t1
+					where t1.storeid = ".$_SESSION['storeid']."
+					$where
+					 
+				";
+			}
+		} else {
+			$sql = "
+				SELECT sum(t1.cost) as 'total'
+				FROM expenses t1
+				WHERE t1.storeid = ".$_SESSION['storeid']."
+			";
+		}
+		
+		return $this->db->query($sql)->fetch(PDO::FETCH_ASSOC);
+	}
+
+	public function getStoreExpenses(){
+		$sql = "
+			SELECT t1.*
+			FROM expenses t1
+			WHERE t1.storeid = ".$_SESSION['storeid']."
+		";
+		
+	
+		$_SESSION['lastExpensesQuery'] = $sql;
+
+		return $this->db->query($sql)->fetchAll();
 	}
 
 	public function getAllExpenses($recordQuery = false){
@@ -784,9 +895,7 @@ class Model {
 			WHERE t2.storeid = ".$_SESSION['storeid']."
 		";
 		
-		if($recordQuery){
-
-		}
+	
 		$_SESSION['lastQuery'] = $sql;
 
 		return $this->db->query($sql)->fetchAll();
@@ -945,7 +1054,7 @@ class Model {
 				$where = ($_POST['date1'] == "")  ? "" : " AND t1.date_purchased = '".$_POST['date1']."'";
 
 				$sql = "
-					SELECT t1.* , t2.name, t2.srp * t1.qty as 'revenue'
+					SELECT t1.* , t2.name, t2.srp, t2.srp * t1.qty as 'revenue'
 					FROM sales t1
 					LEFT JOIN  product t2 
 					ON t1.productid = t2.id
@@ -955,7 +1064,7 @@ class Model {
 			} elseif($_POST['filter'] == "daterange"){
 				$where = ($_POST['date2'] == "")  ? "" : " AND t1.date_purchased BETWEEN '".$_POST['date2']."' AND '".$_POST['date3']."'";
 				$sql = "
-					SELECT t1.* , t2.name, t2.srp * t1.qty as 'revenue'
+					SELECT t1.* , t2.name, t2.srp,t2.srp * t1.qty as 'revenue'
 					FROM sales t1
 					LEFT JOIN  product t2 
 					ON t1.productid = t2.id
@@ -966,7 +1075,7 @@ class Model {
 				//year
 				$where = ($_POST['year'] == "")  ? "" : " AND YEAR(t1.date_purchased) = '".$_POST['year']."' ";
 				$sql = "
-					SELECT t1.* , t2.name, t2.srp * t1.qty as 'revenue'
+					SELECT t1.* , t2.name, t2.srp, t2.srp * t1.qty as 'revenue'
 					FROM sales t1
 					LEFT JOIN  product t2 
 					ON t1.productid = t2.id
@@ -975,11 +1084,12 @@ class Model {
 				";
 			}
 
-			$_SESSION['lastQuery'] = $sql;
+			$_SESSION['lastSaleQuery'] = $sql;
 
+			$expenses = $this->getExpensesTotal();
 			$records = $this->db->query($sql)->fetchAll();
 
-			die(json_encode($records));
+			die(json_encode(array("record" => $records, "expensesTotal" => $expenses)));
 		}
 	}
 
@@ -1602,7 +1712,7 @@ class Model {
 		";	
 
 
-		$_SESSION['monthlySalesQuery'] = $sql;
+		$_SESSION['lastSaleQuery'] = $sql;
 
 		return $this->db->query($sql)->fetchAll();
 	}
@@ -2131,13 +2241,19 @@ class Model {
 
 	public function editproductListener(){
 		if(isset($_POST['editproduct'])){
+			// $sql = "
+			// 	UPDATE product
+			// 	SET name = ?, srp = ?, qty = ?, expiry_date = ?
+			// 	WHERE id = ?
+			// ";
+
 			$sql = "
 				UPDATE product
-				SET name = ?, srp = ?, qty = ?, expiry_date = ?
+				SET name = ?
 				WHERE id = ?
 			";
 
-			$this->db->prepare($sql)->execute(array($_POST['name'], $_POST['price'], $_POST['qty'], $_POST['expiry'], $_POST['editproduct']));
+			$this->db->prepare($sql)->execute(array($_POST['name'], $_POST['editproduct']));
 
 			die(json_encode($_POST));
 		}
@@ -2458,16 +2574,20 @@ class Model {
 	//for easy deletion of records
 	public function reset(){
 		$sql = array();
-		// $sql[] = "delete from store";
-		// $sql[] = "delete from user";
+
+		$sql[] = "delete from store";
+		$sql[] = "delete from user where usertype!='admin'";
 		$sql[] = "delete from product";
+		$sql[] = "delete from payments";
+		$sql[] = "delete from notification";
+		$sql[] = "delete from production";
 		$sql[] = "delete from material";
 		$sql[] = "delete from purchase";
 		$sql[] = "delete from production";
 		$sql[] = "delete from sales";
-		$sql[] = "delete from subscription";
+		// $sql[] = "delete from subscription";
 		$sql[] = "delete from material_inventory";
-		// $sql[] = "delete from userinfo";
+		$sql[] = "delete from userinfo where userid!=36";
 
 		foreach ($sql as $key => $s) {
 			$this->db->query($s);
