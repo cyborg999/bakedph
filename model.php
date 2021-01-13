@@ -83,6 +83,68 @@ class Model {
 		$this->removeSocialListener();
 		$this->viewUserListener();
 		$this->updateBusinessListener();
+		$this->loadUserChartListener();
+	}
+
+	public function loadUserChartListener(){
+		if(isset($_POST['loadUserChart'])){
+			$users = $this->getAllUsers();
+
+			$this->loadAdminChart($users);
+		}
+	}
+
+	public function loadAdminChart($records){
+		$months = array(
+			"Jan" => 0,
+			"Feb" => 0,
+			"Mar" => 0,
+			"Apr" => 0,
+			"May" => 0,
+			"Jun" => 0,
+			"Jul" => 0,
+			"Aug" => 0,
+			"Sep" => 0,
+			"Oct" => 0,
+			"Nov" => 0,
+			"Dec" => 0
+		);
+
+		$data = array();
+		$producedDate = date("Y-m-d");
+
+		foreach($records as $idx => $r){
+			opd($r);
+			$m = date_format($producedDate, "M");
+			$y = date_format($producedDate, "Y");
+
+			$data[$r['productid']]['name'] = $r['name'];
+			@$data[$r['productid']][$m]['total'] += ($key) ? $r['qty'] : $r['quantity'];
+		}
+
+		opd($data);
+		$formatted = array();
+
+		$counter = 0;
+
+		foreach($data as $idx => $d){
+			$formatted[$counter]['name'] = $d['name'];
+			$formatted[$counter]['data'] = $months;
+
+			foreach($months as $iidx => $m){
+				if(array_key_exists($iidx, $d)){
+					$formatted[$counter]['data'][$iidx] = $d[$iidx]['total'];
+				}
+
+			}
+
+			$formatted[$counter]['data'] = array_values($formatted[$counter]['data']);
+
+			$counter++;
+
+		}
+
+		die(json_encode($formatted));
 	}
 
 	public function updateBusinessListener(){
