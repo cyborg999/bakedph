@@ -207,12 +207,26 @@
         .profile-pic {
           color: white!important;
         }
+        #photos {
+            width: 30px;
+            height: 30px;
+            background: url(<?= $photos; ?>) center no-repeat;
+            background-size: cover;
+            border-radius: 100%!important;
+            display: block;
+            margin: 0 auto;
+          }
       </style>
+       <?php
+              $profile = $model->getUserProfile();
+              $photos = ($profile) ? $profile['profilePicture'] : './node_modules/bootstrap-icons/bootstrap-icons.svg#file-person-fill';
+
+            ?>
       <li class="nav-item dropdown no-arrow">
           <a class="nav-link profile-pic dropdown-toggle" href="#" id="userDropdown" role="button"
               data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
               <span class="mr-2 d-none d-lg-inline text-gray-600 small"><?= $_SESSION['name'];?></span>
-              <figure class="img-profile rounded-circle"></figure>
+             <figure id="photos" class="rounded-circle"></figure>
           </a>
           <!-- Dropdown - User Information -->
           <div class="dropdown-menu dropdown-menu-right shadow animated--grow-in"

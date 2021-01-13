@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Jan 12, 2021 at 08:09 PM
+-- Generation Time: Jan 13, 2021 at 03:30 AM
 -- Server version: 10.4.13-MariaDB
 -- PHP Version: 7.4.8
 
@@ -135,7 +135,11 @@ INSERT INTO `notification` (`id`, `title`, `body`, `seen`, `date_added`, `storei
 (126, '<div class=\"mr-3\">\r\n                      <div class=\"icon-circle bg-danger\">\r\n                          <i class=\"fas fa-exclamation-triangle text-white\"></i>\r\n                      </div>\r\n                  </div>\r\n                  <div>Expired Item Alert: <b>1 Material(s)</b> are expired.<!-- <div class=\"small text-gray-500\">December 2, 2019</div> -->\r\n              	</div>', '<b>The following materials are expired:</b> <ul><li>material1(2021-01-12)</li></ul>', 0, '2021-01-12 18:20:01', 35),
 (127, '<div class=\"mr-3\">\r\n                      <div class=\"icon-circle bg-danger\">\r\n                          <i class=\"fas fa-exclamation-triangle text-white\"></i>\r\n                      </div>\r\n                  </div>\r\n                  <div>Expired Item Alert: <b>1 Material(s)</b> are expired.<!-- <div class=\"small text-gray-500\">December 2, 2019</div> -->\r\n              	</div>', '<b>The following materials are expired:</b> <ul><li>material1(2021-01-12)</li></ul>', 0, '2021-01-12 18:20:25', 35),
 (128, '<div class=\"mr-3\">\r\n                      <div class=\"icon-circle bg-danger\">\r\n                          <i class=\"fas fa-exclamation-triangle text-white\"></i>\r\n                      </div>\r\n                  </div>\r\n                  <div>Expired Item Alert: <b>2 Material(s)</b> are expired.<!-- <div class=\"small text-gray-500\">December 2, 2019</div> -->\r\n              	</div>', '<b>The following materials are expired:</b> <ul><li>material1(2021-01-12)</li><li>material1(2021-01-12)</li></ul>', 0, '2021-01-12 18:20:53', 35),
-(129, '<div class=\"mr-3\">\r\n                      <div class=\"icon-circle bg-danger\">\r\n                          <i class=\"fas fa-exclamation-triangle text-white\"></i>\r\n                      </div>\r\n                  </div>\r\n                  <div>Expired Item Alert: <b>2 Material(s)</b> are expired.<!-- <div class=\"small text-gray-500\">December 2, 2019</div> -->\r\n              	</div>', '<b>The following materials are expired:</b> <ul><li>material1(2021-01-12)</li><li>material1(2021-01-12)</li></ul>', 0, '2021-01-12 18:21:04', 35);
+(129, '<div class=\"mr-3\">\r\n                      <div class=\"icon-circle bg-danger\">\r\n                          <i class=\"fas fa-exclamation-triangle text-white\"></i>\r\n                      </div>\r\n                  </div>\r\n                  <div>Expired Item Alert: <b>2 Material(s)</b> are expired.<!-- <div class=\"small text-gray-500\">December 2, 2019</div> -->\r\n              	</div>', '<b>The following materials are expired:</b> <ul><li>material1(2021-01-12)</li><li>material1(2021-01-12)</li></ul>', 0, '2021-01-12 18:21:04', 35),
+(130, '<div class=\"mr-3\">\r\n                      <div class=\"icon-circle bg-warning\">\r\n                          <i class=\"fas fa-exclamation-triangle text-white\"></i>\r\n                      </div>\r\n                  </div>\r\n                  <div>Low Stock Alert: <b>1 Product(s)</b> are currently low in stock.<!-- <div class=\"small text-gray-500\">December 2, 2019</div> -->\r\n              	</div>', '<b>The following products are low in stock:</b> <ul><li>Product2(-1)</li></ul>', 0, '2021-01-13 02:01:26', 35),
+(131, '<div class=\"mr-3\">\r\n                      <div class=\"icon-circle bg-warning\">\r\n                          <i class=\"fas fa-exclamation-triangle text-white\"></i>\r\n                      </div>\r\n                  </div>\r\n                  <div>Low Stock Alert: <b>1 Material(s)</b> are currently low in stock.<!-- <div class=\"small text-gray-500\">December 2, 2019</div> -->\r\n              	</div>', '<b>The following materials are low in stock:</b> <ul><li>material1(-100)</li></ul>', 0, '2021-01-13 02:01:27', 35),
+(132, '<div class=\"mr-3\">\r\n                      <div class=\"icon-circle bg-danger\">\r\n                          <i class=\"fas fa-exclamation-triangle text-white\"></i>\r\n                      </div>\r\n                  </div>\r\n                  <div>Expired Item Alert: <b>2 Material(s)</b> are expired.<!-- <div class=\"small text-gray-500\">December 2, 2019</div> -->\r\n              	</div>', '<b>The following materials are expired:</b> <ul><li>material1(2021-01-12)</li><li>material1(2021-01-12)</li></ul>', 0, '2021-01-13 02:01:27', 35),
+(133, '<div class=\"mr-3\">\r\n                      <div class=\"icon-circle bg-danger\">\r\n                          <i class=\"fas fa-exclamation-triangle text-white\"></i>\r\n                      </div>\r\n                  </div>\r\n                  <div>Expired Item Alert: <b>3 Product(s)</b> are expired.<!-- <div class=\"small text-gray-500\">December 2, 2019</div> -->\r\n              	</div>', '<b>The following products are expired:</b> <ul><li>Product2(2021-01-12)</li><li>Product2(2021-01-12)</li><li>Product 2(2021-01-13)</li></ul>', 0, '2021-01-13 02:01:27', 35);
 
 -- --------------------------------------------------------
 
@@ -183,7 +187,7 @@ CREATE TABLE `product` (
 
 INSERT INTO `product` (`id`, `name`, `srp`, `qty`, `expiry_date`, `storeid`, `date_created`, `status`) VALUES
 (22, 'Product2', 20, -1, '2021-01-12', 35, 2147483647, 1),
-(23, 'Product 2', 0, 998, '0000-00-00', 35, 2147483647, 1);
+(23, 'Product 2', 0, -2, '0000-00-00', 35, 2147483647, 1);
 
 -- --------------------------------------------------------
 
@@ -212,7 +216,7 @@ CREATE TABLE `production` (
 INSERT INTO `production` (`id`, `productid`, `batchnumber`, `quantity`, `date_produced`, `storeid`, `date_created`, `unit`, `date_expired`, `price`, `deducted`) VALUES
 (63, 22, 'Batch #1', 1, '2021-01-12', 35, '2021-01-12 00:54:39', 'pcs', '2021-01-12', 100, 1),
 (64, 22, 'Batch #64', 90, '2021-01-12', 35, '2021-01-12 06:52:35', 'pcs', '2021-01-12', 1, 1),
-(65, 23, 'Batch #65', 1000, '2021-01-13', 35, '2021-01-12 18:27:30', 'pcs', '2021-01-13', 100, 0);
+(65, 23, 'Batch #65', 1000, '2021-01-13', 35, '2021-01-12 18:27:30', 'pcs', '2021-01-13', 100, 1);
 
 -- --------------------------------------------------------
 
@@ -424,7 +428,7 @@ CREATE TABLE `store` (
 --
 
 INSERT INTO `store` (`id`, `name`, `description`, `logo`, `date_creaed`, `userid`, `subscriptionid`, `last_payment_id`, `material_low`, `product_low`, `b_address`, `dti`, `b_email`, `b_contact`) VALUES
-(35, 'Store1', NULL, NULL, '2021-01-11 23:10:57', 53, 43, 'ch_1I8ZXjJmfnsrzK57BzZ9uHh2', 20, 20, '234 sdsa', '345', 'sad@mail.com', '234324');
+(35, 'Store1', '1323', NULL, '2021-01-11 23:10:57', 53, 43, 'ch_1I8ZXjJmfnsrzK57BzZ9uHh2', 20, 20, '234 sdsa2', '3453', 'sad@mail.com4', '5');
 
 -- --------------------------------------------------------
 
@@ -463,16 +467,17 @@ CREATE TABLE `user` (
   `password` varchar(255) NOT NULL,
   `usertype` varchar(255) NOT NULL DEFAULT 'basic',
   `verified` tinyint(1) NOT NULL DEFAULT 0,
-  `date_created` timestamp NOT NULL DEFAULT current_timestamp()
+  `date_created` timestamp NOT NULL DEFAULT current_timestamp(),
+  `photo` varchar(255) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 --
 -- Dumping data for table `user`
 --
 
-INSERT INTO `user` (`id`, `username`, `password`, `usertype`, `verified`, `date_created`) VALUES
-(36, 'admin', 'eed57216df3731106517ccaf5da2122d', 'admin', 0, '2020-10-12 15:56:55'),
-(53, 'store1', '5c07f19fdd6ce3b1a588f71d11ee2b23', 'basic', 1, '2021-01-11 23:10:57');
+INSERT INTO `user` (`id`, `username`, `password`, `usertype`, `verified`, `date_created`, `photo`) VALUES
+(36, 'admin', 'eed57216df3731106517ccaf5da2122d', 'admin', 0, '2020-10-12 15:56:55', NULL),
+(53, 'store1', '5c07f19fdd6ce3b1a588f71d11ee2b23', 'basic', 1, '2021-01-11 23:10:57', 'uploads/user/35/profile/e260b9bc6e950293d73b0775d3548998.jpg');
 
 -- --------------------------------------------------------
 
@@ -497,7 +502,7 @@ CREATE TABLE `userinfo` (
 
 INSERT INTO `userinfo` (`id`, `fullname`, `address`, `contact`, `email`, `bday`, `date_created`, `userid`) VALUES
 (2, 'Jordan Sadiwa', '1852 Sandejas Pasay City', '09287655606', 'JORDAN-E14NWI096B87359TFWN@TEST.INFO', '2021-01-05', '2020-10-12 15:56:56', 36),
-(26, 'Jordan Sadiwa', '1852 Sandejas Pasay City', '324324', 'sad@mail.com', NULL, '2021-01-11 23:10:57', 53);
+(26, 'Jordan Sadiwa112', '1852 Sandejas Pasay City12', '32432413', 'sad@mail.com13', '2021-01-13', '2021-01-11 23:10:57', 53);
 
 -- --------------------------------------------------------
 
@@ -670,7 +675,7 @@ ALTER TABLE `material_inventory`
 -- AUTO_INCREMENT for table `notification`
 --
 ALTER TABLE `notification`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=130;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=134;
 
 --
 -- AUTO_INCREMENT for table `payments`

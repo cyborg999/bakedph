@@ -7,13 +7,29 @@
 				        </button>
 				      </h2>
 				    </div>
+				    <?php
+				    	$profile = $model->getUserProfile();
+				    	$photos = ($profile) ? $profile['profilePicture'] : './node_modules/bootstrap-icons/bootstrap-icons.svg#file-person-fill';
 
+				    ?>
 				    <div id="collapseProfile" class="<?= ($active == "user") ? "show" : ""; ?> collapse" aria-labelledby="headingOne" data-parent="#accordionExample">
 				      <div class="card-body">
 				      	<ul class="list-group list-group-flush">
 			      		 <li class="list-group-item">
-			      		 	
-			      		 	<div class="col-ssm"><svg class="bi" width="50" height="50" fill="currentColor"><use xlink:href="./node_modules/bootstrap-icons/bootstrap-icons.svg#file-person-fill"/></svg></div>
+			      		 	<style type="text/css">
+			      		 		#photo {
+			      		 			width: 70px;
+			      		 			height: 70px;
+			      		 			background: url(<?= $photos; ?>) center no-repeat;
+			      		 			background-size: cover;
+			      		 			border-radius: 100%!important;
+			      		 			display: block;
+			      		 			margin: 0 auto;
+			      		 		}
+			      		 	</style>
+			      		 	<div class="col-ssm">
+         						 <figure id="photo" class="rounded-circle"></figure>
+		      		 		</div>
 				        <?= $_SESSION['username'] ?>
 				        <br>
 				        <small>

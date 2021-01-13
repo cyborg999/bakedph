@@ -80,7 +80,6 @@ todo
 add edit business profile
 upload profile picture
 admin dashboard
-auto deduct ang expired product and mats
 business profile 
 slideshow
 free trial logic

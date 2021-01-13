@@ -82,6 +82,24 @@ class Model {
 		$this->addSocialListener();
 		$this->removeSocialListener();
 		$this->viewUserListener();
+		$this->updateBusinessListener();
+	}
+
+	public function updateBusinessListener(){
+		if(isset($_POST['updateBusiness'])){
+			$sql = "
+				update store 
+				set description = ?, b_address = ?, dti = ? , 
+					b_email = ?, b_contact = ?
+				where id = ?
+			";
+
+			$this->db->prepare($sql)->execute(array($_POST['description'], $_POST['b_address'], $_POST['dti'], $_POST['b_email'], $_POST['b_contact'], $_SESSION['storeid']));
+
+			$this->success = "You have successfully updated this record";
+
+			return $this;
+		}
 	}
 
 	public function viewUserListener(){
@@ -2127,12 +2145,13 @@ class Model {
 
 	public function getUserProfile(){
 		$sql = "
-			SELECT *
-			FROM userinfo
-			WHERE userid = ".$_SESSION['id']."
+			SELECT t1.*,t2.photo as 'profilePicture'
+			FROM userinfo t1
+			LEFT JOIN user t2
+			ON t1.userid = t2.id
+			WHERE t1.userid = ".$_SESSION['id']."
 			LIMIT 1
 		";	
-		
 
 		return $this->db->query($sql)->fetch();
 	}
@@ -2149,9 +2168,50 @@ class Model {
 		return $this->db->query($sql)->fetch();
 	}
 
+	public function updateUserProfile(){
+		if(!isset($_FILES['merchantProfilePicture'])){
+			return $this;
+		}
+
+		$files = $_FILES['merchantProfilePicture']['tmp_name'];
+
+		if($files){
+
+			//start
+			$merchantPath = 'uploads/user/'.$_SESSION['storeid']."/profile/";
+			
+		
+			if(!file_exists($merchantPath)){
+				mkdir($merchantPath,0777,true);
+			}
+
+			$folder_name = $merchantPath;
+
+			 $temp_file = $_FILES['merchantProfilePicture']['tmp_name'];
+			 $ext = strtolower(pathinfo($_FILES["merchantProfilePicture"]["name"],PATHINFO_EXTENSION));
+			 $newName = md5($_FILES['merchantProfilePicture']['name']) .".".$ext;
+			 $location = $folder_name . $newName;
+
+			 if(move_uploaded_file($temp_file, $location)){
+			 	$sql = "
+					UPDATE user
+					SET photo = ?
+					WHERE id = ?
+				";
+
+
+				$this->db->prepare($sql)->execute(array($location, $_SESSION['id']));
+			}
+		} 
+
+		return $this;
+	}
+
 	public function updateUserInfoListener(){
 		if(isset($_POST['updateUserInfo'])){
 			$id = $_SESSION['id'];
+
+			$this->updateUserProfile();
 
 			$sql = "
 				UPDATE userinfo
