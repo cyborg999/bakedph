@@ -114,7 +114,7 @@ class Model {
 		$producedDate = date("Y-m-d");
 
 		foreach($records as $idx => $r){
-			opd($r);
+			// opd($r);
 			$m = date_format($producedDate, "M");
 			$y = date_format($producedDate, "Y");
 
@@ -122,7 +122,7 @@ class Model {
 			@$data[$r['productid']][$m]['total'] += ($key) ? $r['qty'] : $r['quantity'];
 		}
 
-		opd($data);
+		// opd($data);
 		$formatted = array();
 
 		$counter = 0;
@@ -987,8 +987,6 @@ class Model {
 					$where
 					 
 				";
-
-				opd($sql);
 			}
 		} else {
 			$sql = "
