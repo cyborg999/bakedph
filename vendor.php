@@ -7,7 +7,7 @@
       <div class="col-sm-2 sidenav">
         <?php  $active = "vendor";  include_once "./sidenav.php"; ?>
       </div>
-      <div class="col-sm-9">
+      <div class="col-sm-10">
       <?php include_once "./dashboardnav.php"; ?>
         <?php
           $vendors = $model->getAllVendors();
@@ -24,8 +24,11 @@
           </thead>
           <tbody>
             <tr id="search">
-              <td colspan="4">
+              <td colspan="3">
                 <input type="text" class="form-control" id="searchName" placeholder="Name search..."/>
+              </td>
+              <td>
+                <a href="" data-toggle="modal" data-target="#addModal" class="btn btn-sm btn-success">Add New <svg class="bi" width="18" height="18" fill="currentColor"><use xlink:href="./node_modules/bootstrap-icons/bootstrap-icons.svg#plus"/></svg></a>
               </td>
             </tr>
             <?php foreach($vendors as $idx => $vendor): ?>
@@ -48,6 +51,53 @@
     </div>
     
   </div>
+
+<!-- Modal -->
+<div class="modal fade" id="addModal" data-id="" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-md">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Add Supplier</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div class="row  ">
+          <div class="col-sm msg hidden"></div>
+        </div>
+        <div class="row">
+          <div class="col-sm-12">
+            <h5>Supplier Information</h5>
+            <form method="post">
+              <input type="hidden" name="addVendor" value="true">
+              <div class="form-group">
+                <label>Name:
+                  <input type="text" class="form-control" value="<?= isset($_POST['name']) ? $_POST['name'] : '';?>" name="name" placeholder="Name..." required />
+                </label>
+              </div>
+              <div class="form-group">
+                <label>Contact Number:
+                  <input type="number" class="form-control" value="<?= isset($_POST['contact']) ? $_POST['contact'] : '';?>" name="contact" placeholder="Mobile..."/>
+                </label>
+              </div>
+              <div class="form-group">
+                <label>Address:
+                  <input type="text" class="form-control" value="<?= isset($_POST['address']) ? $_POST['address'] : '';?>" name="address" placeholder="Address..."/>
+                </label>
+              </div>
+              <input type="submit" value="Submit" class="btn btn-lg btn-primary">
+            </form>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
+
 
 <!-- Modal -->
 <div class="modal fade" id="editProductModal" data-id="" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">

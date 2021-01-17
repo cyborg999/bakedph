@@ -57,6 +57,7 @@
 
               <td>
                 <button id="filter" class="btn btn-sm btn-primary"> <= Filter</button>
+                <a href="" data-toggle="modal" data-target="#addModal" class="btn btn-sm btn-success">Add New <svg class="bi" width="18" height="18" fill="currentColor"><use xlink:href="./node_modules/bootstrap-icons/bootstrap-icons.svg#plus"/></svg></a>
                 <a href="ajax.php?&export=true&materials=true" class="btn-sm export">export csv</a>
               </td>
             </tr>
@@ -158,6 +159,51 @@
     </div>
   </div>
 </div>
+
+
+
+<!-- Modal -->
+<div class="modal fade" id="addModal" data-id="" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-md">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Add Supplier</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div class="row  ">
+          <div class="col-sm msg hidden"></div>
+        </div>
+        <div class="row">
+          <div class="col-sm-12">
+            <h5>Material Information</h5>
+            <form method="post">
+              <input type="hidden" name="addMaterialInventory" value="true">
+              <div class="form-group">
+                <label>Name:
+                  <input type="text" class="form-control"  value="<?= isset($_POST['name']) ? $_POST['name'] : '';?>" name="name" placeholder="Name..." required />
+                </label>
+              </div>
+              <div class="form-group">
+                <label>Unit:
+                  <input type="text" class="form-control"  value="<?= isset($_POST['unit']) ? $_POST['unit'] : '';?>" name="unit" placeholder="Unit..." required />
+                </label>
+              </div>
+              
+              <input type="submit" value="Submit" class="btn btn-lg btn-primary">
+            </form>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
+
 
 <script type="text/html" id="productTPL">
       <tr class="result [LOWSTOCK]" id="edit[ID]">

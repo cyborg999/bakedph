@@ -26,7 +26,7 @@
 			        </div>
 					<div class="row">
 						<div class="col-sm-4">
-							<h5>Purchase Information</h5>
+							<h5>Raw Materials Inventory Information</h5>
 							<form method="post" class="form">
 								<input type="hidden" name="addPurchase" value="true">
 								<div class="form-group">
@@ -60,7 +60,7 @@
 								</div>
 								<div class="form-group">
 									<label>Quantity:</label>
-									<input type="number" class="form-control" value="" required  id="quantity" name="qty" placeholder="Quantity..."/>
+									<input type="number" class="form-control" value="" min="1" required  id="quantity" name="qty" placeholder="Quantity..."/>
 								</div>
 								<div class="form-group">
 									<label>Unit:</label>
@@ -86,7 +86,7 @@
 							</form>
 						</div>
 						<div class="col-sm-8">
-							<h5>Purchase Order List</h5>
+							<h5>Raw Materials Inventory List</h5>
 							<table class="table">
 								<thead>
 									<tr>

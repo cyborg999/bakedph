@@ -13,7 +13,7 @@
 				<?php include_once "./error.php"; ?>
 				<div class="row">
 					<div class="col-sm">
-						<h5>Purchase Information</h5>
+						<h5>Raw Materials Inventory Information</h5>
 					</div>
 					<div class="col-sm">
 						<a class="float-right" id="exportLink" href="./ajax.php?purchase=true">Export File <svg class="bi" width="20" height="20" fill="currentColor"><use xlink:href="./node_modules/bootstrap-icons/bootstrap-icons.svg#file-earmark-spreadsheet-fill"/></svg></a>

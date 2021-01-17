@@ -114,7 +114,6 @@ class Model {
 		$producedDate = date("Y-m-d");
 
 		foreach($records as $idx => $r){
-			// opd($r);
 			$m = date_format($producedDate, "M");
 			$y = date_format($producedDate, "Y");
 
@@ -1726,11 +1725,12 @@ class Model {
 		if(isset($_POST['addPurchase'])){
 			foreach($_POST['data'] as $idx => $d){
 				$sql = "
-					INSERT INTO purchase(vendorid,materialid,type,qty,date_purchased,storeid,credit_date,expiry_date,unit,price)
-					VALUES(?,?,?,?,?,?,?,?,?,?)
+					INSERT INTO purchase(vendorid,materialid,type,qty,date_purchased,storeid,credit_date,expiry_date,unit,price, remaining_qty)
+					VALUES(?,?,?,?,?,?,?,?,?,?, ?)
 				";
 
-				$this->db->prepare($sql)->execute(array($d[0],$d[1],$d[2],$d[3],$d[4], $_SESSION['storeid'], $d[5], $d[6], $d[7], $d[8]));
+				$this->db->prepare($sql)->execute(array($d[0],$d[1],$d[2],$d[3],$d[4], $_SESSION['storeid'], $d[5], $d[6], $d[7], $d[8],$d[3]));
+
 				$this->updateMaterialInventory($d[1], $d[3], true);
 			}
 			
@@ -1739,6 +1739,91 @@ class Model {
 
 			return $this;
 		}
+	}
+
+	public function updatePurchaseInventory($materialId, $orderedQty){
+		$sql = "
+			select t1.*
+			from purchase t1
+			where t1.storeid = ".$_SESSION['storeid']."
+			and t1.remaining_qty > 0
+			and t1.materialid = ".$materialId."
+		";
+
+		$records = $this->db->query($sql)->fetchAll();
+
+		$ordered = $orderedQty;
+
+		foreach($records as $idx => $r){
+			$remainingQty = $r['remaining_qty'];
+
+			if($ordered > $remainingQty){
+				$sql = "
+					update purchase
+					set remaining_qty =  ?
+					where id = ?
+				";
+			
+				$this->db->prepare($sql)->execute(array(0, $r['id']));
+				
+				$ordered = $ordered - $remainingQty;
+			} else {
+				$sql = "
+					update purchase
+					set remaining_qty = remaining_qty - ?
+					where id = ?
+				";
+			
+				$this->db->prepare($sql)->execute(array($ordered, $r['id']));
+			
+				break;
+			}
+		}
+
+		return $this;
+	}
+
+	public function updateProductionInventory($productId, $orderedQty){
+		$sql = "
+			select t1.*
+			from production t1
+			where t1.storeid = ".$_SESSION['storeid']."
+			and t1.remaining_qty > 0
+			and t1.productid = ".$productId." 
+			and date(t1.date_expired) > date(CURRENT_DATE) 
+		";
+
+		$records = $this->db->query($sql)->fetchAll();
+
+		$ordered = $orderedQty;
+
+		foreach($records as $idx => $r){
+			$remainingQty = $r['remaining_qty'];
+
+			if($ordered > $remainingQty){
+				$sql = "
+					update production
+					set remaining_qty =  ?
+					where id = ?
+				";
+			
+				$this->db->prepare($sql)->execute(array(0, $r['id']));
+				
+				$ordered = $ordered - $remainingQty;
+			} else {
+				$sql = "
+					update production
+					set remaining_qty = remaining_qty - ?
+					where id = ?
+				";
+			
+				$this->db->prepare($sql)->execute(array($ordered, $r['id']));
+			
+				break;
+			}
+		}
+
+		return $this;
 	}
 
 	public function addSaleListener(){
@@ -1751,6 +1836,7 @@ class Model {
 
 				$this->db->prepare($sql)->execute(array($_SESSION['storeid'], $d[0], $d[1], $d[2]));
 
+				$this->updateProductionInventory($d[0], $d[1]);
 				$this->updateProductInventory($d[0], $d[1]);
 			}
 			
@@ -1778,7 +1864,7 @@ class Model {
 
 	public function getAllProduction(){
 		$sql = "
-			SELECT t1.*, t2.name ,t1.price as 'srp'
+			SELECT t1.*, t2.name ,t1.price as 'srp', if((date(CURRENT_DATE) >= date(t1.date_expired)), 'expired' , '') as 'isExpired'
 			FROM production t1
 			LEFT JOIN product t2
 			ON t1.productid = t2.id
@@ -1956,11 +2042,11 @@ class Model {
 
 			foreach($_POST['data'] as $idx => $d){
 				$sql = "
-					INSERT INTO production(productid,batchnumber,quantity,date_produced,storeid,unit,date_expired,price)
-					VALUES(?,?,?,?,?,?,?,?)
+					INSERT INTO production(productid,batchnumber,quantity,date_produced,storeid,unit,date_expired,price, remaining_qty)
+					VALUES(?,?,?,?,?,?,?,?,?)
 				";
 
-				$this->db->prepare($sql)->execute(array($d[0],$d[2],$d[1],$d[3],$_SESSION['storeid'], $d[4], $d[5], $d[7]));
+				$this->db->prepare($sql)->execute(array($d[0],$d[2],$d[1],$d[3],$_SESSION['storeid'], $d[4], $d[5], $d[7], $d[1]));
 
 				$this->updateProductInventory($d[0], $d[1], true);
 
@@ -1968,6 +2054,7 @@ class Model {
 				$materials = $this->getMaterialById($d[0]);
 
 				foreach($materials as $midx => $m){
+					$this->updatePurchaseInventory($m['materialid'], ($m['qty']*$d[1]));
 					$this->updateMaterialInventory($m['materialid'], ($m['qty']*$d[1]));
 				}
 			}
@@ -2657,7 +2744,8 @@ class Model {
 
 	public function getAllPurchase(){
 		$sql = "
-			select t1.*,t2.name, t3.name as 'vendorname', t3.id as 'vendorid'
+			select t1.*,t2.name, t3.name as 'vendorname', t3.id as 'vendorid',
+			if((date(CURRENT_DATE) >= date(t1.expiry_date)), 'expired' , '') as 'isExpired'
 			from purchase t1
 			left join material_inventory t2
 			on t1.materialid = t2.id
@@ -2749,8 +2837,8 @@ class Model {
 	public function reset(){
 		$sql = array();
 
-		$sql[] = "delete from store";
-		$sql[] = "delete from user where usertype!='admin'";
+		// $sql[] = "delete from store";
+		// $sql[] = "delete from user where usertype!='admin'";
 		$sql[] = "delete from product";
 		$sql[] = "delete from payments";
 		$sql[] = "delete from notification";
@@ -2761,7 +2849,7 @@ class Model {
 		$sql[] = "delete from sales";
 		// $sql[] = "delete from subscription";
 		$sql[] = "delete from material_inventory";
-		$sql[] = "delete from userinfo where userid!=36";
+		// $sql[] = "delete from userinfo where userid!=36";
 
 		foreach ($sql as $key => $s) {
 			$this->db->query($s);

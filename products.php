@@ -55,6 +55,7 @@
               </td>
               <td>
                 <button id="filter" class="btn btn-sm btn-primary"> <= Filter</button>
+                <a href="" data-toggle="modal" data-target="#addModal" class="btn btn-sm btn-success">Add New <svg class="bi" width="18" height="18" fill="currentColor"><use xlink:href="./node_modules/bootstrap-icons/bootstrap-icons.svg#plus"/></svg></a>
                <a href="ajax.php?&export=true&products=true" class="export">export csv</a>
               </td>
             </tr>
@@ -186,38 +187,6 @@
                 </table>
                 <!-- <h4 >Total Material Cost/<small>product quantity</small> : P<span id="total">0.00</span></h4> -->
               </div>
-             <!--  <div class="tab-pane fade " id="expenses" role="tabpanel" aria-labelledby="home-tab">
-                  <table class="table table-hover table-sm" id="expensesTbl">
-                    <thead>
-                      <tr>
-                        <th scope="col">Name</th>
-                        <th scope="col">Cost</th>
-                        <th scope="col">Date</th>
-                        <th scope="col">Action</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      
-                    </tbody>
-                    <tfoot>
-                      <tr>
-                        <td style="width: 200px;">
-                          <input type="text" class="form-control" id="expName" placeholder="name">
-
-                        </td>
-                        <td>
-                          <input type="number" id="expCost" class="form-control" name="cost" placeholder="Cost..." min="1" required/>
-                        </td>
-                        <td>
-                          <input type="date" id="dateProduced" class="form-control" name="date" placeholder="Date..."  required/>
-                        </td>
-                        <td>
-                          <button id="addExpenses" class="btn btn-sm btn-primary" ><svg class="bi" width="18" height="18" fill="currentColor"><use xlink:href="./node_modules/bootstrap-icons/bootstrap-icons.svg#plus"/></svg></button>
-                        </td>
-                      </tr>
-                    </tfoot> 
-                  </table>
-              </div> -->
             </div>
           </div>
         </div>
@@ -228,6 +197,59 @@
     </div>
   </div>
 </div>
+
+
+<!-- Modal -->
+<div class="modal fade" id="addModal" data-id="" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-md">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Add Supplier</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div class="row  ">
+          <div class="col-sm msg hidden"></div>
+        </div>
+        <div class="row">
+          <div class="col-sm-12">
+            <h5>Product Information</h5>
+            <form method="post">
+              <input type="hidden" name="addproduct" value="true">
+              <div class="form-group">
+                <label>Product Name:
+                  <input type="text" required class="form-control" name="name" value="<?= isset($_POST['name']) ? $_POST['name'] : '';?>" placeholder="Product Name..."/>
+                </label>
+              </div>
+              <div class="form-group hidden">
+                <label>Price:
+                  <input type="text"  class="form-control" name="price" placeholder="Price..."/>
+                </label>
+              </div>
+              <div class="form-group hidden">
+                <label>Quantity:
+                  <input type="number"  class="form-control" name="qty" placeholder="Quantity..." value="0" />
+                </label>
+              </div>
+              <div class="form-group hidden">
+                <label>Expiry Date:
+                  <input type="date"  class="form-control" name="expiry" placeholder="Expiry Date..."/>
+                </label>
+              </div>
+              <input type="submit" class="btn btn-lg btn-primary" value="submit">
+            </form>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
+
 
 <script type="text/html" id="productTPL">
       <tr class="result [LOWSTOCK]" id="edit[ID]">

@@ -55,11 +55,15 @@
 								</div>
 								<div class="form-group">
 									<label>Quantity:</label>
-									<input type="number" class="form-control" id="quantity" value="<?= isset($_POST['qty']) ? $_POST['qty'] : '';?>" required name="qty" placeholder="Quantity..."/>
+									<input type="number" class="form-control" id="quantity" value="<?= isset($_POST['qty']) ? $_POST['qty'] : '';?>" required min="1" name="qty" placeholder="Quantity..."/>
 								</div>
 								<div class="form-group">
 									<label>Unit:</label>
 									<input type="text" readonly="" class="form-control" id="unit" value="pcs" required name="unit" placeholder="Unit..."/>
+								</div>
+								<div class="form-group">
+									<label># of Rejects:</label>
+									<input type="number" class="form-control" id="rejects" value="<?= isset($_POST['rejects']) ? $_POST['rejects'] : '0';?>" required name="reject" min="0" placeholder="Rejects..."/>
 								</div>
 								<div class="form-group">
 									<label>Date Produced:</label>
@@ -197,6 +201,9 @@
 
 									$(".message").append(tpl);
 								}
+							}
+							, complete : function(){
+								window.location.href = "production.php";
 							}
 						});	
     				}

@@ -96,8 +96,8 @@
 						  <li class="list-group-item">
 						  	<a href="vendor.php" class="black">All Supplier <span class="badge badge-primary badge-pill"><?= $model->getVendorCount(); ?></span></a>
 						  </li>
-						  <li class="list-group-item">
-						  	<a href="addvendor.php" class="black">Add New</a>
+						 <!--  <li class="list-group-item">
+						  	<a href="addvendor.php" class="black">Add New</a> -->
 						  </li>
 						</ul>
 				      </div>
@@ -139,9 +139,9 @@
 						  	?>
 						  	<a href="material_expired.php" class="black">Expired Materials <span class="badge badge-primary badge-pill"><?= count($expiredCount) ?></span></a>
 						  </li>
-						  <li class="list-group-item">
+						 <!--  <li class="list-group-item">
 						  	<a href="addmaterial.php" class="black">Add Material</a>
-						  </li>
+						  </li> -->
 						</ul>
 				      </div>
 				    </div>
@@ -154,7 +154,7 @@
 					    <div class="card-header" id="headingPurchaseOrder">
 					      <h2 class="mb-0">
 					        <button class="btn btn-link btn-block text-left collapsed " type="button" data-toggle="collapse" data-target="#collapsePurchaseOrder" aria-expanded="false" aria-controls="collapsePurchaseOrder">
-					          <svg class="bi" width="18" height="18" fill="currentColor"><use xlink:href="./node_modules/bootstrap-icons/bootstrap-icons.svg#receipt"/></svg> Purchase Order
+					          <svg class="bi" width="18" height="18" fill="currentColor"><use xlink:href="./node_modules/bootstrap-icons/bootstrap-icons.svg#receipt"/></svg> Raw Materials Inventory
 					        </button>
 					      </h2>
 					    </div>
@@ -162,7 +162,7 @@
 					      <div class="card-body">
 					      	<ul class="list-group list-group-flush">
 					      		<li class="list-group-item">
-								  	<a href="addpurchase.php" class="black">Purchase Order</a>
+								  	<a href="addpurchase.php" class="black">Add</a>
 							  	</li>
 							  <!-- 	<li class="list-group-item">
 								  	<a href="addpurchasereturn.php" class="black">Purchase Return</a>
@@ -191,9 +191,9 @@
 						  </li>
 						  <li class="list-group-item">
 						  	<?php
-          						$productLow = $model->getAllProducts(true);
+          						$allProducts = $model->getAllProduction();
 						  	?>
-						  	<a href="allproducts.php" class="black">All Products <span class="badge badge-primary badge-pill"><?= count($productLow) ?></span></a>
+						  	<a href="allproducts.php" class="black">All Products <span class="badge badge-primary badge-pill"><?= count($allProducts) ?></span></a>
 						  </li>
 						  <li class="list-group-item">
 						  	<?php
@@ -204,9 +204,9 @@
 						  <li class="list-group-item">
 						  	<a href="product_expired.php" class="black">Expired Products <span class="badge badge-primary badge-pill"><?= count($model->getExpiredProducts()) ?></span></a>
 						  </li>
-						  <li class="list-group-item">
+						<!--   <li class="list-group-item">
 						  	<a href="addproduct.php" class="black">Add New</a>
-						  </li>
+						  </li> -->
 						</ul>
 				      </div>
 				    </div>
@@ -245,7 +245,7 @@
 					      <div class="card-body">
 					      	<ul class="list-group list-group-flush">
 					         <li class="list-group-item">
-							  	<a href="production.php" class="black">Production</a>
+							  	<a href="production.php" class="black">Add</a>
 							  </li>
 							</ul>
 					      </div>
@@ -292,7 +292,7 @@
 				      	<ul class="list-group list-group-flush">
 			      		 <li class="list-group-item"><a href="monthly_production.php" class="black">Production</a> </li>
 			      		  <li class="list-group-item"><a href="monthly_sales.php" class="black">Sales</a> </li>
-					     <li class="list-group-item"><a href="production_report.php" class="black">Purchase Order</a> </li>
+					     <li class="list-group-item"><a href="production_report.php" class="black">Raw Materials</a> </li>
 					    
 						</ul>
 				      </div>

@@ -38,7 +38,7 @@
 								</div>
 								<div class="form-group">
 									<label>Quantity:</label>
-									<input type="number" class="form-control" value="<?= isset($_POST['qty']) ? $_POST['qty'] : '';?>" required name="qty" id="quantity" placeholder="Quantity..."/>
+									<input type="number" class="form-control" value="<?= isset($_POST['qty']) ? $_POST['qty'] : '';?>" min="1" required name="qty" id="quantity" placeholder="Quantity..."/>
 								</div>
 								<div class="form-group">
 									<label>Unit:</label>

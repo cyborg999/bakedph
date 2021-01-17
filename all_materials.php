@@ -42,6 +42,10 @@
                 display: block;
                 margin-top: 10px;
               }
+               .expired {
+                color: red;
+                font-weight: 700;
+              }
             </style>
 
             <tr id="search">
@@ -59,7 +63,7 @@
               <td class="editname"><?= $product['name']; ?></td>
               <!-- <td class="editname"><?= $product['vendorname']; ?></td> -->
               <td class="editprice"><?= $product['price']; ?></td>
-              <td class="editqty"><?= $product['qty']; ?></td>
+              <td class="editqty"><span class="<?= $product['isExpired']; ?>"><?= $product['remaining_qty']; ?></span>/<?= $product['qty']; ?></td>
               <td class="editunit"><?= $product['unit']; ?></td>
               <td class="editexpiry"><?= $product['date_purchased']; ?></td>
               <td class="editexpiry"><?= $product['expiry_date']; ?></td>

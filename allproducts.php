@@ -10,10 +10,10 @@
       <div class="col-sm-10">
         <?php include_once "./dashboardnav.php"; ?>
         <?php
-          $materials = $model->getAllProduction();
+          $materials = $model->getAllMaterialInventory();
           // opd($materials);
           $store = $model->getStoreStockLimit();
-          $products = $model->getExpiredProducts();
+          $products = $model->getAllProduction();
         ?>
         <h5>All Products</h5>
         <table class="table">
@@ -33,13 +33,10 @@
               .advance {
                 display: block;
               }
-          /*    tr.lowstock {
-                background: #e6e6e6;
-              }
-              .lowstock .editqty {
+              .expired {
                 color: red;
                 font-weight: 700;
-              }*/
+              }
             </style>
             <tr>
               <td colspan="6">
@@ -66,7 +63,7 @@
               <td class="editbatch"><?= $product['batchnumber']; ?></td>
               <td class="editname"><?= $product['name']; ?></td>
               <td class="editsrp"><?= $product['price']; ?></td>
-              <td class="editqty"><?= $product['quantity']; ?></td>
+              <td class="editqty"><span class="<?= $product['isExpired']; ?>"><?= $product['remaining_qty']; ?></span>/<?= $product['quantity']; ?></td>
               <td class="editqty"><?= $product['unit']; ?></td>
               <td class="editproduced"><?= $product['date_produced']; ?></td>
               <td class="editexpiry"><?= $product['date_expired']; ?></td>
