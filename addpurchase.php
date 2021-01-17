@@ -1,4 +1,4 @@
-<?php include_once "./headchosen.php"; ?>
+<?php include_once "./headui.php"; ?>
 <?php $model->checkAccess(); ?>
 <body>
 	<?php include_once "./spinner.php"; ?>
@@ -18,6 +18,7 @@
 						$units = $model->getStoreUnitsOfMeasurement();
 						$vendors = $model->getAllVendors();
 						$purchasedOrders = $model->getPurchaseOrders();
+
 			        ?>
 			        <div class="row">
 			        	<div class="col-sm message">
@@ -43,9 +44,10 @@
 									<select id="slctMaterial"  name="materialid" class="form-control">
 		            					<?php foreach($materials as $idx => $m): ?>
 
-										<option value="<?= $m['id']; ?>"><?= $m['name']; ?></option>
+										<option data-max="<?= $m['qty'];?>" value="<?= $m['id']; ?>"><?= $m['name']; ?></option>
 		            					<?php endforeach ?>
 									</select>
+									<i><small>Current Stock: <span id="maxQty"><?= (count($materials)) ? $materials[0]['qty'] : 0; ?></span></small></i>
 								</div>
 								<div class="form-group">
 									<label for="type">Purchase Type</label>
@@ -59,16 +61,20 @@
 									<input type="date" class="form-control" id="creditDate" placeholder="Credit Date..." name="">
 								</div>
 								<div class="form-group">
-									<label>Quantity:</label>
-									<input type="number" class="form-control" value="" min="1" required  id="quantity" name="qty" placeholder="Quantity..."/>
-								</div>
-								<div class="form-group">
 									<label>Unit:</label>
 									<select id="unit"  class="form-control" name="unit">
-		            					<?php foreach($units as $idx => $v): ?>
+										<option value="millilitre">Millilitre</option>
+										<option value="gram">Gram</option>
+										<option value="piece">Piece</option>
+		            				<!-- 	<?php foreach($units as $idx => $v): ?>
 										<option value="<?= $v['unit'];?>"><?= $v['unit'];?></option>
-		            					<?php endforeach ?>
+		            					<?php endforeach ?> -->
 									</select>
+									<small><a href="" data-toggle="modal" data-target="#editProductModal">show conversion</a></small>
+								</div>
+								<div class="form-group">
+									<label>Quantity:</label>
+									<input type="number" class="form-control" value="1" min="1" required  id="quantity" name="qty" placeholder="Quantity..."/>
 								</div>
 								<div class="form-group">
 									<label>Price:</label>
@@ -76,11 +82,11 @@
 								</div>
 								<div class="form-group">
 									<label>Date of purchase:</label>
-									<input type="date" required class="form-control" value="" id="date_purchased" name="date_purchased" placeholder="Date..."/>
+									<input type="text" readonly required class="form-control"  id="from" name="date_purchased" placeholder="Date..."/>
 								</div>
 								<div class="form-group">
 									<label>Expiry Date:</label>
-									<input type="date" required class="form-control" value="" id="expiry_date" name="expiry_date" placeholder="Date..."/>
+									<input type="text" readonly required class="form-control"  id="to" name="expiry_date" placeholder="Date..."/>
 								</div>
 								<input type="submit" value="Add" class="btn btn-lg btn-primary">
 							</form>
@@ -132,6 +138,47 @@
 		</div>
 	</div>
 
+
+
+<!-- Modal -->
+<div class="modal fade" id="editProductModal" data-id="" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-md">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Convert Unit</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div class="row  ">
+          <div class="col-sm msg hidden"></div>
+        </div>
+        <div class="row">
+          <div class="col-sm">
+          	<label>Quantity:</label>
+          	<input type="number" value="0" min="1" class="form-control" id="convertQty" >
+          	<label>Convertion</label>
+          	<select id="convertUnit"  class="form-control" name="unit">
+				<option value="mll">liter - milliliter</option>
+				<option value="kgg">kilogram - gram</option>
+			</select>
+			<br>
+			<b id="convertedValue">0</b>
+			<br>
+			<input type="submit" data-dismiss="modal" class="btn btn-success" id="use" name="" value="Use">
+           
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+
 	<!-- tpl script -->
 	<script type="text/html" id="tpl">
 		<tr>
@@ -169,9 +216,53 @@
 	<!-- end alert script -->
 	<?php include_once "./foot.php"; ?>
     <script src="./node_modules/chosen-js/chosen.jquery.min.js" ></script>
+    <script src="./js/jquery-ui-1.12.1.custom/jquery-ui.min.js" ></script>
     <script type="text/javascript">
     	(function($){
     		$(document).ready(function(){
+    			$("#slctMaterial").on("change", function(){
+    				var me = $(this);
+    				var maxQty = me.find(":selected").data("max");
+
+    				$("#maxQty").html(maxQty);
+    			});
+
+    			$("#use").on("click", function(){
+    				var val = $("#convertedValue").html();
+
+    				$("#quantity").val(parseFloat(val));
+    			});
+
+    			$("#convertUnit").on("change", function(){
+    				$("#convertQty").trigger("keyup");
+    			});
+
+    			$("#convertQty").on("keyup", function(){
+    				var me = $(this);
+    				var unit = $("#convertUnit").val();
+    				var qty = me.val();
+    				var val = parseFloat(qty) * 1000;
+
+    				$("#convertedValue").html(val);
+					
+    				console.log(me.val());
+    			});
+
+
+    			var dateToday = new Date();
+				var dates = $("#from, #to").datepicker({
+				    defaultDate: "+1w",
+				    changeMonth: true,
+				    numberOfMonths: 2,
+				    // minDate: dateToday,
+				    onSelect: function(selectedDate) {
+				        var option = this.id == "from" ? "minDate" : "maxDate",
+				            instance = $(this).data("datepicker"),
+				            date = $.datepicker.parseDate(instance.settings.dateFormat || $.datepicker._defaults.dateFormat, selectedDate, instance.settings);
+				        dates.not(this).datepicker("option", option, date);
+				    }
+				});
+
     			$("#slcProduct").chosen();
     			$("#slctMaterial").chosen();
     			$("#type").chosen();
@@ -225,7 +316,6 @@
 
 	    					data.push(production);
     					}
-    					
 
     				});
 
@@ -244,6 +334,8 @@
 								$("#tbody").html("");
 
 								$(".message").append($("#success").html());
+
+								window.location.href = "all_materials.php?id="+response.ids;
 							}
 						});	
     				}
@@ -261,12 +353,16 @@
     				var creditDate = $("#creditDate").val();
 
     				var quantity = $("#quantity").val();
-    				var dateProduced = $("#date_purchased").val();
-    				var expiryDate = $("#expiry_date").val();
+    				var dateProduced = $("#from").val();
+    				var expiryDate = $("#to").val();
     				var unit = $("#unit").val();
     				var price = $("#price").val();
 
     				var errCount = 0;
+
+					var selected = $("#slctMaterial :selected");
+					var max = selected.data("max");
+					var newMax = max - parseInt(quantity);
 
     				if(materialId == null){
     					var tpl = $("#error").html();
@@ -295,6 +391,16 @@
 						errCount++;
     				}
 
+    				if(dateProduced == ""){
+    					alert("Please select Date of Purchase");
+    					return;
+    				}
+
+    				if(expiryDate == ""){
+    					alert("Please select Expiry Date");
+    					return;
+    				}
+
     				if(errCount == 0){
 						var tpl = $("#tpl").html();
 						tpl = tpl.replace("[MATERIALID]", materialId).
@@ -311,7 +417,8 @@
 							replace("[EXPIRY_DATE]", expiryDate).
 							replace("[DATE_PURCHASED]", dateProduced);
 
-						$("tbody").append(tpl);
+							$("tbody").append(tpl);
+							$("#maxQty").html(newMax);
 
 						__listen();
     				}

@@ -12,6 +12,7 @@
         <?php
           $products = $model->getAllMaterialInventory();
           $store = $model->getStoreStockLimit();
+
         ?>
         <h5>Materials</h5>
         <table class="table">
@@ -57,7 +58,7 @@
 
               <td>
                 <button id="filter" class="btn btn-sm btn-primary"> <= Filter</button>
-                <a href="" data-toggle="modal" data-target="#addModal" class="btn btn-sm btn-success">Add New <svg class="bi" width="18" height="18" fill="currentColor"><use xlink:href="./node_modules/bootstrap-icons/bootstrap-icons.svg#plus"/></svg></a>
+                <a href="" id="addnew" data-toggle="modal" data-target="#addModal" class="btn btn-sm btn-success">Add New <svg class="bi" width="18" height="18" fill="currentColor"><use xlink:href="./node_modules/bootstrap-icons/bootstrap-icons.svg#plus"/></svg></a>
                 <a href="ajax.php?&export=true&materials=true" class="btn-sm export">export csv</a>
               </td>
             </tr>
@@ -79,7 +80,7 @@
               <td class="editname"><?= $product['name']; ?></td>
               <!-- <td class="editprice"><?= $product['price']; ?></td> -->
               <td class="editqty"><?= $product['qty']; ?></td>
-              <td class="editunit"><?= $product['unit']; ?></td>
+              <!-- <td class="editunit"><?= $product['unit']; ?></td> -->
               <!-- <td class="editexpiry"><?= $product['expiry_date']; ?></td> -->
               <td>
                 <a href="" data-unit="<?= $product['unit']; ?>" data-qty="<?= $product['qty']; ?>" data-expiry="<?= $product['expiry_date']; ?>" data-price="<?= $product['price']; ?>" data-id="<?= $product['id']; ?>" data-name="<?= $product['name']; ?>"class="btn btn-sm btn-warning edit"  data-toggle="modal" data-target="#editProductModal" alt="Edit product"><svg class="bi" width="18" height="18" fill="currentColor"><use xlink:href="./node_modules/bootstrap-icons/bootstrap-icons.svg#pencil"/></svg> </a>
@@ -114,7 +115,6 @@
         <div class="row">
 
           <div class="col-sm">
-            <h5>Material Information</h5>
             <form method="post" id="editform">
             <div class="row">
               <div class="col-sm-6">
@@ -129,9 +129,9 @@
                       <input type="text" id="editprice" required class="form-control" name="price" placeholder="Price..."/>
                     </label>
                   </div>
-                  <div class="form-group">
+                  <div class="form-group hidden">
                     <label>Unit:
-                      <input type="text" id="editunit" required class="form-control" name="unit" placeholder="Unit..."/>
+                      <input type="text" id="editunit" value="" class="form-control" name="unit" placeholder="Unit..."/>
                     </label>
                   </div>
               </div>
@@ -167,7 +167,7 @@
   <div class="modal-dialog modal-md">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title" id="exampleModalLabel">Add Supplier</h5>
+        <h5 class="modal-title" id="exampleModalLabel">Add Material</h5>
         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
           <span aria-hidden="true">&times;</span>
         </button>
@@ -178,19 +178,18 @@
         </div>
         <div class="row">
           <div class="col-sm-12">
-            <h5>Material Information</h5>
             <form method="post">
               <input type="hidden" name="addMaterialInventory" value="true">
               <div class="form-group">
                 <label>Name:
-                  <input type="text" class="form-control"  value="<?= isset($_POST['name']) ? $_POST['name'] : '';?>" name="name" placeholder="Name..." required />
+                  <input id="addname" type="text" class="form-control"  value="<?= isset($_POST['name']) ? $_POST['name'] : '';?>" name="name" placeholder="Name..." required />
                 </label>
               </div>
-              <div class="form-group">
+              <!-- <div class="form-group">
                 <label>Unit:
                   <input type="text" class="form-control"  value="<?= isset($_POST['unit']) ? $_POST['unit'] : '';?>" name="unit" placeholder="Unit..." required />
                 </label>
-              </div>
+              </div> -->
               
               <input type="submit" value="Submit" class="btn btn-lg btn-primary">
             </form>
@@ -210,7 +209,7 @@
           <td class="editname">[NAME]</td>
           <!-- <td class="editsrp">[SRP]</td> -->
           <td class="editqty">[QTY]</td>
-          <td class="editunit">[UNIT]</td>
+          <!-- <td class="editunit">[UNIT]</td> -->
           <!-- <td class="editexpiry">[EXPIRY]</td> -->
           <td>
             <a href="" data-unit="[UNIT]" data-qty="[QTY]" data-expiry="[EXPIRY]" data-price="[SRP]" data-id="[ID]" data-name="[NAME]" class="btn btn-sm btn-warning edit"  data-toggle="modal" data-target="#editProductModal" alt="Edit product"><svg class="bi" width="18" height="18" fill="currentColor"><use xlink:href="./node_modules/bootstrap-icons/bootstrap-icons.svg#pencil"/></svg> </a>
@@ -242,6 +241,11 @@
     (function($){
       $(document).ready(function(){
         $("#editvendorname").chosen();
+
+          $("#addnew").on("click", function(){
+            $("#addname").val("");
+          });
+
         function __listen(){
           $("#editform").off().on("submit", function(e){
             e.preventDefault();
@@ -265,6 +269,7 @@
                 $(".msg").removeClass("hidden");
                 $(".preloader").addClass("hidden");
                 
+                window.location.href="materials.php";
               }
             });
           });

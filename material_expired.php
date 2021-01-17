@@ -34,6 +34,10 @@
               .advance {
                 display: block;
               }
+              .expired {
+                color: red;
+                font-weight: 700;
+              }
              /* tr.lowstock {
                 background: #e6e6e6;
               }
@@ -67,7 +71,7 @@
             <tr class="result <?=($product['qty'] <= $store['material_low']) ? 'lowstock' : ''; ?>" id="edit<?= $product['id']; ?>">
               <td class="editname"><?= $product['name']; ?></td>
               <!-- <td class="editprice"><?= $product['price']; ?></td> -->
-              <td class="editqty"><?= $product['qty']; ?></td>
+              <td class="editqty"><span class="<?= $product['isExpired']; ?>"><?= $product['remaining_qty']; ?></span>/<?= $product['qty']; ?></td>
               <td class="editqty"><?= $product['unit']; ?></td>
               <td class="editexpiry"><?= $product['date_purchased']; ?></td>
               <td class="editexpiry"><?= $product['expiry_date']; ?></td>
@@ -145,7 +149,7 @@
       <tr class="result [LOWSTOCK]" id="edit[ID]">
           <td class="editname">[NAME]</td>
           <!-- <td class="editsrp">[SRP]</td> -->
-          <td class="editqty">[QTY]</td>
+          <td class="editqty"><span class="[EXPIRED]">[REMAINING]</span>/[QUANTITY]</td>
           <td>[UNIT]</td>
           <td>[DATE_PURCHASE]</td>
           <td class="editexpiry">[EXPIRY]</td>
@@ -284,6 +288,9 @@
                   replace("[UNIT]", response[i].unit).
                   replace("[DATE_PURCHASE]", response[i].date_purchased).
                   replace("[EXPIRY_DATE]", response[i].expiry_date).
+                  replace("[EXPIRED]", response[i].isExpired).
+                     replace("[QUANTITY]", response[i].qty).
+                    replace("[REMAINING]", response[i].remaining_qty).
                      replace("[LOWSTOCK]", (response[i].qty <= $("#stock").val()) ? 'lowstock' : '').
                   replace("[SRP]", response[i].price).replace("[QTY]", response[i].qty).replace("[QTY]", response[i].qty).replace("[EXPIRY]", response[i].expiry_date).replace("[EXPIRY]", response[i].expiry_date);
 

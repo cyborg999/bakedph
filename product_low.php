@@ -19,7 +19,7 @@
           <thead>
             <tr>
               <th scope="col">Product Name</th>
-              <th scope="col">SRP</th>
+              <!-- <th scope="col">SRP</th> -->
               <th scope="col">Quantity</th>
               <th scope="col">Action</th>
             </tr>
@@ -60,7 +60,7 @@
 
             <tr class="result <?=($product['qty'] <= $store['product_low']) ? 'lowstock' : ''; ?>" id="edit<?= $product['id']; ?>">
               <td class="editname"><?= $product['name']; ?></td>
-              <td class="editsrp"><?= $product['srp']; ?></td>
+              <!-- <td class="editsrp"><?= $product['srp']; ?></td> -->
               <td class="editqty"><?= $product['qty']; ?></td>
          <!--      <td>
                 <a href="" data-qty="<?= $product['qty']; ?>" data-expiry="<?= $product['expiry_date']; ?>" data-srp="<?= $product['srp']; ?>" data-id="<?= $product['id']; ?>" data-name="<?= $product['name']; ?>"class="btn btn-sm btn-warning edit"  data-toggle="modal" data-target="#editProductModal" alt="Edit product"><svg class="bi" width="18" height="18" fill="currentColor"><use xlink:href="./node_modules/bootstrap-icons/bootstrap-icons.svg#pencil"/></svg> </a>
@@ -219,7 +219,7 @@
 <script type="text/html" id="productTPL">
       <tr class="result [LOWSTOCK]" id="edit[ID]">
           <td class="editname">[NAME]</td>
-          <td class="editsrp">[SRP]</td>
+          <!-- <td class="editsrp">[SRP]</td> -->
           <td class="editqty">[QTY]</td>
        <!--    <td>
             <a href="" data-qty="[QTY]" data-expiry="[EXPIRY]" data-srp="[SRP]" data-id="[ID]" data-name="[NAME]" class="btn btn-sm btn-warning edit"  data-toggle="modal" data-target="#editProductModal" alt="Edit product"><svg class="bi" width="18" height="18" fill="currentColor"><use xlink:href="./node_modules/bootstrap-icons/bootstrap-icons.svg#pencil"/></svg> </a>

@@ -367,6 +367,7 @@
     				type : "post",
     				dataType : "json",
     				success : function(response){
+    					console.log(response);
     					loadChart(response, d.getFullYear());
     				}
     			});
@@ -508,7 +509,7 @@
 
 	    			$.ajax({
 	    				url : "ajax.php",
-	    				data : { loadMonthlyProductChartByYear : true, year: year, products : products},
+	    				data : { loadMonthlySalesChart : true, year: year, products : products},
 	    				type : "post",
 	    				dataType : "json",
 	    				success : function(response){

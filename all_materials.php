@@ -10,7 +10,16 @@
       <div class="col-sm-10">
       <?php include_once "./dashboardnav.php"; ?>
         <?php
-          $products = $model->getAllPurchase();
+          $products = array();
+          $ids = array();
+
+          if(isset($_GET['id'])){
+            $products = $model->getAllPurchase(true);
+            $ids = explode("|", $_GET['id']);
+          } else {
+            $products = $model->getAllPurchase();
+          }
+
         ?>
         <h5>Materials</h5>
         <table class="table">
@@ -23,7 +32,7 @@
               <th scope="col">Unit</th>
               <th scope="col">Date_Purchased</th>
               <th scope="col">Expiry Date</th>
-              <th scope="col">Action</th>
+              <!-- <th scope="col">Action</th> -->
             </tr>
           </thead>
           <tbody>
@@ -46,6 +55,9 @@
                 color: red;
                 font-weight: 700;
               }
+              .newlyadded {
+                background: #f3f5f9;
+              }
             </style>
 
             <tr id="search">
@@ -59,7 +71,7 @@
               </td>
             </tr>
             <?php foreach($products as $idx => $product): ?>
-            <tr class="result" id="edit<?= $product['id']; ?>">
+            <tr class="result <?= (in_array($product['id'], $ids)) ? 'newlyadded' : ''; ?>" id="edit<?= $product['id']; ?>">
               <td class="editname"><?= $product['name']; ?></td>
               <!-- <td class="editname"><?= $product['vendorname']; ?></td> -->
               <td class="editprice"><?= $product['price']; ?></td>
@@ -67,8 +79,8 @@
               <td class="editunit"><?= $product['unit']; ?></td>
               <td class="editexpiry"><?= $product['date_purchased']; ?></td>
               <td class="editexpiry"><?= $product['expiry_date']; ?></td>
-         <!--      <td>
-                <a href="" data-unit="<?= $product['unit']; ?>" data-vendorid="<?= $product['vendorid']; ?>" data-qty="<?= $product['qty']; ?>" data-expiry="<?= $product['expiry_date']; ?>"  data-purchased="<?= $product['date_purchased']; ?>" data-price="<?= $product['price']; ?>" data-id="<?= $product['id']; ?>" data-name="<?= $product['name']; ?>"class="btn btn-sm btn-warning edit"  data-toggle="modal" data-target="#editProductModal" alt="Edit product"><svg class="bi" width="18" height="18" fill="currentColor"><use xlink:href="./node_modules/bootstrap-icons/bootstrap-icons.svg#pencil"/></svg> </a>
+            <!--   <td>
+                <a href="" data-materialid="<?= $product['materialid']; ?>" data-unit="<?= $product['unit']; ?>" data-vendorid="<?= $product['vendorid']; ?>" data-qty="<?= $product['qty']; ?>" data-expiry="<?= $product['expiry_date']; ?>"  data-purchased="<?= $product['date_purchased']; ?>" data-price="<?= $product['price']; ?>" data-id="<?= $product['id']; ?>" data-name="<?= $product['name']; ?>"class="btn btn-sm btn-warning edit"  data-toggle="modal" data-target="#editProductModal" alt="Edit product"><svg class="bi" width="18" height="18" fill="currentColor"><use xlink:href="./node_modules/bootstrap-icons/bootstrap-icons.svg#pencil"/></svg> </a>
                 <a href="" data-id="<?= $product['id']; ?>" class="btn btn-sm btn-danger delete" alt="Delete Product"><svg class="bi" width="18" height="18" fill="currentColor"><use xlink:href="./node_modules/bootstrap-icons/bootstrap-icons.svg#trash"/></svg></a>
               </td> -->
             </tr>
@@ -105,33 +117,36 @@
             <div class="row">
               <div class="col-sm-6">
                 <input type="hidden" name="editallmaterial" id="editid" value="">
+                <input type="hidden" name="materialid" id="materialid" value="">
+                <input type="hidden" name="oldqty" id="editoldqty" value="">
                   <div class="form-group">
                     <label>Name :
                       <input type="text" readonly id="editname" required class="form-control" name="name" value="" placeholder="Material Name..."/>
                     </label>
                   </div>
-                  <div class="form-group hidden">
+                <!--   <div class="form-group hidden">
                     <label>Supplier:
                       <input type="text" id="editvendorid"  class="form-control" name="vendorid" placeholder="Price..."/>
                     </label>
-                  </div>
+                  </div> -->
                   <div class="form-group ">
                     <label>Price:
                       <input type="text" id="editprice" required class="form-control" name="price" placeholder="Price..."/>
                     </label>
                   </div>
-                  <div class="form-group">
+                <!--   <div class="form-group">
                     <label>Unit:
                       <input type="text" id="editunit" required class="form-control" name="unit" placeholder="Unit..."/>
+                    </label>
+                  </div> -->
+                  <div class="form-group">
+                    <label>Quantity:
+                      <input type="number" id="editqty"  class="form-control" name="qty" placeholder="Quantity..."/>
                     </label>
                   </div>
               </div>
               <div class="col-sm-6 ">
-                <div class="form-group">
-                  <label>Quantity:
-                    <input type="number" readonly id="editqty"  class="form-control" name="qty" placeholder="Quantity..."/>
-                  </label>
-                </div>
+                
                 <div class="form-group">
                   <label>Expiry Date:
                     <input type="date" id="editexpiry" required class="form-control" name="expiry_date" placeholder="Expiry Date..."/>
@@ -161,12 +176,12 @@
           <td class="editname">[NAME]</td>
           <!-- <td class="editsupplier">[SUPPLIER]</td> -->
           <td class="editprice">[PRICE]</td>
-          <td class="editqty">[QTY]</td>
+          <td class="editqty"><span class="[EXPIRED]">[REMAINING]</span>/[QUANTITY]</td>
           <td class="editunit">[UNIT]</td>
           <td class="editpuchased">[PURCHASED]</td>
           <td class="editexpiry">[EXPIRY]</td>
-      <!--     <td>
-            <a href="" data-unit="[UNIT]" data-purchased="[PURCHASED]" data-vendorid="[VENDORID]" data-qty="[QTY]" data-expiry="[EXPIRY]" data-price="[SRP]" data-id="[ID]" data-name="[NAME]" class="btn btn-sm btn-warning edit"  data-toggle="modal" data-target="#editProductModal" alt="Edit product"><svg class="bi" width="18" height="18" fill="currentColor"><use xlink:href="./node_modules/bootstrap-icons/bootstrap-icons.svg#pencil"/></svg> </a>
+        <!--   <td>
+            <a href="" data-unit="[UNIT]" data-materialid="[MATERIALID]" data-purchased="[PURCHASED]" data-vendorid="[VENDORID]" data-qty="[QTY]" data-expiry="[EXPIRY]" data-price="[SRP]" data-id="[ID]" data-name="[NAME]" class="btn btn-sm btn-warning edit"  data-toggle="modal" data-target="#editProductModal" alt="Edit product"><svg class="bi" width="18" height="18" fill="currentColor"><use xlink:href="./node_modules/bootstrap-icons/bootstrap-icons.svg#pencil"/></svg> </a>
             <a href="" data-id="[ID]" class="btn btn-sm btn-danger delete" alt="Delete Product"><svg class="bi" width="18" height="18" fill="currentColor"><use xlink:href="./node_modules/bootstrap-icons/bootstrap-icons.svg#trash"/></svg></a>
           </td> -->
         </tr>
@@ -222,6 +237,9 @@
                 $(".preloader").addClass("hidden");
                 
               }
+              , complete :  function(){
+                window.location.href = "all_materials.php";
+              }
             });
           });
 
@@ -234,10 +252,12 @@
             $("#editname").attr("value", data.name);
             $("#editprice").val(data.price);
             $("#editqty").attr("value", data.qty);
+            $("#editoldqty").attr("value", data.qty);
             $("#editid").attr("value", data.id);
             $("#editvendor").data("id", data.vendorname);
             $("#editexpiry").val(data.expiry);
             $("#editpuchased").val(data.expiry);
+            $("#materialid").val(data.materialid);
 
             $("#editunit").attr("value", data.unit);
             $("#editvendorid").val(data.vendorid);
@@ -312,8 +332,12 @@
                   replace("[PURCHASED]", response[i].date_purchased).
                   replace("[VENDORID]", response[i].vendorid).
                   replace("[PURCHASED]", response[i].date_purchased).
+                  replace("[MATERIALID]", response[i].materialid).
                   replace("[EXPIRY]", response[i].expiry_date).
                   replace("[UNIT]", response[i].unit).
+                     replace("[EXPIRED]", response[i].isExpired).
+                     replace("[QUANTITY]", response[i].qty).
+                    replace("[REMAINING]", response[i].remaining_qty).
                      replace("[LOWSTOCK]", (response[i].qty <= $("#stock").val()) ? 'lowstock' : '').
                   replace("[SRP]", response[i].price).replace("[QTY]", response[i].qty).replace("[QTY]", response[i].qty).replace("[EXPIRY]", response[i].expiry_date).replace("[EXPIRY]", response[i].expiry_date);
 
@@ -327,6 +351,7 @@
 
 
               }
+
             });
 
         }, 250);

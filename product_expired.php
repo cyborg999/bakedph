@@ -32,6 +32,10 @@
               .advance {
                 display: block;
               }
+              .expired {
+                color: red;
+                font-weight: 700;
+              }
           /*    tr.lowstock {
                 background: #e6e6e6;
               }
@@ -66,7 +70,7 @@
               <td class="editname"><?= $product['name']; ?></td>
               <td class="editsrp"><?= $product['unit']; ?></td>
               <!-- <td class="editsrp"><?= $product['price']; ?></td> -->
-              <td class="editqty"><?= $product['quantity']; ?></td>
+               <td class="editqty"><span class="<?= $product['isExpired']; ?>"><?= $product['remaining_qty']; ?></span>/<?= $product['quantity']; ?></td>
               <td class="editproduced"><?= $product['date_produced']; ?></td>
               <td class="editexpiry"><?= $product['date_expired']; ?></td>
             </tr>
@@ -225,7 +229,7 @@
           <td class="editname">[NAME]</td>
           <!-- <td class="editsrp">[PRICE]</td> -->
           <td class="editsrp">[UNIT]</td>
-          <td class="editqty">[QUANTITY]</td>
+          <td class="editqty"><span class="[EXPIRED]">[REMAINING]</span>/[QUANTITY]</td>
           <td class="editqty">[DATE_PRODUCED]</td>
           <td class="editqty">[EXPIRY_DATE]</td>
         </tr>
@@ -491,6 +495,8 @@
                     replace("[ID]", response[i].id).
                     replace("[UNIT]", response[i].unit).
                     replace("[QUANTITY]", response[i].quantity).
+                    replace("[EXPIRED]", response[i].isExpired).
+                    replace("[REMAINING]", response[i].remaining_qty).
                     replace("[DATE_PRODUCED]", response[i].date_produced).
                     replace("[EXPIRY_DATE]", response[i].date_expired).
                     replace("[PRICE]", response[i].price).

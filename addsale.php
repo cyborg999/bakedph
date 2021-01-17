@@ -35,10 +35,11 @@
 										<option data-max="<?= $product['qty'];?>" value="<?= $product['id']; ?>"><?= $product['name']; ?></option>
 		            					<?php endforeach ?>
 									</select>
+									<i><small>Current Stock: <span id="maxQty"><?= (count($products)) ? $products[0]['qty'] : 0; ?></span></small></i>
 								</div>
 								<div class="form-group">
 									<label>Quantity:</label>
-									<input type="number" class="form-control" value="<?= isset($_POST['qty']) ? $_POST['qty'] : '';?>" min="1" required name="qty" id="quantity" placeholder="Quantity..."/>
+									<input type="number" class="form-control" value="<?= isset($_POST['qty']) ? $_POST['qty'] : '1';?>" min="1" required name="qty" id="quantity"  placeholder="Quantity..."/>
 								</div>
 								<div class="form-group">
 									<label>Unit:</label>
@@ -121,12 +122,28 @@
     <script type="text/javascript">
     	(function($){
     		$(document).ready(function(){
+				$("#slcProduct").on("change", function(){
+    				var me = $(this);
+					var option = $("#slcProduct option[value='"+ me.val() +"'");
+    				var maxQty = option.data("max");
+
+    				$("#maxQty").html(maxQty);
+    			});
+
     			function __listen(){
     				$(".delete").off().on("click", function(e){
     					e.preventDefault();
 
     					var me = $(this);
+    					var id = me.parents("tr").find(".name").data("id");
+    					var qty = me.parents("tr").find(".quantity").html();
+    					var option = $("#slcProduct option[value='"+id+"'");
+    					var max = option.data("max");
+    					var newMax = parseInt(max)+parseInt(qty);
 
+    					option.data("max", newMax);
+    					option.attr("selected", "selected");
+    					$("#slcProduct").trigger("change");
     					me.parents("tr").remove();
     				});
     			}
@@ -168,7 +185,7 @@
     				}
     			});
 
-    			$("#slcProduct").chosen();
+    			// $("#slcProduct").chosen();
     			$(".form").on("submit", function(e){
     				e.preventDefault();
     				var max = $("#slcProduct :selected").data("max");
@@ -176,9 +193,19 @@
 
     				quantity = parseInt(quantity);
 
+    				if(max == 0){
+    					alert("Product is out of stock");
+
+    					return;
+    				}
+
     				if(quantity>max){
     					alert("Maximum stock for this item is: " + max);
     					return;
+    				} else {
+    					var newMax = max-quantity;
+    					$("#slcProduct :selected").data("max", newMax);
+    					$("#maxQty").html(newMax);
     				}
 
     				var tpl = $("#tpl").html();

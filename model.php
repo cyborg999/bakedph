@@ -19,6 +19,7 @@ class Model {
 		$this->addProductListener();
 		$this->deleteProductListener();
 		$this->editproductListener();
+		$this->editProductInventoryListener();
 		$this->addMaterialListener();
 		$this->getMaterialsListener();
 		$this->deleteMaterialListener();
@@ -84,6 +85,7 @@ class Model {
 		$this->viewUserListener();
 		$this->updateBusinessListener();
 		$this->loadUserChartListener();
+		$this->expiredChecker();
 	}
 
 	public function loadUserChartListener(){
@@ -385,6 +387,18 @@ class Model {
         }
 
 		return $this;
+	}
+
+	public function expiredChecker(){
+		if(isset($_SESSION['storeid'])){
+			$materials = $this->getExpiredMaterials();
+			$products = $this->getExpiredProducts();
+
+	        $this->deductExpiredProduct($products);
+	        $this->deductExpiredMaterials($materials);
+
+	        return $this;
+		}
 	}
 
 	public function getExpiredMaterialNotification(&$notifications){
@@ -867,7 +881,7 @@ class Model {
 	public function searchAllMaterialsListener(){
 		if(isset($_POST['searchAllMaterial'])) {
 			$sql = "
-				select t1.*,t2.name, t3.name as 'vendorname', t3.id as 'vendorid'
+				select t1.*,t2.name, t3.name as 'vendorname', t3.id as 'vendorid',if((date(CURRENT_DATE) >= date(t1.expiry_date)), 'expired' , '') as 'isExpired'
 				from purchase t1
 				left join material_inventory t2
 				on t1.materialid = t2.id
@@ -1599,6 +1613,57 @@ class Model {
 		}
 	}
 
+	public function loadSalesChart($records, $key = false){
+		$months = array(
+			"Jan" => 0,
+			"Feb" => 0,
+			"Mar" => 0,
+			"Apr" => 0,
+			"May" => 0,
+			"Jun" => 0,
+			"Jul" => 0,
+			"Aug" => 0,
+			"Sep" => 0,
+			"Oct" => 0,
+			"Nov" => 0,
+			"Dec" => 0
+		);
+
+		$data = array();
+
+		foreach($records as $idx => $r){
+			$producedDate = date_create($r['date_purchased']);
+			$m = date_format($producedDate, "M");
+			$y = date_format($producedDate, "Y");
+
+			$data[$r['productid']]['name'] = $r['name'];
+			@$data[$r['productid']][$m]['total'] +=  $r['qty'];
+		}
+
+		$formatted = array();
+
+		$counter = 0;
+
+		foreach($data as $idx => $d){
+			$formatted[$counter]['name'] = $d['name'];
+			$formatted[$counter]['data'] = $months;
+
+			foreach($months as $iidx => $m){
+				if(array_key_exists($iidx, $d)){
+					$formatted[$counter]['data'][$iidx] = $d[$iidx]['total'];
+				}
+
+			}
+
+			$formatted[$counter]['data'] = array_values($formatted[$counter]['data']);
+
+			$counter++;
+
+		}
+
+		die(json_encode($formatted));
+	}
+
 	public function loadChart($records, $key = false){
 		$months = array(
 			"Jan" => 0,
@@ -1656,13 +1721,13 @@ class Model {
 				$this->loadChart($this->getAllProductionByYear($_POST['year']));
 			} else {
 				$this->loadChart($this->getAllProduction());	
-		}
+			}
 		}
 	}
 
 	public function getMonthlySalesReportListener(){
 		if(isset($_POST['loadMonthlySalesChart'])){
-			$this->loadChart($this->getAllProductionByYear($_POST['year']));
+			$this->loadSalesChart( $this->getAllSaleByYear($_POST['year']) );
 			// $sales = $this->getAllSales();
 			// $this->loadChart($sales, "date_purchased");
 		}
@@ -1710,31 +1775,43 @@ class Model {
 			} else {
 				$this->success = "You have succesfully added this material.";
 				$sql = "
-					INSERT INTO material_inventory(storeid,name,unit)
-					VALUES(?,?,?)
+					INSERT INTO material_inventory(storeid,name)
+					VALUES(?,?)
 				";
 
-				$this->db->prepare($sql)->execute(array($_SESSION['storeid'],$_POST['name'],$_POST['unit']));
+				$this->db->prepare($sql)->execute(array($_SESSION['storeid'],$_POST['name']));
 
 				return $this;
 			}
 		}
 	}
 
+	public function formateDateToBasic($date){
+		$newDate = date_create($date);
+
+		return date_format($newDate,"Y-m-d");
+	}
+
 	public function addPurchaseListener(){
 		if(isset($_POST['addPurchase'])){
+			$ids = array();
+
 			foreach($_POST['data'] as $idx => $d){
 				$sql = "
 					INSERT INTO purchase(vendorid,materialid,type,qty,date_purchased,storeid,credit_date,expiry_date,unit,price, remaining_qty)
 					VALUES(?,?,?,?,?,?,?,?,?,?, ?)
 				";
+				$datePurchashed = $this->formateDateToBasic($d[4]);
+				$dateExpired = $this->formateDateToBasic($d[6]);
 
-				$this->db->prepare($sql)->execute(array($d[0],$d[1],$d[2],$d[3],$d[4], $_SESSION['storeid'], $d[5], $d[6], $d[7], $d[8],$d[3]));
+				$this->db->prepare($sql)->execute(array($d[0],$d[1],$d[2],$d[3],$datePurchashed, $_SESSION['storeid'], $d[5], $dateExpired, $d[7], $d[8],$d[3]));
+
+				$ids[] = $this->db->lastInsertId();
 
 				$this->updateMaterialInventory($d[1], $d[3], true);
 			}
 			
-			die(json_encode(array("added")));
+			die(json_encode(array("ids" => implode("|", $ids))));
 			
 
 			return $this;
@@ -1862,16 +1939,50 @@ class Model {
 		}
 	}
 
-	public function getAllProduction(){
+	public function getAllProduction($priorityId = false){
+		$orderby = ($priorityId) ? "ORDER BY t1.id DESC" : "";
+
 		$sql = "
 			SELECT t1.*, t2.name ,t1.price as 'srp', if((date(CURRENT_DATE) >= date(t1.date_expired)), 'expired' , '') as 'isExpired'
 			FROM production t1
 			LEFT JOIN product t2
 			ON t1.productid = t2.id
 			WHERE t1.storeid = ".$_SESSION['storeid']."
+			$orderby
 		";	
 
 		$_SESSION['lastQuery'] = $sql;
+
+		return $this->db->query($sql)->fetchAll();
+	}
+
+	public function getAllSaleByYear($year){
+		if($year == ""){
+			$year = date("Y");
+		}
+
+		if(isset($_POST['products'])){
+			$sql = "
+				SELECT t1.*, t2.name 
+				FROM sales t1
+				LEFT JOIN product t2
+				ON t1.productid = t2.id
+				WHERE t1.storeid = ".$_SESSION['storeid']."
+				AND YEAR(t1.date_purchased) = ".$year."
+				AND t1.productid in(".implode(",", $_POST['products']).")
+			";	
+
+		} else {
+			$sql = "
+				SELECT t1.*, t2.name 
+				FROM sales t1
+				LEFT JOIN product t2
+				ON t1.productid = t2.id
+				WHERE t1.storeid = ".$_SESSION['storeid']."
+				AND YEAR(t1.date_purchased) = ".$year."
+			";	
+
+		}
 
 		return $this->db->query($sql)->fetchAll();
 	}
@@ -1995,6 +2106,7 @@ class Model {
 	public function addProductionListener(){
 		if(isset($_POST['addProduction'])){
 			$products = array();
+			$ids = array();
 
 			foreach($_POST['data'] as $idx => $d){
 				$materials = $this->getAllMaterials($d[0]);
@@ -2042,11 +2154,16 @@ class Model {
 
 			foreach($_POST['data'] as $idx => $d){
 				$sql = "
-					INSERT INTO production(productid,batchnumber,quantity,date_produced,storeid,unit,date_expired,price, remaining_qty)
-					VALUES(?,?,?,?,?,?,?,?,?)
+					INSERT INTO production(productid,batchnumber,quantity,date_produced,storeid,unit,date_expired,price, remaining_qty, rejects)
+					VALUES(?,?,?,?,?,?,?,?,?, ?)
 				";
+				
+				$datePurchashed = $this->formateDateToBasic($d[3]);
+				$dateExpired = $this->formateDateToBasic($d[5]);
 
-				$this->db->prepare($sql)->execute(array($d[0],$d[2],$d[1],$d[3],$_SESSION['storeid'], $d[4], $d[5], $d[7], $d[1]));
+				$this->db->prepare($sql)->execute(array($d[0],$d[2],$d[1],$datePurchashed,$_SESSION['storeid'], $d[4], $dateExpired, $d[7], $d[1], $d[8]));
+				
+				$ids[] = $this->db->lastInsertId();
 
 				$this->updateProductInventory($d[0], $d[1], true);
 
@@ -2059,7 +2176,7 @@ class Model {
 				}
 			}
 			
-			die(json_encode(array("added" => true, "msg" => $msg)));
+			die(json_encode(array("added" => true, "msg" => $msg, "ids" => implode("|", $ids))));
 		}
 	}
 
@@ -2172,7 +2289,7 @@ class Model {
 	public function searchExpiredMaterialsListener(){
 		if(isset($_POST['searchExpiredMaterial'])) {
 			$sql = "
-				SELECT t1.*, t2.name
+				SELECT t1.*, t2.name, if((date(CURRENT_DATE) >= date(t1.expiry_date)), 'expired' , '') as 'isExpired'
 				FROM purchase t1 
 				left join material_inventory t2
 				on t1.materialid = t2.id
@@ -2500,21 +2617,29 @@ class Model {
 		}
 	}
 
-	public function editproductListener(){
-		if(isset($_POST['editproduct'])){
-			// $sql = "
-			// 	UPDATE product
-			// 	SET name = ?, srp = ?, qty = ?, expiry_date = ?
-			// 	WHERE id = ?
-			// ";
-
+	public function editProductInventoryListener(){
+		if(isset($_POST['editproduct2'])){
 			$sql = "
 				UPDATE product
 				SET name = ?
 				WHERE id = ?
 			";
 
-			$this->db->prepare($sql)->execute(array($_POST['name'], $_POST['editproduct']));
+			$this->db->prepare($sql)->execute(array($_POST['name'], $_POST['editproduct2']));
+
+			die(json_encode($_POST));
+		}
+	}
+
+	public function editproductListener(){
+		if(isset($_POST['editproduct'])){
+			$sql = "
+				UPDATE product
+				SET srp = ?, qty = ?, expiry_date = ?
+				WHERE id = ?
+			";
+
+			$this->db->prepare($sql)->execute(array($_POST['price'], $_POST['qty'], $_POST['expiry'], $_POST['editproduct']));
 
 			die(json_encode($_POST));
 		}
@@ -2522,14 +2647,25 @@ class Model {
 
 	public function editAllmaterialsListener(){
 		if(isset($_POST['editallmaterial'])){
+			$qtyDifference = 0;
+
+			if($_POST['oldqty'] > $_POST['qty']){
+				$qtyDifference = $_POST['oldqty'] - $_POST['qty']; 
+
+				$this->updateMaterialInventory($_POST['materialid'], $qtyDifference);
+			} else {
+				$qtyDifference = $_POST['qty'] - $_POST['oldqty']; 
+
+				$this->updateMaterialInventory($_POST['materialid'], $qtyDifference,true);
+			}
+
 			$sql = "
 				UPDATE purchase
-				SET name = ?, unit = ? , price = ?, qty = ?,expiry_date = ?, date_purchased = ?
+				SET  price = ?, qty = ?,expiry_date = ?, date_purchased = ?
 				WHERE id = ?
 			";
-			oppd();
 
-			$this->db->prepare($sql)->execute(array($_POST['name'], $_POST['unit'], $_POST['price'], $_POST['qty'], $_POST['expiry_date'], $_POST['date_purchased'], $_POST['editallmaterial']));
+			$this->db->prepare($sql)->execute(array( $_POST['price'], $_POST['qty'], $_POST['expiry_date'], $_POST['date_purchased'], $_POST['editallmaterial']));
 
 			die(json_encode($_POST));
 		}
@@ -2617,7 +2753,7 @@ class Model {
 	public function searchAllProductsListener(){
 		if(isset($_POST['searchAllProducts'])) {
 			$sql = "
-				SELECT t1.*,t2.name
+				SELECT t1.*,t2.name,if((date(CURRENT_DATE) >= date(t1.date_expired)), 'expired' , '') as 'isExpired'
 				FROM production t1
 				left join product t2
 				on t1.productid = t2.id
@@ -2636,7 +2772,7 @@ class Model {
 	public function searchExpiredProductsListener(){
 		if(isset($_POST['searchProductExpired'])) {
 			$sql = "
-				SELECT t1.*,t2.name
+				SELECT t1.*,t2.name, if((date(CURRENT_DATE) >= date(t1.date_expired)), 'expired' , '') as 'isExpired'
 				FROM production t1
 				left join product t2
 				on t1.productid = t2.id
@@ -2655,7 +2791,7 @@ class Model {
 
 	public function getExpiredProducts(){
 		$sql = "
-			SELECT t1.*,t2.name
+			SELECT t1.*,t2.name, if((date(CURRENT_DATE) >= date(t1.date_expired)), 'expired' , '') as 'isExpired'
 			FROM production t1
 			left join product t2
 			on t1.productid = t2.id
@@ -2705,7 +2841,7 @@ class Model {
 
 	public function getExpiredMaterials(){
 		$sql = "
-			SELECT t1.*, t2.name
+			SELECT t1.*, t2.name, if((date(CURRENT_DATE) >= date(t1.expiry_date)), 'expired' , '') as 'isExpired'
 			FROM purchase t1 
 			left join material_inventory t2
 			on t1.materialid = t2.id
@@ -2742,7 +2878,9 @@ class Model {
 		return $this->db->query($sql)->fetchAll();
 	}
 
-	public function getAllPurchase(){
+	public function getAllPurchase($priorityId = false){
+		$orderby = ($priorityId) ? "ORDER BY t1.id DESC" : "";
+
 		$sql = "
 			select t1.*,t2.name, t3.name as 'vendorname', t3.id as 'vendorid',
 			if((date(CURRENT_DATE) >= date(t1.expiry_date)), 'expired' , '') as 'isExpired'
@@ -2752,6 +2890,7 @@ class Model {
 			left join vendor t3
 			on t1.vendorid = t3.id
 			WHERE t1.storeid = '".$_SESSION['storeid']."'
+			$orderby
 		";
 
 		$_SESSION['lastQuery'] = $sql;

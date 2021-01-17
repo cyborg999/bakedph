@@ -87,21 +87,21 @@ free trial logic
 
 
 
-
-
-
-
+done
 supplier add new sa all supplier
 materials/product same
 purchase order - raw material inventory -view - change labels
-production/purchase order before expiration date
-purchase order, after submit, view material inventory
-sales/purchaseorder/production, show current stock of selected product
 sales/ bawas sa pinakalumang batch ng production
+(applied nadin sa purchase order)
+product>add new>sabay na materials
+production>rejects
+edit material qty (auto update inventory)
+production/purchase order before expiration date
+purchase order, after submit, view material inventory (sa all material ko ni redirect)
+
+sales/purchaseorder/production, show current stock of selected product
 products expired products
 store>dashboard monthly production vs sales
-production>rejects
-product>add new>sabay na materials
 purchase order >conversion (ml,g,pcs)
 purchase order > static unit
 product/material qty edit
@@ -114,3 +114,4 @@ if expired na, dapat d na kasama sa query ng deduction
 if kaya edit history
 check if idelete yung material na gamit ng active product
 ask if iexclude yung out of stock products sa production
+if inedit yung expiry, i reset yung lahat ng deducted value or i reset lahat then recheck

@@ -13,7 +13,15 @@
           $materials = $model->getAllMaterialInventory();
           // opd($materials);
           $store = $model->getStoreStockLimit();
-          $products = $model->getAllProduction();
+          $products = array();
+          $ids = array();
+
+          if(isset($_GET['id'])){
+            $products = $model->getAllProduction(true);
+            $ids = explode("|", $_GET['id']);
+          } else {
+            $products = $model->getAllProduction();
+          }
         ?>
         <h5>All Products</h5>
         <table class="table">
@@ -26,6 +34,7 @@
               <th scope="col">Unit</th>
               <th scope="col">Date Produced</th>
               <th scope="col">Expiry Date</th>
+              <!-- <th>Action</th> -->
             </tr>
           </thead>
           <tbody>
@@ -36,6 +45,9 @@
               .expired {
                 color: red;
                 font-weight: 700;
+              }
+               .newlyadded {
+                background: #f3f5f9;
               }
             </style>
             <tr>
@@ -59,7 +71,7 @@
             </tr>
             <?php foreach($products as $idx => $product): ?>
 
-            <tr class="result <?=($product['qty'] <= $store['product_low']) ? 'lowstock' : ''; ?>" id="edit<?= $product['id']; ?>">
+            <tr class="result <?= (in_array($product['id'], $ids)) ? 'newlyadded' : ''; ?> <?=($product['qty'] <= $store['product_low']) ? 'lowstock' : ''; ?>" id="edit<?= $product['id']; ?>">
               <td class="editbatch"><?= $product['batchnumber']; ?></td>
               <td class="editname"><?= $product['name']; ?></td>
               <td class="editsrp"><?= $product['price']; ?></td>
@@ -67,10 +79,12 @@
               <td class="editqty"><?= $product['unit']; ?></td>
               <td class="editproduced"><?= $product['date_produced']; ?></td>
               <td class="editexpiry"><?= $product['date_expired']; ?></td>
+          <!--     <td>
+                <a href="" data-qty="<?= $product['quantity']; ?>" data-expiry="<?= $product['expiry_date']; ?>" data-srp="<?= $product['srp']; ?>" data-id="<?= $product['id']; ?>" data-name="<?= $product['name']; ?>"class="btn btn-sm btn-warning edit"  data-toggle="modal" data-target="#editProductModal" alt="Edit product"><svg class="bi" width="18" height="18" fill="currentColor"><use xlink:href="./node_modules/bootstrap-icons/bootstrap-icons.svg#pencil"/></svg> </a>
+                <a href="" data-id="<?= $product['id']; ?>" class="btn btn-sm btn-danger delete" alt="Delete Product"><svg class="bi" width="18" height="18" fill="currentColor"><use xlink:href="./node_modules/bootstrap-icons/bootstrap-icons.svg#trash"/></svg></a>
+              </td> -->
             </tr>
             <?php endforeach ?>
-           
-           
           </tbody>
         </table>
       </div>
@@ -93,13 +107,13 @@
           <div class="col-sm msg hidden"></div>
         </div>
         <div class="row">
-          <div class="col-sm-5">
+          <div class="col-sm">
             <h5>Product Information</h5>
             <form method="post" id="editform">
               <input type="hidden" name="editproduct" id="editid" value="">
               <div class="form-group">
                 <label>Product Name:</label>
-                <input type="text" id="editname" required class="form-control" name="name" value="" placeholder="Product Name..."/>
+                <input type="text" readonly id="editname" required class="form-control" name="name" value="" placeholder="Product Name..."/>
               </div>
               <div class="form-group">
                 <label>Price:</label>
@@ -118,7 +132,7 @@
 
             </form>
           </div>
-          <div class="col-sm-7">
+        <!--   <div class="col-sm-7">
             <ul class="nav nav-tabs" id="myTab" role="tablist">
               <li class="nav-item">
                 <a class="nav-link active" id="home-tab" data-toggle="tab" href="#raw" role="tab" aria-controls="home" aria-selected="true">Raw Materials</a>
@@ -207,7 +221,7 @@
                   </table>
               </div>
             </div>
-          </div>
+          </div> -->
         </div>
       </div>
       <div class="modal-footer">
@@ -222,7 +236,7 @@
           <td class="editname">[BATCH]</td>
           <td class="editname">[NAME]</td>
           <td class="editsrp">[PRICE]</td>
-          <td class="editqty">[QUANTITY]</td>
+          <td class="editqty"><span class="[EXPIRED]">[REMAINING]</span>/[QUANTITY]</td>
           <td class="editqty">[UNIT]</td>
           <td class="editqty">[DATE_PRODUCED]</td>
           <td class="editqty">[EXPIRY_DATE]</td>
@@ -345,71 +359,70 @@
             var data = me.data();
 
             $("#editname").attr("value", data.name);
-            $("#editqty").attr("value", data.qty);
+            $("#editqty").val(data.qty);
             $("#editprice").attr("value", data.srp);
             $("#editid").attr("value", data.id);
             $("#addMaterial").data("id", data.id);
             $("#addExpenses").data("id", data.id);
             $("#editexpiry").attr("value", data.expiry);
             $(".msg").addClass("hidden");
-            $(".preloader").removeClass("hidden");
             $("#material").find("tbody").html("");
             $("#total").html("");
             $("#expensesTbl tbody").html("");
             
-            //get expenses
-            $.ajax({
-              url : "ajax.php",
-              data : { getExpensesById : true, id : data.id},
-              type : "post",
-              dataType : 'json',
-              success : function(response){
-                console.log(response);
-                for(var i in response){
-                  var tpl = $("#expensesTpl").html();
-                  tpl = tpl.replace("[NAME]", response[i].name).
-                    replace("[BATCH]", response[i].batchnumber).
-                    replace("[ID]", response[i].id).
-                    replace("[QUANTITY]", response[i].quantity).
-                    replace("[DATE_PRODUCED]", response[i].date_produced).
-                    replace("[EXPIRY_DATE]", response[i].date_expired).
-                    replace("[PRICE]", response[i].price);
+            // //get expenses
+            // $.ajax({
+            //   url : "ajax.php",
+            //   data : { getExpensesById : true, id : data.id},
+            //   type : "post",
+            //   dataType : 'json',
+            //   success : function(response){
+            //     console.log(response);
+            //     for(var i in response){
+            //       var tpl = $("#expensesTpl").html();
+            //       tpl = tpl.replace("[NAME]", response[i].name).
+            //         replace("[BATCH]", response[i].batchnumber).
+            //         replace("[ID]", response[i].id).
+            //         replace("[QUANTITY]", response[i].quantity).
+            //         replace("[DATE_PRODUCED]", response[i].date_produced).
+            //         replace("[EXPIRY_DATE]", response[i].date_expired).
+            //         replace("[PRICE]", response[i].price);
 
-                  $("#expensesTbl tbody").append(tpl);
-                }
+            //       $("#expensesTbl tbody").append(tpl);
+            //     }
 
-                __listen();
-                $(".preloader").addClass("hidden");
+            //     __listen();
+            //     $(".preloader").addClass("hidden");
 
-              }
-            });
-            //get materials
-            $.ajax({
-              url : "ajax.php",
-              data : { getMaterials : true, id : data.id},
-              type : "post",
-              dataType : 'json',
-              success : function(response){
-                var total = 0;
+            //   }
+            // });
+            // //get materials
+            // $.ajax({
+            //   url : "ajax.php",
+            //   data : { getMaterials : true, id : data.id},
+            //   type : "post",
+            //   dataType : 'json',
+            //   success : function(response){
+            //     var total = 0;
 
-                for(var i in response){
-                  var tpl = $("#mats").html();
+            //     for(var i in response){
+            //       var tpl = $("#mats").html();
 
-                  tpl = tpl.replace("[NAME]", response[i].name).
-                    replace("[ID]", response[i].id).
-                    replace("[PRICE]", response[i].price).replace("[QTY]", response[i].qty).replace("[QTY]", response[i].qty).replace("[PRICE]", response[i].price).replace("[MID]", response[i].materialid);
+            //       tpl = tpl.replace("[NAME]", response[i].name).
+            //         replace("[ID]", response[i].id).
+            //         replace("[PRICE]", response[i].price).replace("[QTY]", response[i].qty).replace("[QTY]", response[i].qty).replace("[PRICE]", response[i].price).replace("[MID]", response[i].materialid);
 
-                  total += response[i].price * response[i].qty;
+            //       total += response[i].price * response[i].qty;
 
-                  $("#material tbody").append(tpl);
-                }
+            //       $("#material tbody").append(tpl);
+            //     }
 
-                __listen();
-                $("#total").html(total);
-                $(".preloader").addClass("hidden");
+            //     __listen();
+            //     $("#total").html(total);
+            //     $(".preloader").addClass("hidden");
 
-              }
-            });
+            //   }
+            // });
           });
 
           $(".delete").off().on("click", function(e){
@@ -489,6 +502,8 @@
                     replace("[ID]", response[i].id).
                     replace("[UNIT]", response[i].unit).
                     replace("[QUANTITY]", response[i].quantity).
+                     replace("[EXPIRED]", response[i].isExpired).
+                    replace("[REMAINING]", response[i].remaining_qty).
                     replace("[DATE_PRODUCED]", response[i].date_produced).
                     replace("[EXPIRY_DATE]", response[i].date_expired).
                     replace("[PRICE]", response[i].price).

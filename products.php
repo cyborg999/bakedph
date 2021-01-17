@@ -55,7 +55,7 @@
               </td>
               <td>
                 <button id="filter" class="btn btn-sm btn-primary"> <= Filter</button>
-                <a href="" data-toggle="modal" data-target="#addModal" class="btn btn-sm btn-success">Add New <svg class="bi" width="18" height="18" fill="currentColor"><use xlink:href="./node_modules/bootstrap-icons/bootstrap-icons.svg#plus"/></svg></a>
+                <a href="" id="addnew" data-toggle="modal" data-target="#addModal" class="btn btn-sm btn-success">Add New <svg class="bi" width="18" height="18" fill="currentColor"><use xlink:href="./node_modules/bootstrap-icons/bootstrap-icons.svg#plus"/></svg></a>
                <a href="ajax.php?&export=true&products=true" class="export">export csv</a>
               </td>
             </tr>
@@ -109,7 +109,7 @@
           <div class="col-sm-5">
             <h5>Product Information</h5>
             <form method="post" id="editform">
-              <input type="hidden" name="editproduct" id="editid" value="">
+              <input type="hidden" name="editproduct2" id="editid" value="">
               <div class="form-group">
                 <label>Product Name:</label>
                 <input type="text" id="editname" required class="form-control" name="name" value="" placeholder="Product Name..."/>
@@ -204,7 +204,7 @@
   <div class="modal-dialog modal-md">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title" id="exampleModalLabel">Add Supplier</h5>
+        <h5 class="modal-title" id="exampleModalLabel">Add Product</h5>
         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
           <span aria-hidden="true">&times;</span>
         </button>
@@ -215,12 +215,11 @@
         </div>
         <div class="row">
           <div class="col-sm-12">
-            <h5>Product Information</h5>
             <form method="post">
               <input type="hidden" name="addproduct" value="true">
               <div class="form-group">
                 <label>Product Name:
-                  <input type="text" required class="form-control" name="name" value="<?= isset($_POST['name']) ? $_POST['name'] : '';?>" placeholder="Product Name..."/>
+                  <input type="text" id="addname" required class="form-control" name="name" value="<?= isset($_POST['name']) ? $_POST['name'] : '';?>" placeholder="Product Name..."/>
                 </label>
               </div>
               <div class="form-group hidden">
@@ -295,6 +294,10 @@
   <script type="text/javascript">
     (function($){
       $(document).ready(function(){
+        $("#addnew").on("click", function(){
+          $("#addname").val("");
+        });
+
         function __listen(){
           // $(".preloader").addClass("hidden");
           

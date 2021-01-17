@@ -1,4 +1,4 @@
-<?php include_once "./head.php"; ?>
+<?php include_once "./headui.php"; ?>
 <?php $model->checkAccess(); ?>
 <body>
 	<div class="container-fluid">
@@ -18,9 +18,7 @@
 			          $nextBatch = $model->getNextBatch();
 			        ?>
 			        <div class="row">
-			        	<div class="col-sm message">
-			        		
-			        	</div>
+			        	<div class="message col-sm"></div>
 			        </div>
 			        <style type="text/css">
 			        	#failedContent b {
@@ -41,9 +39,10 @@
 									<select id="slcProduct"  name="productid" class="form-control">
 		            					<?php foreach($products as $idx => $product): ?>
 
-										<option value="<?= $product['id']; ?>"><?= $product['name']; ?></option>
+										<option data-max="<?= $product['qty'];?>"  value="<?= $product['id']; ?>"><?= $product['name']; ?></option>
 		            					<?php endforeach ?>
 									</select>
+									<i><small>Current Stock: <span id="maxQty"><?= (count($products)) ? $products[0]['qty'] : 0; ?></span></small></i>
 								</div>
 								<div class="form-group">
 									<label>Batch Number:</label>
@@ -55,7 +54,7 @@
 								</div>
 								<div class="form-group">
 									<label>Quantity:</label>
-									<input type="number" class="form-control" id="quantity" value="<?= isset($_POST['qty']) ? $_POST['qty'] : '';?>" required min="1" name="qty" placeholder="Quantity..."/>
+									<input type="number" class="form-control" id="quantity" value="<?= isset($_POST['qty']) ? $_POST['qty'] : '1';?>" required min="1" name="qty" placeholder="Quantity..."/>
 								</div>
 								<div class="form-group">
 									<label>Unit:</label>
@@ -67,11 +66,11 @@
 								</div>
 								<div class="form-group">
 									<label>Date Produced:</label>
-									<input type="date" required class="form-control" id="date_produced" value="<?= isset($_POST['date_produced']) ? $_POST['date_produced'] : '';?>"" name="date_produced" placeholder="Date..."/>
+									<input type="text" readonly="readonly"  required class="from form-control" id="from"  name="date_produced" placeholder="Date..."/>
 								</div>
 								<div class="form-group">
 									<label>Expiry Date:</label>
-									<input type="date" required class="form-control" id="expiry_date" value="<?= isset($_POST['expiry_date']) ? $_POST['expiry_date'] : '';?>" name="expiry_date" placeholder="Date..."/>
+									<input type="text" readonly="readonly"  required class="to form-control" id="to"  name="expiry_date" placeholder="Date..."/>
 								</div>
 								<input type="submit" value="Add" class="btn btn-lg btn-primary">
 							</form>
@@ -112,7 +111,7 @@
 		<tr>
 			<td class="name" data-id="[ID]">[NAME]</td>
 			<td class="batchnumber">[BATCHNUMBER]</td>
-			<td data-unit="[UNIT]" class="quantity">[QUANTITY]</td>
+			<td data-unit="[UNIT]" data-rejects="[REJECTS]" class="quantity">[QUANTITY]</td>
 			<td class="unit">[UNIT]</td>
 			<td class="price">[PRICE]</td>
 			<td data-expiry="[EXPIRY]" class="date_produced">[DATE_PRODUCED]</td>
@@ -143,9 +142,31 @@
 	<!-- end alert script -->
 	<?php include_once "./foot.php"; ?>
     <script src="./node_modules/chosen-js/chosen.jquery.min.js" ></script>
+    <script src="./js/jquery-ui-1.12.1.custom/jquery-ui.min.js" ></script>
     <script type="text/javascript">
     	(function($){
     		$(document).ready(function(){
+    			$("#slcProduct").on("change", function(){
+    				var me = $(this);
+    				var maxQty = me.find(":selected").data("max");
+
+    				$("#maxQty").html(maxQty);
+    			});
+
+				var dateToday = new Date();
+				var dates = $("#from, #to").datepicker({
+				    defaultDate: "+1w",
+				    changeMonth: true,
+				    numberOfMonths: 2,
+				    // minDate: dateToday,
+				    onSelect: function(selectedDate) {
+				        var option = this.id == "from" ? "minDate" : "maxDate",
+				            instance = $(this).data("datepicker"),
+				            date = $.datepicker.parseDate(instance.settings.dateFormat || $.datepicker._defaults.dateFormat, selectedDate, instance.settings);
+				        dates.not(this).datepicker("option", option, date);
+				    }
+				});
+
     			function __listen(){
     				$(".delete").off().on("click", function(e){
     					e.preventDefault();
@@ -162,7 +183,7 @@
     				e.preventDefault();
 
     				var data = Array();
-    				var tr = $("tbody tr");
+    				var tr = $("#tbody tr");
 
     				tr.each(function(x, y){
     					var tr = $(y);
@@ -172,16 +193,17 @@
     					var batchNumber = tr.find(".batchnumber").html();
     					var dateProduced = tr.find(".date_produced").html();
     					var dateExpiry = tr.find(".date_produced").data("expiry");
+    					var rejects = tr.find(".quantity").data("rejects");
     					var price = tr.find(".price").html();
 
-    					var production = Array(name,quantity,batchNumber,dateProduced,unit,dateExpiry, tr.find(".name").html(), price);
+    					var production = Array(name,quantity,batchNumber,dateProduced,unit,dateExpiry, tr.find(".name").html(), price, rejects);
 
     					data.push(production);
 
     				});
 
     				$(".message").html("");
-    				
+
     				if(tr.length){
     					$.ajax({
 							url : "ajax.php"
@@ -193,7 +215,8 @@
 									$("#tbody").html("");
 
 									$(".message").append($("#success").html());
-									window.location.href = "production.php";
+									
+									window.location.href = "allproducts.php?id="+response.ids;
 								} else {
 									var tpl = $("#failed").html();
 
@@ -203,7 +226,7 @@
 								}
 							}
 							, complete : function(){
-								window.location.href = "production.php";
+								// window.location.href = "production.php";
 							}
 						});	
     				}
@@ -218,9 +241,10 @@
     				var productId = $("#slcProduct").val();
     				var batchNumber = $("#batchnumber").val();
     				var quantity = $("#quantity").val();
+    				var reject = $("#rejects").val();
     				var unit = $("#unit").val();
-    				var dateProduced = $("#date_produced").val();
-    				var expiryDate = $("#expiry_date").val();
+    				var dateProduced = $("#from").val();
+    				var expiryDate = $("#to").val();
     				var productName = $("#slcProduct :selected").html();
     				var price = $("#price").val();
 
@@ -231,10 +255,21 @@
     					replace("[UNIT]", unit).
     					replace("[UNIT]", unit).
     					replace("[PRICE]", price).
+    					replace("[REJECTS]", reject).
     					replace("[EXPIRY]", expiryDate).
     					replace("[DATE_PRODUCED]", dateProduced);
 
-    				$("tbody").append(tpl);
+    				if(dateProduced == ""){
+    					alert("Please select Date Produced");
+    					return;
+    				}
+
+    				if(expiryDate == ""){
+    					alert("Please select Expiry Date");
+    					return;
+    				}
+    				
+    				$("#tbody").append(tpl);
 
     				__listen();
 
