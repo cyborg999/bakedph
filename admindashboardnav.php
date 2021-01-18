@@ -5,9 +5,9 @@
   </button>
   <div class="collapse navbar-collapse" id="navbarText">
     <ul class="navbar-nav mr-auto">
-      <li class="nav-item active">
+     <!--  <li class="nav-item active">
         <a class="nav-link" href="admindashboard.php">Dashboard </a>
-      </li>
+      </li> -->
       <li class="nav-item">
         <a class="nav-link" href="logout.php">Logout</a>
       </li>

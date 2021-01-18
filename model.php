@@ -292,7 +292,7 @@ class Model {
 				$this->db->prepare($sql)->execute(array(1, $p['id']));
 
 				//deduct expired qty to inventory
-				$this->updateProductInventory($p['productid'], $p['quantity']);
+				$this->updateProductInventory($p['productid'], $p['remaining_qty']);
 			}
 		}
 
@@ -314,7 +314,7 @@ class Model {
 				$this->db->prepare($sql)->execute(array(1, $p['id']));
 
 				//deduct expired qty to inventory
-				$this->updateMaterialInventory($p['materialid'], $p['qty']);
+				$this->updateMaterialInventory($p['materialid'], $p['remaining_qty']);
 			}
 		}
 
