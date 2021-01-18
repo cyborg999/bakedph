@@ -85,6 +85,7 @@ class Model {
 		$this->viewUserListener();
 		$this->updateBusinessListener();
 		$this->loadUserChartListener();
+		$this->loadSalesVsProductionListener();
 		$this->expiredChecker();
 	}
 
@@ -1610,6 +1611,87 @@ class Model {
 			$records = $this->getPurchaseOrdersByType($_POST['type']);
 
 			die(json_encode($records));
+		}
+	}
+
+	public function getProductionData(){
+		$sql = "
+			select year(date_produced) as 'year', month(date_produced) as 'month',sum(quantity) as 'count', 'production' as 'name'
+			from production
+			where storeid = ".$_SESSION['storeid']."
+			 and year(date_produced) = year(CURRENT_DATE)
+			group by year(date_produced), month(date_produced)
+		";
+
+		return $this->db->query($sql)->fetchAll();
+	}
+
+	public function getSalesChartData(){
+		$sql = "
+			select year(date_purchased) as 'year', month(date_purchased) as 'month',sum(qty) as 'count', 'sales' as 'name'
+			from sales
+			where storeid = ".$_SESSION['storeid']."
+			 and year(date_purchased) = year(CURRENT_DATE)
+			group by year(date_purchased), month(date_purchased)
+		";
+
+		return $this->db->query($sql)->fetchAll();
+	}
+
+	public function loadSalesVsProductionListener(){
+		if(isset($_POST['loadSalesVsProduction'])){
+			$sales = $this->getSalesChartData();
+			$production = $this->getProductionData();
+
+			$record = array_merge($sales, $production);
+
+			$months = array(
+				"1" => 0,
+				"2" => 0,
+				"3" => 0,
+				"4" => 0,
+				"5" => 0,
+				"6" => 0,
+				"7" => 0,
+				"8" => 0,
+				"9" => 0,
+				"10" => 0,
+				"11" => 0,
+				"12" => 0
+			);
+
+			$data = array();
+
+			foreach($record as $idx => $r){
+				$m = $r['month'];
+				$y = $r['year'];
+
+				$data[$r['name']]['name'] = $r['name'];
+				@$data[$r['name']][$m]['total'] +=  $r['count'];
+			}
+
+			$formatted = array();
+
+			$counter = 0;
+
+			foreach($data as $idx => $d){
+				$formatted[$counter]['name'] = $d['name'];
+				$formatted[$counter]['data'] = $months;
+
+				foreach($months as $iidx => $m){
+					if(array_key_exists($iidx, $d)){
+						$formatted[$counter]['data'][$iidx] = $d[$iidx]['total'];
+					}
+
+				}
+
+				$formatted[$counter]['data'] = array_values($formatted[$counter]['data']);
+
+				$counter++;
+
+			}
+
+			die(json_encode($formatted));
 		}
 	}
 

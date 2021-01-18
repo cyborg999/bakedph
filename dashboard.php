@@ -12,9 +12,13 @@
 					</div>
 				</div>
 				<div class="jumbotron">
-					
 					<div class="row">
-						
+						<div class="col-sm">
+						    <div id="sales"></div>
+						</div>
+					</div>
+					<br>
+					<div class="row">
 						<div class="col-sm">
 							<figure class="highcharts-figure">
 							    <div id="container"></div>
@@ -97,6 +101,54 @@
 					
     			}
 
+    			function loadSalesChart(data, year){
+    				Highcharts.chart('sales', {
+					    title: {
+					        text: 'Sales vs Production'
+					    },
+					    subtitle: {
+					        text: 'Annual data for year '+ year
+					    },
+					    yAxis: {
+					        title: {
+					            text: 'Quantity'
+					        }
+					    },
+
+
+					    legend: {
+					        layout: 'vertical',
+					        align: 'right',
+					        verticalAlign: 'middle'
+					    },
+
+					    xAxis: {
+					        categories: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'July', 'Aug', 'Sept', 'Oct', 'Nov', 'Dec'],
+					        title: {
+					            text: null
+					        }
+					    },
+
+					    series: data,
+
+					    responsive: {
+					        rules: [{
+					            condition: {
+					                maxWidth: 500
+					            },
+					            chartOptions: {
+					                legend: {
+					                    layout: 'horizontal',
+					                    align: 'center',
+					                    verticalAlign: 'bottom'
+					                }
+					            }
+					        }]
+					    }
+
+					});
+    			}
+
     			function loadPieChart(data){
     				Highcharts.chart('container', {
 					    chart: {
@@ -144,6 +196,16 @@
 				var d = new Date();
 				var m = d.getMonth();
 				var y = d.getFullYear();
+
+				$.ajax({
+    				url : "ajax.php",
+    				data : { loadSalesVsProduction : true},
+    				type : "post",
+    				dataType : "json",
+    				success : function(response){
+						loadSalesChart(response, y);
+    				}
+    			});
 
     			$.ajax({
     				url : "ajax.php",

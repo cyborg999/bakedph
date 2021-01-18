@@ -98,20 +98,19 @@ production>rejects
 edit material qty (auto update inventory)
 production/purchase order before expiration date
 purchase order, after submit, view material inventory (sa all material ko ni redirect)
-
-sales/purchaseorder/production, show current stock of selected product
-products expired products
-store>dashboard monthly production vs sales
-purchase order >conversion (ml,g,pcs)
 purchase order > static unit
+sales/purchaseorder/production, show current stock of selected product
+(sa sale lang yung nagbabawas ng current quantity, d na needed sa material and production)
+purchase order >conversion (ml,g,pcs) (inalis ko na yung unit sa materials>add new since static na naman to)
+products expired products
+
+store>dashboard monthly production vs sales
 product/material qty edit
+unit sa add product ingredients
 
 check
 add ng product kahit wala pang naset na material
-dapat d maka add ng sales of kulang yung inventory ng product
-pag filtered products/d nalabas remaining qty
-if expired na, dapat d na kasama sa query ng deduction
 if kaya edit history
 check if idelete yung material na gamit ng active product
-ask if iexclude yung out of stock products sa production
 if inedit yung expiry, i reset yung lahat ng deducted value or i reset lahat then recheck
+add new material, dapat wala na unit since static na naman
