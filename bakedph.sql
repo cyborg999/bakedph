@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Jan 17, 2021 at 03:48 PM
+-- Generation Time: Jan 18, 2021 at 12:25 PM
 -- Server version: 10.4.13-MariaDB
 -- PHP Version: 7.4.8
 
@@ -63,16 +63,21 @@ CREATE TABLE `material` (
   `materialid` int(11) NOT NULL,
   `qty` int(11) NOT NULL,
   `productid` int(11) NOT NULL,
-  `date_created` timestamp NOT NULL DEFAULT current_timestamp()
+  `date_created` timestamp NOT NULL DEFAULT current_timestamp(),
+  `unit` varchar(255) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 --
 -- Dumping data for table `material`
 --
 
-INSERT INTO `material` (`id`, `materialid`, `qty`, `productid`, `date_created`) VALUES
-(86, 41, 1, 31, '2021-01-17 14:36:44'),
-(87, 42, 1, 31, '2021-01-17 14:36:48');
+INSERT INTO `material` (`id`, `materialid`, `qty`, `productid`, `date_created`, `unit`) VALUES
+(91, 44, 12, 35, '2021-01-18 10:40:16', 'millilitre'),
+(92, 44, 1, 46, '2021-01-18 11:22:10', 'millilitre'),
+(93, 44, 23, 47, '2021-01-18 11:22:37', 'millilitre'),
+(94, 44, 23, 48, '2021-01-18 11:23:26', 'millilitre'),
+(95, 44, 23, 49, '2021-01-18 11:23:40', 'millilitre'),
+(96, 44, 23, 50, '2021-01-18 11:24:44', 'millilitre');
 
 -- --------------------------------------------------------
 
@@ -96,8 +101,7 @@ CREATE TABLE `material_inventory` (
 --
 
 INSERT INTO `material_inventory` (`id`, `storeid`, `name`, `qty`, `price`, `expiry_date`, `date_created`, `unit`) VALUES
-(41, 35, 'Egg', 1900, 0, '0000-00-00', '2021-01-17 14:24:14', ''),
-(42, 35, 'Flour', 0, 0, '0000-00-00', '2021-01-17 14:24:32', NULL);
+(44, 35, 'Egg', 1001, 0, '0000-00-00', '2021-01-18 07:09:46', NULL);
 
 -- --------------------------------------------------------
 
@@ -152,9 +156,11 @@ CREATE TABLE `product` (
 --
 
 INSERT INTO `product` (`id`, `name`, `srp`, `qty`, `expiry_date`, `storeid`, `date_created`, `status`) VALUES
-(31, 'Cheese Cake', 0, 100, '0000-00-00', 35, 2147483647, 1),
-(32, 'Pandesal', 0, 1, '0000-00-00', 35, 2147483647, 1),
-(33, 'Pandecoco', 0, 90, '0000-00-00', 35, 2147483647, 1);
+(46, 'test', 0, 0, '0000-00-00', 35, 2147483647, 1),
+(47, 'test2', 0, 0, '0000-00-00', 35, 2147483647, 1),
+(48, 'test3', 0, 0, '0000-00-00', 35, 2147483647, 1),
+(49, 'test4', 0, 0, '0000-00-00', 35, 2147483647, 1),
+(50, 'test55', 0, 0, '0000-00-00', 35, 2147483647, 1);
 
 -- --------------------------------------------------------
 
@@ -183,9 +189,7 @@ CREATE TABLE `production` (
 --
 
 INSERT INTO `production` (`id`, `productid`, `batchnumber`, `quantity`, `date_produced`, `storeid`, `date_created`, `unit`, `date_expired`, `price`, `deducted`, `remaining_qty`, `rejects`) VALUES
-(97, 31, 'Batch #1', 100, '2021-01-17', 35, '2021-01-17 14:38:20', 'pcs', '2021-01-20', 12, 0, 100, 0),
-(98, 32, 'Batch #98', 10, '2021-01-24', 35, '2021-01-17 14:39:17', 'pcs', '2021-01-27', 12, 0, 1, 0),
-(99, 33, 'Batch #99', 99, '2021-01-10', 35, '2021-01-17 14:39:51', 'pcs', '2021-01-29', 1, 0, 90, 0);
+(101, 35, 'Batch #1', 100, '2021-01-18', 35, '2021-01-18 07:10:46', 'pcs', '2021-01-17', 6, 1, 50, 0);
 
 -- --------------------------------------------------------
 
@@ -215,9 +219,8 @@ CREATE TABLE `purchase` (
 --
 
 INSERT INTO `purchase` (`id`, `vendorid`, `materialid`, `date_purchased`, `type`, `qty`, `date_created`, `storeid`, `credit_date`, `expiry_date`, `unit`, `price`, `deducted`, `remaining_qty`) VALUES
-(93, 7, 41, '2021-01-17', 'cash', 1000, '2021-01-17 14:24:59', 35, '2021-01-17', '2021-01-25', 'piece', 12, 0, 900),
-(94, 7, 41, '2021-01-17', 'cash', 1000, '2021-01-17 14:34:41', 35, '2021-01-17', '2021-01-25', 'millilitre', 1, 0, 1000),
-(95, 7, 42, '2021-01-11', 'cash', 100, '2021-01-17 14:35:37', 35, '2021-01-17', '2021-01-26', 'millilitre', 123, 0, 0);
+(97, 7, 44, '2021-01-18', 'cash', 1000, '2021-01-18 07:10:14', 35, '2021-01-18', '2021-01-27', 'piece', 4.5, 0, 1000),
+(98, 7, 44, '2021-01-14', 'cash', 1, '2021-01-18 09:17:41', 35, '2021-01-18', '2021-01-28', 'gram', 1, 0, 1);
 
 -- --------------------------------------------------------
 
@@ -264,8 +267,7 @@ CREATE TABLE `sales` (
 --
 
 INSERT INTO `sales` (`id`, `storeid`, `productid`, `qty`, `date_purchased`, `other_details`, `date_created`, `unit`) VALUES
-(32, 35, 33, 9, '2021-01-17', '', '2021-01-17 14:40:16', 'pcs'),
-(33, 35, 32, 9, '2021-01-17', '', '2021-01-17 14:40:16', 'pcs');
+(37, 35, 35, 50, '2021-01-18', '', '2021-01-18 07:11:47', 'pcs');
 
 -- --------------------------------------------------------
 
@@ -638,19 +640,19 @@ ALTER TABLE `expenses`
 -- AUTO_INCREMENT for table `material`
 --
 ALTER TABLE `material`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=88;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=97;
 
 --
 -- AUTO_INCREMENT for table `material_inventory`
 --
 ALTER TABLE `material_inventory`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=43;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=45;
 
 --
 -- AUTO_INCREMENT for table `notification`
 --
 ALTER TABLE `notification`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=147;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=154;
 
 --
 -- AUTO_INCREMENT for table `payments`
@@ -662,19 +664,19 @@ ALTER TABLE `payments`
 -- AUTO_INCREMENT for table `product`
 --
 ALTER TABLE `product`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=34;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=51;
 
 --
 -- AUTO_INCREMENT for table `production`
 --
 ALTER TABLE `production`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=100;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=102;
 
 --
 -- AUTO_INCREMENT for table `purchase`
 --
 ALTER TABLE `purchase`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=96;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=99;
 
 --
 -- AUTO_INCREMENT for table `purchase_return`
@@ -686,7 +688,7 @@ ALTER TABLE `purchase_return`
 -- AUTO_INCREMENT for table `sales`
 --
 ALTER TABLE `sales`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=34;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=38;
 
 --
 -- AUTO_INCREMENT for table `sales_return`

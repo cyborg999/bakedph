@@ -87,6 +87,54 @@ class Model {
 		$this->loadUserChartListener();
 		$this->loadSalesVsProductionListener();
 		$this->expiredChecker();
+		$this->addNewProductListener();
+	}
+
+	public function addNewProductListener(){
+		if(isset($_POST['addNewProduct'])){
+			$sql = "
+				SELECT *
+				FROM product
+				WHERE name = '".$_POST['name']."'  AND storeid = '".$_SESSION['storeid']."'
+				LIMIT 1
+			";
+
+			$exists = $this->db->query($sql)->fetch();
+	
+			if(!$exists){
+				$sql = "
+					INSERT INTO product(name,storeid)
+					VALUES(?,?)
+				";
+
+				$this->db->prepare($sql)->execute(array($_POST['name'], $_SESSION['storeid']));
+
+				$productId = $this->db->lastInsertId();
+
+				if(isset($_POST['data'])){
+					foreach($_POST['data'] as $idx => $d){
+						$sql = "
+							INSERT INTO material(materialId,qty,productid,unit)
+							VALUES(?,?,?,?)
+						";	
+
+						$this->db->prepare($sql)->execute(array($d['id'],  $d['qty'], $productId, $d['unit']));
+					}
+				}
+				
+				
+
+				// $data['added'] = true;
+				// $data['id'] = $this->db->lastInsertId();
+
+				$this->success = "You have sucesfully added this product.";
+
+			} else {
+				$this->errors[] = "You already have this product added before.";
+			}
+
+			die(json_encode(array("errors"=> $this->errors, "success" => $this->success)));
+		}
 	}
 
 	public function loadUserChartListener(){
@@ -2633,11 +2681,11 @@ class Model {
 				$data['added'] = false;
 			} else {
 				$sql = "
-					INSERT INTO material(materialId,qty,productid)
-					VALUES(?,?,?)
+					INSERT INTO material(materialId,qty,productid,unit)
+					VALUES(?,?,?,?)
 				";	
 
-				$this->db->prepare($sql)->execute(array($_POST['materialId'],  $_POST['qty'], $_POST['id']));
+				$this->db->prepare($sql)->execute(array($_POST['materialId'],  $_POST['qty'], $_POST['id'], $_POST['unit']));
 
 				$data['added'] = true;
 				$data['id'] = $this->db->lastInsertId();
