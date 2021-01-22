@@ -14,6 +14,7 @@
 				<div class="row">
 					<div class="col-sm">
 						<h5>Raw Materials Inventory Information</h5>
+						<i><small>Date: <?= date("Y-m-d");?></small></i>
 					</div>
 					<div class="col-sm">
 						<a class="float-right" id="exportLink" href="./ajax.php?purchase=true">Export File <svg class="bi" width="20" height="20" fill="currentColor"><use xlink:href="./node_modules/bootstrap-icons/bootstrap-icons.svg#file-earmark-spreadsheet-fill"/></svg></a>
@@ -39,12 +40,15 @@
 			        	}
 			        	.red {
 			        		color: red;
+			        		font-weight: 500;
 			        	}
 			        	.green {
 			        		color: green;
+			        		font-weight: 500;
 			        	}
 			        	.yellow {
-			        		color: yellow;
+			        		color: orange;
+			        		font-weight: 500;
 			        	}
 			        </style>
 			        <table class="table" id="creditTable">
@@ -126,8 +130,8 @@
 			<td>
 				<span data-id="[ID]?>" class="badge bd [BADGE]">[TYPE]</span>
 			</td>
-			<td>[MATERIALNAME]</td>
 			<td>[STATUS]</td>
+			<td>[MATERIALNAME]</td>
 			<td>[VENDORNAME]</td>
 			<td>[DATE]</td>
 			<td class="credit tr">[CREDIT]</td>

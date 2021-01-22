@@ -239,7 +239,7 @@
 		            					
 		            					<?php foreach($products as $idx => $product): ?>
 		            						<?php
-												$etotal += ($product['price'] * $product['qty']);
+												$etotal += $product['price'];
 											?>
 								            <tr class="result " id="edit<?= $product['id']; ?>">
 								              <td class="editname"><?= $product['name']; ?></td>

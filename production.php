@@ -79,6 +79,7 @@
 							<table class="table">
 								<thead>
 									<tr>
+										<th>Materials</th>
 										<th>Product Name</th>
 										<th>Batch #</th>
 										<th>Quantity</th>
@@ -94,7 +95,7 @@
 								</tbody>
 								<tfoot>
 									<tr>
-										<td colspan="6">
+										<td colspan="9">
 											<a href="" class="btn btn-success submit">Submit</a>
 										</td>
 									</tr>
@@ -106,11 +107,134 @@
 			</div>
 		</div>
 	</div>
+ <style type="text/css">
+  .chosen-container-single .chosen-single,
+  .chosen-container {
+    width: 200px!important;
+  }
+</style>
+
+
+
+<!-- Modal -->
+<div class="modal fade" id="editProductModal" data-id="" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-xl">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Edit Product</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div class="row  ">
+          <div class="col-sm msg hidden"></div>
+        </div>
+        <div class="row">
+          <div class="col-sm-5">
+            <h5>Product Information</h5>
+            <form method="post" id="editform">
+              <input type="hidden" name="editproduct2" id="editid" value="">
+              <div class="form-group">
+                <label>Product Name:</label>
+                <input type="text" id="editname" required readonly class="form-control" name="name" value="" placeholder="Product Name..."/>
+              </div>
+           <!--    <div class="form-group">
+                <label>Price:</label>
+                <input type="text" id="editprice" required class="form-control" name="price" placeholder="Price..."/>
+              </div> -->
+              <div class="form-group">
+                <label>Quantity:</label>
+                <input type="number" readonly id="editqty" required class="form-control" name="qty" placeholder="Quantity..."/>
+
+              </div>
+              <!-- <div class="form-group">
+                <label>Expiry Date:</label>
+                <input type="date" id="editexpiry" required class="form-control" name="expiry" placeholder="Expiry Date..."/>
+              </div> -->
+              <!-- <input type="submit" class="btn btn-lg btn-success" value="Update"> -->
+
+            </form>
+          </div>
+          <div class="col-sm-7">
+            <ul class="nav nav-tabs" id="myTab" role="tablist">
+              <li class="nav-item">
+                <a class="nav-link active" id="home-tab" data-toggle="tab" href="#raw" role="tab" aria-controls="home" aria-selected="true">Raw Materials Used</a>
+              </li>
+              <!-- <li class="nav-item">
+                <a class="nav-link" id="profile-tab" data-toggle="tab" href="#expenses" role="tab" aria-controls="profile" aria-selected="false">Expenses</a>
+              </li> -->
+            </ul>
+            <div class="tab-content" id="myTabContent">
+              <div class="tab-pane fade show active" id="raw" role="raw" aria-labelledby="home-tab">
+                <table class="table table-hover table-sm" id="material">
+                  <thead>
+                    <tr>
+                      <th scope="col">Name</th>
+                      <!-- <th scope="col">Price</th> -->
+                      <th scope="col">Unit</th>
+                      <th scope="col">Quantity</th>
+                      <th scope="col">Action</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    
+                  </tbody>
+                  <tfoot>
+                    <tr>
+                      <td style="width: 200px;">
+                        <style type="text/css">
+                          .chosen-container-single .chosen-single,
+                          .chosen-container {
+                            width: 200px!important;
+                          }
+                        </style>
+                        <select  id="materialName" class="form-control" >
+                         
+                        </select>
+
+                      </td>
+                     <!--  <td>
+                        <input type="text" id="materialSrp" readonly class="form-control" name="price" placeholder="SRP..." required />
+                      </td> -->
+                      <td>
+                        <select id="unit"  class="form-control" name="unit">
+                          <option value="millilitre">Millilitre</option>
+                          <option value="gram">Gram</option>
+                          <option value="piece">Piece</option>
+                        </select>
+                      </td>
+                      <td>
+                        <input type="number" id="materialQty" class="form-control" name="qty" placeholder="Quantity..." min="1" required/>
+                      </td>
+                      <td>
+                        <button id="addMaterial" class="btn btn-sm btn-primary" ><svg class="bi" width="18" height="18" fill="currentColor"><use xlink:href="./node_modules/bootstrap-icons/bootstrap-icons.svg#plus"/></svg></button>
+                      </td>
+                    </tr>
+                  </tfoot> 
+                </table>
+                <!-- <h4 >Total Material Cost/<small>product quantity</small> : P<span id="total">0.00</span></h4> -->
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
 
 	<!-- tpl script -->
 	<script type="text/html" id="tpl">
 		<tr>
-			<td class="name" data-id="[ID]">[NAME]</td>
+			<td>
+			 	<a href="" data-qty="[QTY]" data-expiry="[EXPIRY]" data-srp="[SRP]" data-id="[ID]" data-name="[NAME]" class="btn btn-sm btn-link edit"  data-toggle="modal" data-target="#editProductModal" alt="Edit product"><svg class="bi" width="18" height="18" fill="currentColor"><use xlink:href="./node_modules/bootstrap-icons/bootstrap-icons.svg#pencil"/></svg> </a>
+			</td>
+			<td class="name" data-id="[ID]">
+				<p>[NAME]</p>
+			</td>
 			<td class="batchnumber">[BATCHNUMBER]</td>
 			<td data-unit="[UNIT]" data-rejects="[REJECTS]" class="quantity">[QUANTITY]</td>
 			<td class="unit">[UNIT]</td>
@@ -118,7 +242,7 @@
 			<td class="reject">[REJECTS]</td>
 			<td data-expiry="[EXPIRY]" class="date_produced">[DATE_PRODUCED]</td>
 			<td>
-				<a href="" class="delete btn btn-danger" ><svg class="bi" width="18" height="18" fill="currentColor"><use xlink:href="./node_modules/bootstrap-icons/bootstrap-icons.svg#trash"/></svg></a>
+				<a href="" class="delete btn btn-sm btn-danger" ><svg class="bi" width="18" height="18" fill="currentColor"><use xlink:href="./node_modules/bootstrap-icons/bootstrap-icons.svg#trash"/></svg></a>
 			</td>
 		</tr>
 	</script>
@@ -142,6 +266,18 @@
 	      </div>
 	</script>
 	<!-- end alert script -->
+
+	<script type="text/html" id="mats">
+	  <tr>
+	    <td class="name">[NAME]</td>
+	    <td>[UNIT]</td>
+	    <td>[QTY]</td>
+	    <td>
+	      <button  class="btn btn-sm btn-danger deleteMaterial" data-mid="[MID]" data-id="[ID]" data-price="[PRICE]" data-qty="[QTY]" data-unit="[UNIT]"><svg class="bi" width="18" height="18" fill="currentColor"><use xlink:href="./node_modules/bootstrap-icons/bootstrap-icons.svg#trash"/></svg></button>
+	    </td>
+	  </tr>
+	</script>
+
 	<?php include_once "./foot.php"; ?>
     <script src="./node_modules/chosen-js/chosen.jquery.min.js" ></script>
     <script src="./js/jquery-ui-1.12.1.custom/jquery-ui.min.js" ></script>
@@ -155,21 +291,185 @@
     				$("#maxQty").html(maxQty);
     			});
 
-				var dateToday = new Date();
-				var dates = $("#from, #to").datepicker({
-				    defaultDate: "+1w",
-				    changeMonth: true,
-				    numberOfMonths: 2,
-				    // minDate: dateToday,
-				    onSelect: function(selectedDate) {
-				        var option = this.id == "from" ? "minDate" : "maxDate",
-				            instance = $(this).data("datepicker"),
-				            date = $.datepicker.parseDate(instance.settings.dateFormat || $.datepicker._defaults.dateFormat, selectedDate, instance.settings);
-				        dates.not(this).datepicker("option", option, date);
+				// var dateToday = new Date();
+				// var dates = $("#from, #to").datepicker({
+				//     defaultDate: "+1w",
+				//     changeMonth: true,
+				//     numberOfMonths: 2,
+				//     // minDate: dateToday,
+				//     // maxDate: dateToday
+				//     onSelect: function(selectedDate) {
+				//         var option = this.id == "from" ? "minDate" : "maxDate",
+				//             instance = $(this).data("datepicker"),
+				//             date = $.datepicker.parseDate(instance.settings.dateFormat || $.datepicker._defaults.dateFormat, selectedDate, instance.settings);
+				//         dates.not(this).datepicker("option", option, date);
+				//     }
+				// });
+				var currentDate = new Date();
+
+				var dates = $("#from").datepicker({
+					defaultDate: "+1w",
+					endDate: "currentDate",
+					maxDate: currentDate,
+					 onSelect: function(selectedDate) {
+					 	$("#to").datepicker({
+					 		defaultDate: "+1w",
+					 		changeMonth: true,
+					 		numberOfMonths: 2
+					 	});
+				        $("#to").datepicker("option","minDate", selectedDate);
 				    }
 				});
 
+				$("#addMaterial").on("click", function(e){
+		          e.preventDefault();
+
+		          var material = $("#materialName option:selected").data();
+		          var srp = $("#materialSrp").val();
+		          var qty = $("#materialQty").val();
+		          var unit = $("#unit").val();
+		          var id = $(this).data("id");
+		          var max = $("#materialQty option:selected").data();
+
+		          if(qty == ""){
+		            alert("Please Input Quantity");
+		            
+		          } else if(qty > material.max) {
+		            alert("Not enough stocks");
+
+		          } else {
+		            $.ajax({
+		              url : "ajax.php",
+		              data : { 
+		                addMaterial : true, 
+		                materialId : $("#materialName").val(),
+		                id : id,
+		                unit : unit,
+		                qty : qty
+		              },
+		              type : "post",
+		              dataType : "json",
+		              success :  function(response){
+		                if(response.added){
+		                  var tpl = $("#mats").html(); 
+
+		                  tpl = tpl.replace("[NAME]", material.name).
+		                    replace("[ID]", response.id).
+		                    replace("[UNIT]", unit).
+		                    replace("[PRICE]", material.price).replace("[QTY]", qty).replace("[QTY]", qty).replace("[PRICE]", material.price).replace("[MID]", $("#materialName").val());
+
+		                  $("#material tbody").append(tpl);
+		                  var total = $("#total").html();
+
+		                  $("#total").html(parseFloat(total) + (qty*material.price));
+		                  __listen();
+		                } else {
+		                  alert("You already added this material to this product.");
+		                }
+		                
+		                $(".preloader").addClass("hidden");
+		                
+		              }
+		            });
+
+		          }
+		      
+		        });
+
     			function __listen(){
+    				$(".deleteMaterial").off().on("click", function(e){
+			            e.preventDefault();
+
+			            var me = $(this);
+			            var qty = me.data("qty");
+			            var price = me.data("price");
+			            var total = $("#total").html();
+
+
+			            $(".preloader").removeClass("hidden");
+
+			            $.ajax({
+			              url : "ajax.php",
+			              data : { deleteMaterial : true, qty : me.data("qty") ,id : me.data("mid")},
+			              type : "post",
+			              dataType : "json",
+			              success : function(response){
+			                $(".preloader").addClass("hidden");
+
+			                me.parents("tr").remove();
+
+			                $("#total").html(parseFloat(total) - (qty*price));
+			              }
+			            });
+
+			          });
+
+
+    				 $(".edit").off().on("click", function(e){
+			            e.preventDefault();
+			            
+			            var me = $(this);
+			            var data = me.data();
+
+			            $("#editname").attr("value", data.name);
+			            $("#editqty").attr("value", data.qty);
+			            $("#editprice").attr("value", data.srp);
+			            $("#editid").attr("value", data.id);
+			            $("#addMaterial").data("id", data.id);
+			            $("#addExpenses").data("id", data.id);
+			            $("#editexpiry").attr("value", data.expiry);
+			            $(".msg").addClass("hidden");
+			            $(".preloader").removeClass("hidden");
+			            $("#material").find("tbody").html("");
+			            $("#total").html("");
+			            $("#expensesTbl tbody").html("");
+			            
+			        
+			            //get materials
+			            $.ajax({
+			              url : "ajax.php",
+			              data : { materialSelect :true, getMaterials : true, id : data.id},
+			              type : "post",
+			              dataType : 'json',
+			              success : function(res){
+			                var total = 0;
+			                var response = res.records;
+			                var materials = res.materials;
+			                var options = "";
+
+			                for(var i in materials){
+			                	console.log(i);
+			                	if(i == 0){
+			                		options = "<option selected>Select</option>";
+			                		options += '<option data-price="'+materials[i].price+'"  data-max="'+materials[i].qty+'"  data-name="'+materials[i].name+'" value="'+materials[i].id+'">'+materials[i].name+'</option>';
+			                	} else {
+			                		options += '<option data-price="'+materials[i].price+'"  data-max="'+materials[i].qty+'"  data-name="'+materials[i].name+'" value="'+materials[i].id+'">'+materials[i].name+'</option>';
+			                	}
+			                }
+
+			                $("#materialName").html(options);
+
+			                for(var i in response){
+			                  var tpl = $("#mats").html();
+
+			                  tpl = tpl.replace("[NAME]", response[i].name).
+			                    replace("[ID]", response[i].id).
+			                    replace("[UNIT]", response[i].unit).
+			                    replace("[PRICE]", response[i].price).replace("[QTY]", response[i].qty).replace("[QTY]", response[i].qty).replace("[PRICE]", response[i].price).replace("[MID]", response[i].materialid);
+
+			                  total += response[i].price * response[i].qty;
+
+			                  $("#material tbody").append(tpl);
+			                }
+
+			                __listen();
+			                $("#total").html(total);
+			                $(".preloader").addClass("hidden");
+
+			              }
+			            });
+			          });
+
     				$(".delete").off().on("click", function(e){
     					e.preventDefault();
 
@@ -252,13 +552,18 @@
 
     				tpl = tpl.replace("[NAME]", productName).
     					replace("[ID]", productId).
+    					replace("[ID]", productId).
     					replace("[BATCHNUMBER]", batchNumber).
     					replace("[QUANTITY]", quantity).
+    					replace("[QTY]", quantity).
+    					replace("[NAME]", productName).
     					replace("[UNIT]", unit).
     					replace("[UNIT]", unit).
     					replace("[PRICE]", price).
+    					replace("[SRP]", price).
     					replace("[REJECTS]", reject).
     					replace("[REJECTS]", reject).
+    					replace("[EXPIRY]", expiryDate).
     					replace("[EXPIRY]", expiryDate).
     					replace("[DATE_PRODUCED]", dateProduced);
 

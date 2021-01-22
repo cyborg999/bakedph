@@ -1098,7 +1098,7 @@ class Model {
 			";
 		} else {
 			$sql = "
-				select sum(t1.price * t1.qty) as 'total'
+				select sum(t1.price) as 'total'
 				from purchase t1
 				WHERE t1.storeid = '".$_SESSION['storeid']."'
 			";
@@ -2228,7 +2228,8 @@ class Model {
 
 	public function getPurchaseOrdersByType($type){
 		$sql = "
-			SELECT t1.*, t2.name as 'vendorname', t3.name as 'materialname'
+			SELECT t1.*, t2.name as 'vendorname', t3.name as 'materialname',
+			 datediff(date(CURRENT_DATE), t1.credit_date) as 'duedate'
 			FROM purchase t1
 			LEFT JOIN vendor t2
 			ON t1.vendorid = t2.id
@@ -2249,19 +2250,17 @@ class Model {
 			if($r['type'] == "cash"){
 				$status = "<p class='green'>Paid</p>";
 			} else {
-				$today = date_create(date("Y-m-d"));
-				$dueDate = date_create($r['credit_date']);
-				$diff = date_diff($today, $dueDate);
-
-				if($diff->d > 0){
-					$status = "<p class='red'>Overdue <b>($diff->d day(s))</b></p>";
+				if($r['duedate'] > 0){
+					$status = "<p class='red'>Overdue <b>(".$r['duedate']." day(s))</b></p>";
 				} else {
 					$status = "<p class='yellow'>Unpaid</p>";
 				}
+
 			}
 
 			$r['status'] = $status;
 		}
+
 
 		return $record;
 	}
@@ -2728,6 +2727,12 @@ class Model {
 	public function getMaterialsListener(){
 		if(isset($_POST['getMaterials'])){
 			$records = $this->getMaterialById($_POST['id']);
+
+			if(isset($_POST['materialSelect'])){
+				$materials = $this->getAllMaterialInventory();
+				
+				die(json_encode(array("records" => $records, "materials" => $materials)));
+			}
 
 			die(json_encode($records));
 		}

@@ -133,17 +133,18 @@ unverify=suspend(status=suspended)
 production>batchnumber = currentdate + batchnumber (01202012)
 production>dateproduced  set default ddate (current)
 production>dateproduced future date(add sa expiry opposite)
-
 materials>prioritize expire date
-production>add materials(modal)
+product>prioritize expire date
 production> add reject sa right table
-rejects >deduct(add sa all product)
-products>expired products>add button 'use as material' 2 days expiry (d na pde mause as material after expiry)
 sales>expenses remove
-reports>expenses>materials expenses
 reports>raw materials>credit date = due date
 reports>raw materials>add new column 'status:paid,unpaid,overdue', value 'days', change color
 if changed to cash, paid,...
+products>expired products>add button 'use as material' 2 days expiry (d na pde mause as material after expiry)
+rejects >deduct(add sa all product)
+
+production>add materials(modal)
+reports>expenses>materials expenses
 
 
 
