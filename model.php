@@ -90,6 +90,21 @@ class Model {
 		$this->addNewProductListener();
 		$this->updateVerifyListener();
 		$this->useAsMaterialListener();
+		$this->saveMaterialEditListener();
+	}
+
+	public function saveMaterialEditListener(){
+		if(isset($_POST['saveMaterialEdit'])){
+			$sql = "
+				update material
+				set qty = ? 
+				where id = ?
+			";
+
+			$this->db->prepare($sql)->execute(array($_POST['qty'], $_POST['id']));
+
+			die(json_encode(array("updated")));
+		}
 	}
 
 	public function createKalahi(){

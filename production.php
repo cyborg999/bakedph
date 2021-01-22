@@ -236,13 +236,16 @@
 				<p>[NAME]</p>
 			</td>
 			<td class="batchnumber">[BATCHNUMBER]</td>
-			<td data-unit="[UNIT]" data-rejects="[REJECTS]" class="quantity">[QUANTITY]</td>
+			<td data-unit="[UNIT]" data-rejects="[REJECTS]" class="quantity">
+				[QUANTITY]
+			</td>
 			<td class="unit">[UNIT]</td>
 			<td class="price">[PRICE]</td>
 			<td class="reject">[REJECTS]</td>
 			<td data-expiry="[EXPIRY]" class="date_produced">[DATE_PRODUCED]</td>
 			<td>
 				<a href="" class="delete btn btn-sm btn-danger" ><svg class="bi" width="18" height="18" fill="currentColor"><use xlink:href="./node_modules/bootstrap-icons/bootstrap-icons.svg#trash"/></svg></a>
+				
 			</td>
 		</tr>
 	</script>
@@ -271,9 +274,15 @@
 	  <tr>
 	    <td class="name">[NAME]</td>
 	    <td>[UNIT]</td>
-	    <td>[QTY]</td>
+	    <td>
+	    	<span class="qtyValue">[QTY]</span>
+			<input type="text" class="qtyedit hidden" value="1">
+	    </td>
 	    <td>
 	      <button  class="btn btn-sm btn-danger deleteMaterial" data-mid="[MID]" data-id="[ID]" data-price="[PRICE]" data-qty="[QTY]" data-unit="[UNIT]"><svg class="bi" width="18" height="18" fill="currentColor"><use xlink:href="./node_modules/bootstrap-icons/bootstrap-icons.svg#trash"/></svg></button>
+	      <a href="" class="editMaterial btn btn-sm btn-warning" ><svg class="bi" width="18" height="18" fill="currentColor"><use xlink:href="./node_modules/bootstrap-icons/bootstrap-icons.svg#pencil"/></svg></a>
+	      <a href="" data-mid="[MID]" data-id="[ID]" class="saveEdit hidden btn btn-sm btn-success" ><svg class="bi" width="18" height="18" fill="currentColor"><use xlink:href="./node_modules/bootstrap-icons/bootstrap-icons.svg#check"/></svg></a>
+	      <a href="" class="cancelEdit hidden btn btn-sm btn-danger" ><svg class="bi" width="18" height="18" fill="currentColor"><use xlink:href="./node_modules/bootstrap-icons/bootstrap-icons.svg#x"/></svg></a>
 	    </td>
 	  </tr>
 	</script>
@@ -355,6 +364,8 @@
 
 		                  tpl = tpl.replace("[NAME]", material.name).
 		                    replace("[ID]", response.id).
+		                    replace("[ID]", response.id).
+		                    replace("[MID]", $("#materialName").val()).
 		                    replace("[UNIT]", unit).
 		                    replace("[PRICE]", material.price).replace("[QTY]", qty).replace("[QTY]", qty).replace("[PRICE]", material.price).replace("[MID]", $("#materialName").val());
 
@@ -377,6 +388,69 @@
 		        });
 
     			function __listen(){
+    				$(".cancelEdit").off().on("click", function(e){
+    					e.preventDefault();
+
+    					var me = $(this);
+    					var tr = me.parents("tr");
+    					var qtyValue = tr.find(".qtyValue");
+    					var qtyEdit = tr.find(".qtyedit");
+    					var save = tr.find(".saveEdit");
+
+    					qtyEdit.addClass("hidden");
+    					qtyValue.removeClass("hidden");
+
+    					tr.find(".deleteMaterial").removeClass("hidden");
+    					tr.find(".editMaterial").removeClass("hidden");
+    					tr.find(".saveEdit").addClass("hidden");
+    					me.addClass("hidden");
+    				});
+
+    				$(".saveEdit").off().on("click", function(e){
+    					e.preventDefault();
+
+    					var me = $(this);
+    					var tr = me.parents("tr");
+    					var qtyValue = tr.find(".qtyValue");
+    					var qtyEdit = tr.find(".qtyedit");
+    					var save = tr.find(".saveEdit");
+
+
+    					$.ajax({
+    						url  : "ajax.php",
+    						data : { saveMaterialEdit : true, qty : qtyEdit.val(), id : me.data("id"), materialId : me.data("mid")},
+    						type : "post",
+    						dataType : "json",
+    						success : function(response){
+		    					qtyValue.html(qtyEdit.val());
+		    					qtyEdit.addClass("hidden");
+		    					qtyValue.removeClass("hidden");
+		    					tr.find(".editMaterial").removeClass("hidden");
+		    					tr.find(".cancelEdit").addClass("hidden");
+		    					$(".deleteMaterial").removeClass("hidden");
+		    					me.addClass("hidden");
+    						}
+    					});
+    				});
+
+    				$(".editMaterial").off().on("click", function(e){
+    					e.preventDefault();
+
+    					var me = $(this);
+    					var tr = me.parents("tr");
+    					var qtyValue = tr.find(".qtyValue");
+    					var qtyEdit = tr.find(".qtyedit");
+    					var save = tr.find(".saveEdit");
+
+    					qtyEdit.val(qtyValue.html());
+    					qtyEdit.removeClass("hidden");
+    					qtyValue.addClass("hidden");
+    					save.removeClass("hidden");
+    					me.addClass("hidden");
+    					$(".deleteMaterial").addClass("hidden");
+    					$(".cancelEdit").removeClass("hidden");
+    				});
+
     				$(".deleteMaterial").off().on("click", function(e){
 			            e.preventDefault();
 
@@ -454,8 +528,11 @@
 
 			                  tpl = tpl.replace("[NAME]", response[i].name).
 			                    replace("[ID]", response[i].id).
+			                    replace("[ID]", response[i].id).
 			                    replace("[UNIT]", response[i].unit).
-			                    replace("[PRICE]", response[i].price).replace("[QTY]", response[i].qty).replace("[QTY]", response[i].qty).replace("[PRICE]", response[i].price).replace("[MID]", response[i].materialid);
+			                    replace("[PRICE]", response[i].price).replace("[QTY]", response[i].qty).replace("[QTY]", response[i].qty).replace("[PRICE]", response[i].price).
+			                    replace("[MID]", response[i].materialid).
+			                    replace("[MID]", response[i].materialid);
 
 			                  total += response[i].price * response[i].qty;
 
@@ -551,6 +628,7 @@
     				var price = $("#price").val();
 
     				tpl = tpl.replace("[NAME]", productName).
+    					replace("[ID]", productId).
     					replace("[ID]", productId).
     					replace("[ID]", productId).
     					replace("[BATCHNUMBER]", batchNumber).
