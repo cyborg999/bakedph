@@ -25,6 +25,7 @@
               <th scope="col">Quantity</th>
               <th scope="col">Date Produced</th>
               <th scope="col">Expiry Date</th>
+              <th>Action</th>
             </tr>
           </thead>
           <tbody>
@@ -73,6 +74,13 @@
                <td class="editqty"><span class="<?= $product['isExpired']; ?>"><?= $product['remaining_qty']; ?></span>/<?= $product['quantity']; ?></td>
               <td class="editproduced"><?= $product['date_produced']; ?></td>
               <td class="editexpiry"><?= $product['date_expired']; ?></td>
+               <td>
+                <?php if($product['material_added']): ?>
+                <p class="btn btn-sm">Added as Material</p>
+              <?php else : ?>
+                <a href="" class="btn btn-sm btn-success use" data-qty="<?= $product['remaining_qty']; ?>" data-id="<?= $product['id'];?>">Use as Material</a>
+              <?php endif ?>
+              </td>
             </tr>
             <?php endforeach ?>
            
@@ -232,6 +240,7 @@
           <td class="editqty"><span class="[EXPIRED]">[REMAINING]</span>/[QUANTITY]</td>
           <td class="editqty">[DATE_PRODUCED]</td>
           <td class="editqty">[EXPIRY_DATE]</td>
+          <td>[ACTION]</td>
         </tr>
 </script>
 <script type="text/html" id="mats">
@@ -270,6 +279,34 @@
         function __listen(){
           // $(".preloader").addClass("hidden");
           
+          $(".use").off().on("click", function(e){
+            e.preventDefault();
+
+            var me = $(this);
+
+            showPreloader();
+
+            $.ajax({
+              url : "ajax.php",
+              data : { 
+                useAsMaterial : true, 
+                qty : me.data("qty"), 
+                id : me.data("id")},
+              type : "post",
+              dataType : "json",
+              success : function(response){
+                me.removeClass("btn-success");
+                me.html("Added as Material");
+
+                me.off();
+                me.removeClass("use");
+              },
+              complete : function(){
+                hidePreloader();
+              }
+            });
+          });
+
           $(".deleteMaterial").off().on("click", function(e){
             e.preventDefault();
 
@@ -488,12 +525,18 @@
                 for(var i in response){
                   console.log(response[i].name);
                   var tpl = $("#productTPL").html();
+                  var action = ' <a href="" class="btn btn-sm btn-success use" data-qty="'+response[i].remaining_qty+'" data-id="'+response[i].id+'">Use as Material</a>';
+                  
+                  if(parseInt(response[i].material_added) == 1){
+                    action = '<p class="btn btn-sm">Added as Material</p>';
+                  }
 
                   tpl = tpl.replace("[ID]", response[i].id).replace("[ID]", response[i].id).replace("[ID]", response[i].id).
                   replace("[NAME]", response[i].name).
                    replace("[BATCH]", response[i].batchnumber).
                     replace("[ID]", response[i].id).
                     replace("[UNIT]", response[i].unit).
+                    replace("[ACTION]", action).
                     replace("[QUANTITY]", response[i].quantity).
                     replace("[EXPIRED]", response[i].isExpired).
                     replace("[REMAINING]", response[i].remaining_qty).

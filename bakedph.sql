@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Jan 18, 2021 at 12:25 PM
+-- Generation Time: Jan 22, 2021 at 04:19 AM
 -- Server version: 10.4.13-MariaDB
 -- PHP Version: 7.4.8
 
@@ -67,18 +67,6 @@ CREATE TABLE `material` (
   `unit` varchar(255) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
---
--- Dumping data for table `material`
---
-
-INSERT INTO `material` (`id`, `materialid`, `qty`, `productid`, `date_created`, `unit`) VALUES
-(91, 44, 12, 35, '2021-01-18 10:40:16', 'millilitre'),
-(92, 44, 1, 46, '2021-01-18 11:22:10', 'millilitre'),
-(93, 44, 23, 47, '2021-01-18 11:22:37', 'millilitre'),
-(94, 44, 23, 48, '2021-01-18 11:23:26', 'millilitre'),
-(95, 44, 23, 49, '2021-01-18 11:23:40', 'millilitre'),
-(96, 44, 23, 50, '2021-01-18 11:24:44', 'millilitre');
-
 -- --------------------------------------------------------
 
 --
@@ -101,7 +89,7 @@ CREATE TABLE `material_inventory` (
 --
 
 INSERT INTO `material_inventory` (`id`, `storeid`, `name`, `qty`, `price`, `expiry_date`, `date_created`, `unit`) VALUES
-(44, 35, 'Egg', 1001, 0, '0000-00-00', '2021-01-18 07:09:46', NULL);
+(50, 35, 'Kalahi', 31, 0, '0000-00-00', '2021-01-22 01:16:07', NULL);
 
 -- --------------------------------------------------------
 
@@ -156,11 +144,7 @@ CREATE TABLE `product` (
 --
 
 INSERT INTO `product` (`id`, `name`, `srp`, `qty`, `expiry_date`, `storeid`, `date_created`, `status`) VALUES
-(46, 'test', 0, 0, '0000-00-00', 35, 2147483647, 1),
-(47, 'test2', 0, 0, '0000-00-00', 35, 2147483647, 1),
-(48, 'test3', 0, 0, '0000-00-00', 35, 2147483647, 1),
-(49, 'test4', 0, 0, '0000-00-00', 35, 2147483647, 1),
-(50, 'test55', 0, 0, '0000-00-00', 35, 2147483647, 1);
+(53, 'test', 0, 0, '0000-00-00', 35, 2147483647, 1);
 
 -- --------------------------------------------------------
 
@@ -181,15 +165,18 @@ CREATE TABLE `production` (
   `price` float DEFAULT NULL,
   `deducted` int(11) DEFAULT 0,
   `remaining_qty` int(11) DEFAULT 0,
-  `rejects` int(11) DEFAULT 0
+  `rejects` int(11) DEFAULT 0,
+  `material_added` int(11) DEFAULT 0
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 --
 -- Dumping data for table `production`
 --
 
-INSERT INTO `production` (`id`, `productid`, `batchnumber`, `quantity`, `date_produced`, `storeid`, `date_created`, `unit`, `date_expired`, `price`, `deducted`, `remaining_qty`, `rejects`) VALUES
-(101, 35, 'Batch #1', 100, '2021-01-18', 35, '2021-01-18 07:10:46', 'pcs', '2021-01-17', 6, 1, 50, 0);
+INSERT INTO `production` (`id`, `productid`, `batchnumber`, `quantity`, `date_produced`, `storeid`, `date_created`, `unit`, `date_expired`, `price`, `deducted`, `remaining_qty`, `rejects`, `material_added`) VALUES
+(109, 53, '2101221', 1, '2021-01-22', 35, '2021-01-22 00:58:01', 'pcs', '2021-01-22', 1, 1, 1, 0, 1),
+(110, 53, '210122110', 1, '2021-01-22', 35, '2021-01-22 02:29:01', 'pcs', '2021-01-22', 1, 1, 1, 0, 1),
+(111, 53, '210122111', 1, '2021-01-22', 35, '2021-01-22 02:31:07', 'pcs', '2021-01-22', 1, 1, 1, 0, 1);
 
 -- --------------------------------------------------------
 
@@ -211,16 +198,24 @@ CREATE TABLE `purchase` (
   `unit` varchar(255) DEFAULT NULL,
   `price` float DEFAULT NULL,
   `deducted` int(11) DEFAULT 0,
-  `remaining_qty` int(11) DEFAULT 0
+  `remaining_qty` int(11) DEFAULT 0,
+  `material_added` int(11) DEFAULT 0
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 --
 -- Dumping data for table `purchase`
 --
 
-INSERT INTO `purchase` (`id`, `vendorid`, `materialid`, `date_purchased`, `type`, `qty`, `date_created`, `storeid`, `credit_date`, `expiry_date`, `unit`, `price`, `deducted`, `remaining_qty`) VALUES
-(97, 7, 44, '2021-01-18', 'cash', 1000, '2021-01-18 07:10:14', 35, '2021-01-18', '2021-01-27', 'piece', 4.5, 0, 1000),
-(98, 7, 44, '2021-01-14', 'cash', 1, '2021-01-18 09:17:41', 35, '2021-01-18', '2021-01-28', 'gram', 1, 0, 1);
+INSERT INTO `purchase` (`id`, `vendorid`, `materialid`, `date_purchased`, `type`, `qty`, `date_created`, `storeid`, `credit_date`, `expiry_date`, `unit`, `price`, `deducted`, `remaining_qty`, `material_added`) VALUES
+(103, 0, 50, '2021-01-22', 'cash', 1, '2021-01-22 01:16:08', 35, NULL, '2021-01-24', 'pcs', 0, 0, 1, 0),
+(104, 0, 50, '2021-01-22', 'cash', 1, '2021-01-22 02:29:14', 35, NULL, '2021-01-24', 'pcs', 0, 0, 1, 0),
+(105, 0, 50, '2021-01-22', 'cash', 1, '2021-01-22 02:29:17', 35, NULL, '2021-01-24', 'pcs', 0, 0, 1, 0),
+(106, 0, 50, '2021-01-22', 'cash', 1, '2021-01-22 02:29:39', 35, NULL, '2021-01-24', 'pcs', 0, 0, 1, 0),
+(107, 0, 50, '2021-01-22', 'cash', 1, '2021-01-22 02:29:41', 35, NULL, '2021-01-24', 'pcs', 0, 0, 1, 0),
+(108, 0, 50, '2021-01-22', 'cash', 1, '2021-01-22 02:29:52', 35, NULL, '2021-01-24', 'pcs', 0, 0, 1, 0),
+(109, 0, 50, '2021-01-22', 'cash', 1, '2021-01-22 02:31:29', 35, NULL, '2021-01-24', 'pcs', 0, 0, 1, 0),
+(110, 7, 50, '2021-01-22', 'cash', 12, '2021-01-22 03:03:51', 35, '2021-01-22', '2021-01-29', 'piece', 1, 0, 12, 0),
+(111, 7, 50, '2021-01-22', 'cash', 12, '2021-01-22 03:03:51', 35, '2021-01-22', '2022-04-13', 'piece', 1, 0, 12, 0);
 
 -- --------------------------------------------------------
 
@@ -261,13 +256,6 @@ CREATE TABLE `sales` (
   `date_created` timestamp NOT NULL DEFAULT current_timestamp(),
   `unit` varchar(255) DEFAULT 'pcs'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
-
---
--- Dumping data for table `sales`
---
-
-INSERT INTO `sales` (`id`, `storeid`, `productid`, `qty`, `date_purchased`, `other_details`, `date_created`, `unit`) VALUES
-(37, 35, 35, 50, '2021-01-18', '', '2021-01-18 07:11:47', 'pcs');
 
 -- --------------------------------------------------------
 
@@ -646,13 +634,13 @@ ALTER TABLE `material`
 -- AUTO_INCREMENT for table `material_inventory`
 --
 ALTER TABLE `material_inventory`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=45;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=51;
 
 --
 -- AUTO_INCREMENT for table `notification`
 --
 ALTER TABLE `notification`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=154;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=164;
 
 --
 -- AUTO_INCREMENT for table `payments`
@@ -664,19 +652,19 @@ ALTER TABLE `payments`
 -- AUTO_INCREMENT for table `product`
 --
 ALTER TABLE `product`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=51;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=54;
 
 --
 -- AUTO_INCREMENT for table `production`
 --
 ALTER TABLE `production`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=102;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=112;
 
 --
 -- AUTO_INCREMENT for table `purchase`
 --
 ALTER TABLE `purchase`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=99;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=112;
 
 --
 -- AUTO_INCREMENT for table `purchase_return`
@@ -688,7 +676,7 @@ ALTER TABLE `purchase_return`
 -- AUTO_INCREMENT for table `sales`
 --
 ALTER TABLE `sales`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=38;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=39;
 
 --
 -- AUTO_INCREMENT for table `sales_return`

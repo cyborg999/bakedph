@@ -32,6 +32,7 @@
               <th scope="col">Price</th>
               <th scope="col">Quantity</th>
               <th scope="col">Unit</th>
+              <th scope="col">Rejects</th>
               <th scope="col">Date Produced</th>
               <th scope="col">Expiry Date</th>
               <!-- <th>Action</th> -->
@@ -77,8 +78,10 @@
               <td class="editsrp"><?= $product['price']; ?></td>
               <td class="editqty"><span class="<?= $product['isExpired']; ?>"><?= $product['remaining_qty']; ?></span>/<?= $product['quantity']; ?></td>
               <td class="editqty"><?= $product['unit']; ?></td>
+              <td class="editrejects"><?= $product['rejects']; ?></td>
               <td class="editproduced"><?= $product['date_produced']; ?></td>
               <td class="editexpiry"><?= $product['date_expired']; ?></td>
+             
           <!--     <td>
                 <a href="" data-qty="<?= $product['quantity']; ?>" data-expiry="<?= $product['expiry_date']; ?>" data-srp="<?= $product['srp']; ?>" data-id="<?= $product['id']; ?>" data-name="<?= $product['name']; ?>"class="btn btn-sm btn-warning edit"  data-toggle="modal" data-target="#editProductModal" alt="Edit product"><svg class="bi" width="18" height="18" fill="currentColor"><use xlink:href="./node_modules/bootstrap-icons/bootstrap-icons.svg#pencil"/></svg> </a>
                 <a href="" data-id="<?= $product['id']; ?>" class="btn btn-sm btn-danger delete" alt="Delete Product"><svg class="bi" width="18" height="18" fill="currentColor"><use xlink:href="./node_modules/bootstrap-icons/bootstrap-icons.svg#trash"/></svg></a>
@@ -238,6 +241,7 @@
           <td class="editsrp">[PRICE]</td>
           <td class="editqty"><span class="[EXPIRED]">[REMAINING]</span>/[QUANTITY]</td>
           <td class="editqty">[UNIT]</td>
+          <td class="editrejects">[REJECTS]</td>
           <td class="editqty">[DATE_PRODUCED]</td>
           <td class="editqty">[EXPIRY_DATE]</td>
         </tr>
@@ -501,6 +505,7 @@
                    replace("[BATCH]", response[i].batchnumber).
                     replace("[ID]", response[i].id).
                     replace("[UNIT]", response[i].unit).
+                    replace("[REJECTS]", response[i].rejects).
                     replace("[QUANTITY]", response[i].quantity).
                      replace("[EXPIRED]", response[i].isExpired).
                     replace("[REMAINING]", response[i].remaining_qty).

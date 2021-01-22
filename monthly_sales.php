@@ -220,28 +220,36 @@
 									</div>
 								</div>
 								<?php
-									$expenses = $model->getStoreExpenses(); 
+            						$products = $model->getAllPurchase();
 									$etotal = 0;
 								?>
 								<table class="table table-hover">
 									<thead>
 										<tr>
-											<th>Name</th>
-											<th>Cost</th>
-											<th>Date Produced</th>
+											<th scope="col">Name</th>
+											<th scope="col">Price</th>
+											<th scope="col">Quantity</th>
+											<th scope="col">Unit</th>
+											<!-- <th scope="col">Expiry Date</th> -->
+											<th scope="col">Date_Purchased</th>
 										</tr>
 									</thead>
 									<tbody id="expensesTbody">
-										<?php foreach($expenses as $idx => $p): ?>
-											<?php
-												$etotal += $p['cost'];
+											
+		            					
+		            					<?php foreach($products as $idx => $product): ?>
+		            						<?php
+												$etotal += ($product['price'] * $product['qty']);
 											?>
-		            						<tr>
-												<td><?= $p['name']; ?></td>
-												<td><?= $p['cost']; ?></td>
-												<td><?= $p['date_produced']; ?></td>
-											</tr>
-		            					<?php endforeach ?>
+								            <tr class="result " id="edit<?= $product['id']; ?>">
+								              <td class="editname"><?= $product['name']; ?></td>
+								              <td class="editprice"><?= $product['price']; ?></td>
+								              <td class="editqty"><?= $product['qty']; ?></td>
+								              <td class="editunit"><?= $product['unit']; ?></td>
+								              <!-- <td class="editexpiry"><?= $product['expiry_date']; ?></td> -->
+								              <td class="editpurchase"><?= $product['date_purchased']; ?></td>
+								            </tr>
+								            <?php endforeach ?>
 									</tbody>
 									<tfoot>
 										<tr>
@@ -271,8 +279,11 @@
 	<script type="text/html" id="expensesTpl">
 		<tr>
 			<td>[NAME]</td>
-			<td>[COST]</td>
-			<td>[DATE_PRODUCED]</td>
+			<td>[PRICE]</td>
+			<td>[QTY]</td>
+			<td>[UNIT]</td>
+			<!-- <td>[DATE_EXPIRED]</td> -->
+			<td>[DATE_PURCHASED]</td>
 		</tr>
 	</script>
 	<!-- end tpl -->
@@ -479,8 +490,11 @@
     							var tpl = $("#expensesTpl").html();
 
     							tpl = tpl.replace("[NAME]", response[i].name).
-    							replace("[COST]", response[i].cost).
-    							replace("[DATE_PRODUCED]", response[i].date_produced);
+    							replace("[PRICE]", response[i].price).
+    							replace("[UNIT]", response[i].unit).
+    							replace("[DATE_PURCHASED]", response[i].date_purchased).
+    							replace("[DATE_EXPIRED]", response[i].expiry_date).
+    							replace("[QTY]", response[i].qty);
 
     							total += parseFloat(response[i].cost);
 

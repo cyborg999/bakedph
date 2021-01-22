@@ -88,6 +88,70 @@ class Model {
 		$this->loadSalesVsProductionListener();
 		$this->expiredChecker();
 		$this->addNewProductListener();
+		$this->updateVerifyListener();
+		$this->useAsMaterialListener();
+	}
+
+	public function createKalahi(){
+		$exists = $this->checkifMaterialInventoryExists($_SESSION['storeid'], "Kalahi");
+
+		if($exists){
+			return $exists['id'];
+		} else {
+			$sql = "
+				INSERT INTO material_inventory(storeid,name)
+				VALUES(?,?)
+			";
+
+			$this->db->prepare($sql)->execute(array($_SESSION['storeid'],"Kalahi"));
+
+			return $this->db->lastInsertId();
+		}
+	}
+
+	public function updateProductMaterialAdded($productId){
+		$sql = "
+			update production
+			set material_added = 1
+			where id = ?
+		";
+
+		$this->db->prepare($sql)->execute(array($productId));
+
+		return $this;
+	}
+
+	public function useAsMaterialListener(){
+		if(isset($_POST['useAsMaterial'])){
+
+			$materialId = $this->createKalahi();
+			// create material
+			$sql = "
+				INSERT INTO purchase(vendorid,materialid,type,qty,date_purchased,storeid,expiry_date,unit,price, remaining_qty)
+				VALUES(?,?,?,?,?,?,?,?,?,?)
+			";
+
+			$datePurchashed = $this->formateDateToBasic(date("Y-m-d"));
+			$expiry = date('Y-m-d', strtotime("+2 days", strtotime($datePurchashed)));
+			$dateExpired = $this->formateDateToBasic($expiry);
+
+			$this->db->prepare($sql)->execute(array(0,$materialId,"cash",$_POST['qty'], $datePurchashed,$_SESSION['storeid'],$dateExpired, "pcs","0",$_POST['qty']));
+
+			$this->updateMaterialInventory($materialId, $_POST['qty'], true);
+			$this->updateProductMaterialAdded($_POST['id']);
+
+			die(json_encode(array("updated")));
+		}
+	}
+
+	public function updateVerifyListener(){
+		if(isset($_POST['updateVerify'])){
+			if(md5($_POST['password']) == $_SESSION['password'])  {
+				die(json_encode(array(true)));
+			} else {
+				die(json_encode(array(false)));
+			}
+		}
 	}
 
 	public function addNewProductListener(){
@@ -692,8 +756,9 @@ class Model {
 		";
 
 		$record = $this->db->query($sql)->fetch();
+		$date = date("ymd");
 
-		return ($record) ? "Batch #" . ++$record['id'] : "Batch #1";
+		return ($record) ? "{$date}" . ++$record['id'] : "{$date}1";
 	}
 	
 	public function exportListener(){
@@ -791,12 +856,12 @@ class Model {
 				$output = fopen('php://output', 'w');
 
 
-				fputcsv($output, array("Description", "Cost", 'Date Produced'));
+				fputcsv($output, array("Name", "Price", 'Quantity', 'Unit', 'Date Purchased'));
 
 				$records = $this->db->query($_SESSION['lastExpensesQuery'])->fetchAll();
 
 				foreach($records as $idx => $r){
-					$data = array($r['name'],$r['cost'], $r['date_produced']);
+					$data = array($r['name'],$r['price'], $r['qty'], $r['unit'], $r['date_purchased']);
 					fputcsv($output, $data);
 				}
 			}
@@ -984,33 +1049,25 @@ class Model {
 	public function filterExpensesListener(){
 		if(isset($_POST['filterExpenses'])){
 			if($_POST['filter'] == "day"){
-				$where = ($_POST['date1'] == "")  ? "" : " AND  t1.date_produced = '".$_POST['date1']."'";
-				$sql = "
-					SELECT t1.* 
-					FROM expenses t1
-					where t1.storeid = ".$_SESSION['storeid']."
-					$where 
-				";
+				$where = ($_POST['date1'] == "")  ? "" : " AND  t1.date_purchased = '".$_POST['date1']."'";
 			} elseif($_POST['filter'] == "daterange"){
-				$where = ($_POST['date2'] == "")  ? "" : " AND t1.date_produced BETWEEN '".$_POST['date2']."' AND '".$_POST['date3']."'";
-				$sql = "
-					SELECT t1.* 
-					FROM expenses t1
-					where t1.storeid = ".$_SESSION['storeid']."
-					$where
-					 
-				";
+				$where = ($_POST['date2'] == "")  ? "" : " AND t1.date_purchased BETWEEN '".$_POST['date2']."' AND '".$_POST['date3']."'";
 			} else {
 				//year
-				$where = ($_POST['year'] == "")  ? "" : " AND YEAR(t1.date_produced) = '".$_POST['year']."' ";
-				$sql = "
-					SELECT t1.* 
-					FROM expenses t1
-					where t1.storeid = ".$_SESSION['storeid']."
-					$where
-					 
-				";
+				$where = ($_POST['year'] == "")  ? "" : " AND YEAR(t1.date_purchased) = '".$_POST['year']."' ";
 			}
+
+			$sql = "
+				select t1.*,t2.name, t3.name as 'vendorname', t3.id as 'vendorid',
+				if((date(CURRENT_DATE) >= date(t1.expiry_date)), 'expired' , '') as 'isExpired'
+				from purchase t1
+				left join material_inventory t2
+				on t1.materialid = t2.id
+				left join vendor t3
+				on t1.vendorid = t3.id
+				WHERE t1.storeid = '".$_SESSION['storeid']."'
+				$where 
+			";
 
 			$_SESSION['lastExpensesQuery'] = $sql;
 
@@ -1023,38 +1080,27 @@ class Model {
 	function getExpensesTotal(){
 		if(isset($_POST['filter'])){
 			if($_POST['filter'] == "day"){
-				$where = ($_POST['date1'] == "")  ? "" : " AND  t1.date_produced = '".$_POST['date1']."'";
-				$sql = "
-					SELECT sum(t1.cost) as 'total'
-					FROM expenses t1
-					where t1.storeid = ".$_SESSION['storeid']."
-					$where 
-				";
+				$where = ($_POST['date1'] == "")  ? "" : " AND  t1.date_purchased = '".$_POST['date1']."'";
+			
 			} elseif($_POST['filter'] == "daterange"){
-				$where = ($_POST['date2'] == "")  ? "" : " AND t1.date_produced BETWEEN '".$_POST['date2']."' AND '".$_POST['date3']."'";
-				$sql = "
-					SELECT sum(t1.cost) as 'total'
-					FROM expenses t1
-					where t1.storeid = ".$_SESSION['storeid']."
-					$where
-					 
-				";
+				$where = ($_POST['date2'] == "")  ? "" : " AND t1.date_purchased BETWEEN '".$_POST['date2']."' AND '".$_POST['date3']."'";
+			
 			} else {
 				//year
-				$where = ($_POST['year'] == "")  ? "" : " AND YEAR(t1.date_produced) = '".$_POST['year']."' ";
-				$sql = "
-					SELECT sum(t1.cost) as 'total'
-					FROM expenses t1
-					where t1.storeid = ".$_SESSION['storeid']."
-					$where
-					 
-				";
+				$where = ($_POST['year'] == "")  ? "" : " AND YEAR(t1.date_purchased) = '".$_POST['year']."' ";
+				
 			}
+			$sql = "
+				select sum(t1.price * t1.qty) as 'total'
+				from purchase t1
+				WHERE t1.storeid = '".$_SESSION['storeid']."'
+					$where
+			";
 		} else {
 			$sql = "
-				SELECT sum(t1.cost) as 'total'
-				FROM expenses t1
-				WHERE t1.storeid = ".$_SESSION['storeid']."
+				select sum(t1.price * t1.qty) as 'total'
+				from purchase t1
+				WHERE t1.storeid = '".$_SESSION['storeid']."'
 			";
 		}
 
@@ -1955,6 +2001,8 @@ class Model {
 			where t1.storeid = ".$_SESSION['storeid']."
 			and t1.remaining_qty > 0
 			and t1.materialid = ".$materialId."
+			and t1.deducted = 0
+			order by t1.expiry_date asc
 		";
 
 		$records = $this->db->query($sql)->fetchAll();
@@ -1998,6 +2046,8 @@ class Model {
 			and t1.remaining_qty > 0
 			and t1.productid = ".$productId." 
 			and date(t1.date_expired) > date(CURRENT_DATE) 
+			and t1.deducted = 0
+			order by t1.date_expired asc
 		";
 
 		$records = $this->db->query($sql)->fetchAll();
@@ -2190,7 +2240,30 @@ class Model {
 
 		$_SESSION['lastQuery'] = $sql;
 
-		return $this->db->query($sql)->fetchAll();
+		$data = array();
+		$record = $this->db->query($sql)->fetchAll();
+
+		foreach($record as $idx => &$r){
+			$status = "";
+
+			if($r['type'] == "cash"){
+				$status = "<p class='green'>Paid</p>";
+			} else {
+				$today = date_create(date("Y-m-d"));
+				$dueDate = date_create($r['credit_date']);
+				$diff = date_diff($today, $dueDate);
+
+				if($diff->d > 0){
+					$status = "<p class='red'>Overdue <b>($diff->d day(s))</b></p>";
+				} else {
+					$status = "<p class='yellow'>Unpaid</p>";
+				}
+			}
+
+			$r['status'] = $status;
+		}
+
+		return $record;
 	}
 
 	public function getPurchaseOrders(){
@@ -3330,6 +3403,7 @@ class Model {
 				//redirect to dashboard
 				$_SESSION['id'] = $exists['id'];
 				$_SESSION['username'] = $exists['username'];
+				$_SESSION['password'] = $exists['password'];
 				$_SESSION['name'] = $exists['fullname'];
 				$_SESSION['storeid'] = $exists['storeId'];
 				$_SESSION['usertype'] = $exists['usertype'];

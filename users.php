@@ -29,8 +29,11 @@
 							<td><a href="" data-id="<?= $u['id'];?>" class="view"><?= $u['username'];?></a></td>
 							<td><?= $u['contact'];?></td>
 							<td><?= $u['email'];?></td>
-							<td><span class="badge <?= (!$u['verified']) ? 'btn-warning' : 'btn-info'; ?>""><?= ($u['verified']) ? 'verified' : 'unverified'; ?></span></td>
-							<td><a href="" data-verify="<?= $u['verified'];?>" data-id="<?= $u['id'];?>" class="verify btn btn-sm <?= ($u['verified']) ? 'btn-danger' : 'btn-success'; ?>"><?= (!$u['verified']) ? 'verify' : 'unverify'; ?></a></td>
+							<td><span class="badge <?= (!$u['verified']) ? 'btn-warning' : 'btn-info'; ?>""><?= ($u['verified']) ? 'verified' : 'suspended'; ?></span></td>
+							<td>
+								<a href="" data-toggle="modal" data-target="#updateModal" class="verify1 btn btn-sm <?= ($u['verified']) ? 'btn-danger' : 'btn-success'; ?>"><?= (!$u['verified']) ? 'verify' : 'suspend'; ?></a>
+
+								<a href="" data-verify="<?= $u['verified'];?>" data-id="<?= $u['id'];?>" class="verify2 hidden btn btn-sm <?= ($u['verified']) ? 'btn-danger' : 'btn-success'; ?>"><?= (!$u['verified']) ? 'verify' : 'suspend'; ?></a></td>
 						</tr>
 						<?php endforeach ?>
 					</tbody>
@@ -39,7 +42,35 @@
 		</div>
 	</div>
 
-
+<!-- Modal -->
+<div class="modal fade" id="updateModal" data-id="" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Verification</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div class="row">
+          <div class="col-sm">
+            <h5>Please enter your password to update this record.</h5>
+            <form id="updateVerify">
+            	<input type="hidden" name="updateVerify" value="true">
+	            <input type="password" id="password" class="password form-control" name="password">
+	            <br>
+    	        <input type="submit" class="btn btn-lg btn-primary" value="submit" >
+            </form>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
 
 <!-- Modal -->
 <div class="modal fade" id="checkPayment" data-id="" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
@@ -109,6 +140,29 @@
 	<script type="text/javascript">
 		(function($){
 			$(document).ready(function(){
+				var last = null;
+				var lastMe = null;
+
+				$("#updateVerify").on("submit", function(e){
+					e.preventDefault();
+
+					$.ajax({
+						url : "ajax.php",
+						data : $(this).serialize(),
+						type : "post",
+						dataType : "json",
+						success : function(response){
+							if(response == "true"){
+								$(last).trigger("click");
+
+								$("#updateModal").modal("hide");
+							} else {
+								alert("Incorrect Password");
+							}
+						}
+					});
+				});
+
 				function __listen(){
 					$(".view").off().on("click", function(e){
 						e.preventDefault();
@@ -149,7 +203,17 @@
 
 					});
 
-					$(".verify").off().on("click", function(e){
+
+					$(".verify1").off().on("click", function(){
+						var me = $(this);
+
+						$("#password").val("");
+
+						lastMe = me;
+						last = me.parent("td").find(".verify2");
+					});
+
+					$(".verify2").off().on("click", function(e){
 						e.preventDefault();
 
 						var me = $(this);
@@ -166,25 +230,38 @@
 							dataType : "json",
 							success : function(response){
 								if(me.hasClass("btn-danger")){
+									lastMe.removeClass("btn-danger");
 									me.removeClass("btn-danger");
+									lastMe.addClass("btn-success");
 									me.addClass("btn-success");
 
+									lastMe.html("verify")
 									me.html("verify")
 
-									me.parents("tr").find(".badge").html("unverified");
+									lastMe.parents("tr").find(".badge").html("suspended");
+									me.parents("tr").find(".badge").html("suspended");
+									lastMe.parents("tr").find(".badge").removeClass("btn-info");
 									me.parents("tr").find(".badge").removeClass("btn-info");
+									lastMe.parents("tr").find(".badge").addClass("btn-warning");
 									me.parents("tr").find(".badge").addClass("btn-warning");
 								} else {
+									lastMe.addClass("btn-danger");
 									me.addClass("btn-danger");
+									lastMe.removeClass("btn-success");
 									me.removeClass("btn-success");
-									me.html("unverify")
+									lastMe.html("suspend")
+									me.html("suspend")
 
+									lastMe.parents("tr").find(".badge").html("verified");
 									me.parents("tr").find(".badge").html("verified");
+									lastMe.parents("tr").find(".badge").removeClass("btn-warning");
 									me.parents("tr").find(".badge").removeClass("btn-warning");
+									lastMe.parents("tr").find(".badge").addClass("btn-info");
 									me.parents("tr").find(".badge").addClass("btn-info");
 									
 								}
 
+								lastMe.data("verify", (lastMe.data("verify") == 0) ? 1 : 0);
 								me.data("verify", (me.data("verify") == 0) ? 1 : 0);
 							}
 						});

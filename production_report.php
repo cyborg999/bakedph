@@ -37,15 +37,25 @@
 			        	#creditTable.active .credit {
 			        		display: block;
 			        	}
+			        	.red {
+			        		color: red;
+			        	}
+			        	.green {
+			        		color: green;
+			        	}
+			        	.yellow {
+			        		color: yellow;
+			        	}
 			        </style>
 			        <table class="table" id="creditTable">
 			        	<thead>
 			        		<tr>
 			        			<th>Purchase Type</th>
+			        			<th>Status</th>
 			        			<th>Material</th>
 			        			<th>Supplier</th>
 			        			<th>Date Purchased</th>
-			        			<th class="credit">Credit Date</th>
+			        			<th class="credit">Due Date</th>
 			        			<th>Quantity</th>
 			        			<th>Unit</th>
 			        		</tr>
@@ -68,9 +78,32 @@
 			        			
 			        		</tr>
 			        		<?php foreach($purchasedOrders as $idx => $p): ?>
+			        			<?php
+			        				$diff = "";
+
+			        				if($p['type'] == "credit"){
+			        					$today = date_create(date("Y-m-d"));
+										$dueDate = date_create($p['credit_date']);
+										$diff = date_diff($today,$dueDate);
+			        				}
+			        			?>
 							<tr>
 			        			<td>
 									<span data-id="<?= $p['id'];?>" class="badge bd <?=($p['type'] == 'cash') ? 'badge-success' : 'badge-danger'?>"><?= $p['type'];?></span>
+			        			</td>
+			        			<td>
+			        				<?php
+			        					if($p['type'] == "cash"){
+			        						echo "<p class='green'>Paid</p>";
+			        					} else {
+			        						if($diff->d > 0){
+			        							echo "<p class='red'>Overdue <b>($diff->d day(s))</b></p>";
+			        						} else {
+			        							echo "<p class='yellow'>Unpaid</p>";
+			        						}
+			        					}
+
+			        				?>
 			        			</td>
 			        			<td><?= $p['materialname'];?></td>
 			        			<td><?= $p['vendorname'];?></td>
@@ -94,6 +127,7 @@
 				<span data-id="[ID]?>" class="badge bd [BADGE]">[TYPE]</span>
 			</td>
 			<td>[MATERIALNAME]</td>
+			<td>[STATUS]</td>
 			<td>[VENDORNAME]</td>
 			<td>[DATE]</td>
 			<td class="credit tr">[CREDIT]</td>
@@ -128,7 +162,7 @@
 	    					type : "post" ,
 	    					dataType : "json",
 	    					success : function(response){
-
+	    						window.location.href = "production_report.php";
 	    					}
 	    				});
 	    			});
@@ -158,10 +192,12 @@
     						for(var i in response){
     							var r = response[i];
     							var tpl = $("#purchase").html();
+    							var status = "";
 
     							tpl = tpl.replace("[ID]",r.id).
     							replace("[TYPE]",r.type).
     							replace("[MATERIALNAME]",r.materialname).
+    							replace("[STATUS]", r.status).
     							replace("[CREDIT]",r.credit_date).
     							replace("[VENDORNAME]",r.vendorname).
     							replace("[UNIT]",r.unit).

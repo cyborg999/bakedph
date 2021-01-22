@@ -266,11 +266,11 @@
 				      <div class="card-body">
 				      	<ul class="list-group list-group-flush">
 						   <li class="list-group-item">
-						  	<a href="addsale.php" class="black">Sales</a>
+						  	<a href="addsale.php" class="black">Add</a>
 						  </li>
-					     	<li class="list-group-item">
+					<!--      	<li class="list-group-item">
 						  	<a href="addexpenses.php" class="black">Expenses</a>
-						  </li>
+						  </li> -->
 						  <!-- <li class="list-group-item">
 						  	<a href="addsalesreturn.php" class="black">Sales Return</a>
 						  </li> -->

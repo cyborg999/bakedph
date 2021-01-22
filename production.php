@@ -66,7 +66,7 @@
 								</div>
 								<div class="form-group">
 									<label>Date Produced:</label>
-									<input type="text" readonly="readonly"  required class="from form-control" id="from"  name="date_produced" placeholder="Date..."/>
+									<input type="text" readonly="readonly"  required class="from form-control" id="from" value="<?= date("m/d/Y");?>" name="date_produced" placeholder="Date..."/>
 								</div>
 								<div class="form-group">
 									<label>Expiry Date:</label>
@@ -84,6 +84,7 @@
 										<th>Quantity</th>
 										<th>Unit</th>
 										<th>Price</th>
+										<th>Reject</th>
 										<th>Date Produced</th>
 										<th>Action</th>
 									</tr>
@@ -114,6 +115,7 @@
 			<td data-unit="[UNIT]" data-rejects="[REJECTS]" class="quantity">[QUANTITY]</td>
 			<td class="unit">[UNIT]</td>
 			<td class="price">[PRICE]</td>
+			<td class="reject">[REJECTS]</td>
 			<td data-expiry="[EXPIRY]" class="date_produced">[DATE_PRODUCED]</td>
 			<td>
 				<a href="" class="delete btn btn-danger" ><svg class="bi" width="18" height="18" fill="currentColor"><use xlink:href="./node_modules/bootstrap-icons/bootstrap-icons.svg#trash"/></svg></a>
@@ -255,6 +257,7 @@
     					replace("[UNIT]", unit).
     					replace("[UNIT]", unit).
     					replace("[PRICE]", price).
+    					replace("[REJECTS]", reject).
     					replace("[REJECTS]", reject).
     					replace("[EXPIRY]", expiryDate).
     					replace("[DATE_PRODUCED]", dateProduced);
